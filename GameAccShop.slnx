@@ -1,6 +1,8 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="Application/Application.csproj" Id="8c89d297-4f24-4b53-b718-ab8603fb897c" />
     <Project Path="Domain/Domain.csproj" />
     <Project Path="GameAccShop/GameAccShop.csproj" />
+    <Project Path="Infrastructure/Infrastructure.csproj" Id="4efb7d45-9580-4981-83a7-9f50defa8ecb" />
   </Folder>
 </Solution>

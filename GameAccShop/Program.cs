@@ -1,4 +1,7 @@
 
+using Infrastructure.EntityModel;
+using Microsoft.EntityFrameworkCore;
+
 namespace GameAccShop
 {
     public class Program
@@ -14,7 +17,8 @@ namespace GameAccShop
             builder.Services.AddSwaggerGen();   
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            builder.Services.AddDbContext<DbContextModel>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
