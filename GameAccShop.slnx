@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="GameAccShop/GameAccShop.csproj" />
+  <Folder Name="/src/">
+    <Project Path="Domain/Domain.csproj" />
+    <Project Path="GameAccShop/GameAccShop.csproj" />
+  </Folder>
 </Solution>
