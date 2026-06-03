@@ -7,7 +7,8 @@ using System.Text;
 
 namespace Infrastructure.EntityModel
 {
-    public class DbContextModel:DbContext
+    public class 
+        DbContextModel:DbContext
     {
         public DbContextModel(DbContextOptions<DbContextModel> options)
         : base(options)

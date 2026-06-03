@@ -7,14 +7,27 @@ namespace Domain.Models.ProductsModels
 {
     public class Product
     {
-        public int Id { get; set; } 
-        public int Acc_strength { get; set; }
-        public int player_count { get; set; }
-        public int coins_count { get; set; }
-        public int Acc_price { get; set; }
-        public string Acc_email { get; set; }
-        public string Acc_password { get; set; }
-        public int user_Id { get; set; }
-        public User User { get; set; }  
+        public int Id { get; set; }
+
+        public int AccStrength { get; set; }
+
+        public int PlayerCount { get; set; }
+
+        public int CoinsCount { get; set; }
+
+        public decimal AccPrice { get; set; }
+
+        public string AccEmail { get; set; }
+
+        public string AccPassword { get; set; }
+
+        public ProductStatus Status { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        // Seller
+        public int SellerId { get; set; }
+
+        public User Seller { get; set; }
     }
 }
