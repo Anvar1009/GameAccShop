@@ -11,15 +11,16 @@ namespace Domain.Models.OrdersModel
         public int Id { get; set; }
 
         // Xaridor
-        public int UserId { get; set; }
+        public int BuyerId { get; set; }
 
-        public User User { get; set; }
+        public User Buyer { get; set; }
 
         // Sotib olingan account
         public int ProductId { get; set; }
 
         public Product Product { get; set; }
 
+        // Xarid vaqtidagi narx
         public decimal Price { get; set; }
 
         public OrderStatus Status { get; set; }

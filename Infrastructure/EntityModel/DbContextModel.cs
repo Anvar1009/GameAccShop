@@ -1,4 +1,5 @@
-﻿using Domain.Models.ProductsModels;
+﻿using Domain.Models.OrdersModel;
+using Domain.Models.ProductsModels;
 using Domain.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,6 +17,6 @@ namespace Infrastructure.EntityModel
         }
         public DbSet<User> Users { get; set; }  
         public DbSet<Product> products { get; set; }
-
+        public DbSet<Order> orders { get; set; }    
     }
 }
