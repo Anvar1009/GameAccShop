@@ -2,6 +2,7 @@
 using Application.Interfaces.Repositories_interface;
 using Domain.Models.UserModels;
 using Infrastructure.EntityModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,14 +18,22 @@ namespace Infrastructure.Repositories.UserRepositoryFolder
             
         }
 
-        public Task<User> GetByLoginAsycn(string login)
+        public async Task<User> GetByLoginAsycn(string login)
         {
-            throw new NotImplementedException();
+            var result = await _dbContextModel.Users.FirstOrDefaultAsync(u => u.Login == login);
+            if (result == null) 
+            {
+                return null;
+            }
+            return result;  
         }
 
-        public Task<User> Register(User user)
+        public async Task<User> Register(User user)
         {
-            throw new NotImplementedException();
+            _dbContextModel.Users.Add(user);
+            await _dbContextModel.SaveChangesAsync();
+
+            return user;
         }
     }
 }
