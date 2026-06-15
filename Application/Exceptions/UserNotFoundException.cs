@@ -4,7 +4,11 @@ using System.Text;
 
 namespace Application.Exceptions
 {
-    public class UserNotFoundException
+    public class UserNotFoundException:Exception
     {
+        public UserNotFoundException()
+        : base("Bunday foydalanuvchi mavjud emas")
+        {
+        }
     }
 }

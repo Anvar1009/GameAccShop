@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.RegisterDTO;
 using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.Security;
+using Application.Interfaces.ServiceInterface;
 using Domain.Models.UserModels;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace Application.Services
 {
-    public class AuthService
+    public class AuthService:IAuthService
     {
         private readonly IUserRepositories _userRepositories;
         private readonly IPasswordHasher passwordHasher; 
