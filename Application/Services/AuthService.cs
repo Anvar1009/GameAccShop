@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.RegisterDTO;
 using Application.Exceptions;
+using Application.Interfaces.Provider;
 using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.Security;
 using Application.Interfaces.ServiceInterface;
@@ -13,11 +14,13 @@ namespace Application.Services
     public class AuthService:IAuthService
     {
         private readonly IUserRepositories _userRepositories;
-        private readonly IPasswordHasher passwordHasher; 
-        public AuthService(IUserRepositories userRepositories, IPasswordHasher hasher)
+        private readonly IPasswordHasher passwordHasher;
+        private readonly IJwtProvider jwtProvider;
+        public AuthService(IUserRepositories userRepositories, IPasswordHasher hasher, IJwtProvider provider)
         {
             _userRepositories = userRepositories;
             passwordHasher = hasher;
+            jwtProvider = provider;
             
         }
         /// <summary>
@@ -91,7 +94,7 @@ namespace Application.Services
                 {
                     UserId = user.Id,
                     Login = user.Login,
-                    Token = ""
+                    Token = jwtProvider.GenerateToken(user)
                 };
 
                 return responseDTO;

@@ -1,4 +1,5 @@
 
+using Application.Interfaces.Provider;
 using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.Security;
 using Application.Interfaces.ServiceInterface;
@@ -7,7 +8,10 @@ using GameAccShop.Middleware.GlobalExceptionMiddleware;
 using Infrastructure.EntityModel;
 using Infrastructure.Repositories.UserRepositoryFolder;
 using Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace GameAccShop
 {
@@ -32,7 +36,38 @@ namespace GameAccShop
             builder.Services.AddScoped<IUserRepositories, UserRepository>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme =
+                    JwtBearerDefaults.AuthenticationScheme;
+
+                options.DefaultChallengeScheme =
+                    JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+    options.TokenValidationParameters =
+    new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer =
+            builder.Configuration["Jwt:Issuer"],
+
+        ValidAudience =
+            builder.Configuration["Jwt:Audience"],
+
+        IssuerSigningKey =
+            new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(
+                    builder.Configuration["Jwt:Key"]))
+    };
+});
 
             var app = builder.Build();
 
@@ -49,6 +84,8 @@ namespace GameAccShop
 
             app.UseMiddleware<GlobalExceptionMiddleware>();
 
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

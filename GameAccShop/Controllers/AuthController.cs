@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.RegisterDTO;
+using Application.Interfaces.ServiceInterface;
 using Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,20 +10,27 @@ namespace GameAccShop.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService _authService;
-        public AuthController(AuthService service)
+        private readonly   IAuthService _authService;
+        public AuthController(IAuthService service)
         {
             _authService = service;
         }
-        [HttpPost]
+
+        [HttpPost("Registratsiya")]
         public async Task<ActionResult<ResponseRegisterDTO>> Registration(RequestRegisterDTO requestRegisterDTO)
         {
-            if (requestRegisterDTO == null)
-            {
-                return BadRequest("Request is null");
-            }
             
             var result = await _authService.Register_Service(requestRegisterDTO); 
+            return Ok(result);
+        }
+        
+
+        [HttpPost("login")]
+        public async Task<ActionResult<LoginResponseDTO>> Login(
+            LoginRequestDTO request)
+        {
+            var result = await _authService.Login_Service(request);
+
             return Ok(result);
         }
     }

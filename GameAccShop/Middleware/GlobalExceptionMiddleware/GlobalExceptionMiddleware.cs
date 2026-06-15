@@ -59,7 +59,7 @@ namespace GameAccShop.Middleware.GlobalExceptionMiddleware
                 context.Response.StatusCode = 500;
 
                 response.StatusCode = 500;
-                response.Message = "Internal Server Error";
+                response.Message = ex.Message;
             }
 
             var json = System.Text.Json.JsonSerializer.Serialize(response);
