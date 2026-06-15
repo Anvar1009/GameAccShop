@@ -31,6 +31,7 @@ namespace Infrastructure.Repositories.UserRepositoryFolder
         public async Task<User> Register(User user)
         {
             _dbContextModel.Users.Add(user);
+
             await _dbContextModel.SaveChangesAsync();
 
             return user;
