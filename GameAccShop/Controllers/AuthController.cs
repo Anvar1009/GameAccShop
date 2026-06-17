@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.RegisterDTO;
 using Application.Interfaces.ServiceInterface;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,6 +33,13 @@ namespace GameAccShop.Controllers
             var result = await _authService.Login_Service(request);
 
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            return Ok("Authorized");
         }
     }
 }
