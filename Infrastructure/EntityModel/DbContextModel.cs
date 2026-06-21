@@ -17,6 +17,9 @@ namespace Infrastructure.EntityModel
         }
         public DbSet<User> Users { get; set; }  
         public DbSet<Product> products { get; set; }
-        public DbSet<Order> orders { get; set; }    
+        public DbSet<Order> orders { get; set; }
+        public DbSet<ProductTag> ProductTags { get; set; }
+
+        public DbSet<ProductMedia> ProductMedias { get; set; }
     }
 }

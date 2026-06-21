@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Application.DTOs.ProductDTOs
 {
-    internal class FindHashTagDTO
+    internal class SearchdHashTagDTO
     {
     }
 }

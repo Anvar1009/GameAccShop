@@ -24,9 +24,11 @@ namespace Domain.Models.ProductsModels
         public ProductStatus Status { get; set; }
 
         public DateTime CreatedAt { get; set; }
-        public string SearchTags { get; set; }
+        public ICollection<ProductTag> Tags { get; set; }
+        = new List<ProductTag>();
 
         public ICollection<ProductMedia> Medias { get; set; }
+          = new List<ProductMedia>();
 
         // Seller
         public int SellerId { get; set; }
