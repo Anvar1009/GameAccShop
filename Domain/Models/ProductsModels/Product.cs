@@ -19,11 +19,14 @@ namespace Domain.Models.ProductsModels
 
         public string AccEmail { get; set; }
 
-        public string AccPassword { get; set; }
+        public string AccPasswordHash { get; set; }
 
         public ProductStatus Status { get; set; }
 
         public DateTime CreatedAt { get; set; }
+        public string SearchTags { get; set; }
+
+        public ICollection<ProductMedia> Medias { get; set; }
 
         // Seller
         public int SellerId { get; set; }
