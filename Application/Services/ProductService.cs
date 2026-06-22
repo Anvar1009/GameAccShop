@@ -21,7 +21,6 @@ namespace Application.Services
         public async Task<GetProductDTO> CreateAsync(CreateProductDTO product, int sellerId)
         {
 
-            
                 var list = product.Tags.ToList();
                 ICollection<ProductTag> productTags = new HashSet<ProductTag>();
 
@@ -92,13 +91,30 @@ namespace Application.Services
 
                 Product product2 = await _repository.CreateAsync(product1);
 
+
+
+            List<string> tag2 = new List<string>();
+
+            foreach (var tag in product2.Tags)
+            {
+                tag2.Add(tag.ToString());
+            }
+
+            List<string> medias = new List<string>();    
+            foreach(var medi in product2.Medias)
+            {
+                medias.Add(medi.Url);    
+            }
+
             GetProductDTO getProductDTO = new GetProductDTO()
             {
                 AccPrice = product2.AccPrice,
                 AccStrength = product2.AccStrength,
                 CoinsCount = product2.CoinsCount,
                 Description = product2.Description,
-                PlayerCount = product2.PlayerCount
+                PlayerCount = product2.PlayerCount,
+                Tags = tag2,
+                Medias = medias
             };
 
             return getProductDTO;
