@@ -29,9 +29,9 @@ namespace Infrastructure.Repositories.ProductRepoFolder
         public async Task DeleteAsync(Product product)
         {
            
-                _dbContext.products.Remove(product);
+            _dbContext.products.Remove(product);
 
-                await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
         }
 

@@ -18,6 +18,8 @@ namespace Application.DTOs.ProductDTOs
 
         public decimal AccPrice { get; set; }
 
+        public string Description { get; set; } = string.Empty;
+
         public List<string> Tags { get; set; } = new();
 
         public List<string> Medias { get; set; } = new();

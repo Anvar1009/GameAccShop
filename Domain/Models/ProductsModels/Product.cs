@@ -17,6 +17,8 @@ namespace Domain.Models.ProductsModels
 
         public decimal AccPrice { get; set; }
 
+        public string Description { get; set; } = string.Empty;
+
         public string AccEmail { get; set; }
 
         public string AccPasswordHash { get; set; }
