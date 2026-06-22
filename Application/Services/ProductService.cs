@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.ProductDTOs;
 using Application.Interfaces.ServiceInterface;
+using Domain.Models.ProductsModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +11,35 @@ namespace Application.Services
     {
         public Task<GetProductDTO> CreateAsync(CreateProductDTO product)
         {
+
+            var list = product.Tags.ToList();
+            ICollection<ProductTag> productTags = new HashSet<ProductTag>();
+
+            foreach (var tag in list)
+            {
+                ProductTag productTag = new ProductTag()
+                {
+                    Name = tag
+                };
+                productTags.Add(productTag);
+            }
+
+
+            Product product1 = new Product()
+            {
+                AccStrength = product.AccStrength,
+                AccPrice = product.AccPrice,
+                CoinsCount = product.CoinsCount,
+                PlayerCount = product.PlayerCount,
+                Description = product.Description,
+                AccEmail = product.AccEmail,
+                AccPasswordHash = product.AccPassword,
+                Status = ProductStatus.Available,
+                CreatedAt = DateTime.Now,
+                Tags=productTags,
+
+            };
+
             throw new NotImplementedException();
         }
 

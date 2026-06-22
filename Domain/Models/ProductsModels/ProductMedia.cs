@@ -13,7 +13,7 @@ namespace Domain.Models.ProductsModels
 
         public MediaType Type { get; set; }
 
-        public long ProductId { get; set; }
+        public int ProductId { get; set; }
 
         public Product Product { get; set; }
     }

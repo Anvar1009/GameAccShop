@@ -3,6 +3,7 @@ using System;
 using Infrastructure.EntityModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DbContextModel))]
-    partial class DbContextModelModelSnapshot : ModelSnapshot
+    [Migration("20260622172501_AddProductDescription")]
+    partial class AddProductDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,7 +113,10 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("ProductId")
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ProductId1")
                         .HasColumnType("integer");
 
                     b.Property<int>("Type")
@@ -122,7 +128,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("ProductMedias");
                 });
@@ -225,7 +231,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Models.ProductsModels.Product", "Product")
                         .WithMany("Medias")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
