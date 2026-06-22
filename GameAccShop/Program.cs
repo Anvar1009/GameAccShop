@@ -98,6 +98,7 @@ namespace GameAccShop
 
             app.UseMiddleware<GlobalExceptionMiddleware>();
 
+            app.UseStaticFiles();
 
             app.UseAuthentication();
 

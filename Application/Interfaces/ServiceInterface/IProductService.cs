@@ -8,7 +8,7 @@ namespace Application.Interfaces.ServiceInterface
 {
     public interface IProductService
     {
-        Task<GetProductDTO> CreateAsync(CreateProductDTO product);
+        Task<GetProductDTO> CreateAsync(CreateProductDTO product, int userId);
 
         Task<List<GetProductDTO>> GetAllAsync();
 
