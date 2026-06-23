@@ -19,10 +19,15 @@ namespace Infrastructure.Repositories.ProductRepoFolder
 
         public async Task<Product> CreateAsync(Product product)
         {
-            await _dbContext.products.AddAsync(product);
-
-            await _dbContext.SaveChangesAsync();
-
+            try
+            {
+                _dbContext.products.Add(product);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.InnerException?.Message ?? ex.Message);
+            }
             return product;
         }
 

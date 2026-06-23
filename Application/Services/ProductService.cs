@@ -1,5 +1,7 @@
 ﻿using Application.DTOs.ProductDTOs;
+using Application.Exceptions;
 using Application.Interfaces.Repositories_interface;
+using Application.Interfaces.Security;
 using Application.Interfaces.ServiceInterface;
 using Domain.Models.Abstracts;
 using Domain.Models.ProductsModels;
@@ -12,16 +14,29 @@ namespace Application.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _repository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IPasswordHasher passwordHasher)
         {
             _repository = productRepository;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<GetProductDTO> CreateAsync(CreateProductDTO product, int sellerId)
         {
 
-                var list = product.Tags.ToList();
+            if (!product.Tags.Any())
+            {
+                throw new BadRequestException("At least one tag is required");
+            }
+            if (product.AccPrice < 0)
+            {
+                throw new BadRequestException("Price must be greater than zero");
+            }
+
+
+
+            var list = product.Tags;
                 ICollection<ProductTag> productTags = new HashSet<ProductTag>();
 
                 foreach (var tag in list)
@@ -32,7 +47,10 @@ namespace Application.Services
                     };
                     productTags.Add(productTag);
                 }
+                
 
+
+                string passHash = _passwordHasher.HashPassword(product.AccPassword);
 
                 Product product1 = new Product()
                 {
@@ -42,9 +60,9 @@ namespace Application.Services
                     PlayerCount = product.PlayerCount,
                     Description = product.Description,
                     AccEmail = product.AccEmail,
-                    AccPasswordHash = product.AccPassword,
+                    AccPasswordHash = passHash,
                     Status = ProductStatus.Available,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     Tags = productTags,
                     SellerId = sellerId,
 
@@ -97,7 +115,7 @@ namespace Application.Services
 
             foreach (var tag in product2.Tags)
             {
-                tag2.Add(tag.ToString());
+                tag2.Add(tag.Name);
             }
 
             List<string> medias = new List<string>();    
@@ -106,8 +124,12 @@ namespace Application.Services
                 medias.Add(medi.Url);    
             }
 
+
+
+
             GetProductDTO getProductDTO = new GetProductDTO()
             {
+                Id= product2.Id,
                 AccPrice = product2.AccPrice,
                 AccStrength = product2.AccStrength,
                 CoinsCount = product2.CoinsCount,
@@ -115,6 +137,7 @@ namespace Application.Services
                 PlayerCount = product2.PlayerCount,
                 Tags = tag2,
                 Medias = medias
+               
             };
 
             return getProductDTO;

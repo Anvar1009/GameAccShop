@@ -6,12 +6,14 @@ using Application.Interfaces.ServiceInterface;
 using Application.Services;
 using GameAccShop.Middleware.GlobalExceptionMiddleware;
 using Infrastructure.EntityModel;
+using Infrastructure.Repositories.ProductRepoFolder;
 using Infrastructure.Repositories.UserRepositoryFolder;
 using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace GameAccShop
@@ -37,6 +39,10 @@ namespace GameAccShop
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+
 
             builder.Services.AddAuthentication(options =>
             {
@@ -81,6 +87,21 @@ namespace GameAccShop
                     In = ParameterLocation.Header,
                     Description = "JWT token kiriting"
                 });
+                options.AddSecurityRequirement(
+    new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 
             });
 

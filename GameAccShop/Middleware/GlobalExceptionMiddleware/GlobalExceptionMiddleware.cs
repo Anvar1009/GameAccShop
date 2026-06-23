@@ -54,6 +54,13 @@ namespace GameAccShop.Middleware.GlobalExceptionMiddleware
                 response.StatusCode = 404;
                 response.Message = ex.Message;
             }
+            else if (ex is BadRequestException)
+            {
+                context.Response.StatusCode = 400;
+
+                response.StatusCode = 400;
+                response.Message = ex.Message;
+            }
             else
             {
                 context.Response.StatusCode = 500;

@@ -39,7 +39,7 @@ namespace GameAccShop.Controllers
         [HttpGet("me")]
         public IActionResult Me()
         {
-            return Ok("Authorized");
+            return Ok(User.Identity?.Name);
         }
     }
 }
