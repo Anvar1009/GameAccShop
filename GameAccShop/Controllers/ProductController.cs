@@ -32,5 +32,14 @@ namespace GameAccShop.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetByID(int id)
+        {
+            var result = await _productService.GetByIdAsync(id);    
+
+            return Ok(result);
+        }
+        
+
     }
 }

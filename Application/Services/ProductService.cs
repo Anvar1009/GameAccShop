@@ -153,9 +153,41 @@ namespace Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<GetProductDTO?> GetByIdAsync(int id)
+        public async Task<GetProductDTO?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await _repository.GetByIdAsync(id);
+             
+            if(result is null)
+            {
+                throw new ProductNotFoundException();
+            }
+
+            List<string> tag2 = new List<string>();
+
+            foreach (var tag in result.Tags)
+            {
+                tag2.Add(tag.Name);
+            }
+
+            List<string> medias = new List<string>();
+            foreach (var medi in result.Medias)
+            {
+                medias.Add(medi.Url);
+            }
+
+            GetProductDTO getProductDTO = new GetProductDTO()
+            {
+                Id = result.Id,
+                AccPrice = result.AccPrice,
+                AccStrength = result.AccStrength,
+                CoinsCount = result.CoinsCount,
+                Description = result.Description,
+                PlayerCount = result.PlayerCount,
+                Medias = medias,
+                Tags = tag2
+            };
+
+            return getProductDTO;
         }
 
         public Task<List<GetProductDTO>> SearchByTagAsync(string tag)
