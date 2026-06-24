@@ -143,14 +143,59 @@ namespace Application.Services
             return getProductDTO;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await _repository.GetByIdAsync(id);
+
+            if (result == null)
+                throw new ProductNotFoundException();
+
+             await _repository.DeleteAsync(result);
         }
 
-        public Task<List<GetProductDTO>> GetAllAsync()
+        public async Task<List<GetProductDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            List<Product> result = await _repository.GetAllAsync();
+
+            if (result is null)
+            {
+                throw new ProductNotFoundException();
+            }
+
+            List<string> tag2 = new List<string>();
+
+            List<GetProductDTO> getProductDTOs = new List<GetProductDTO>(); 
+
+            foreach (var product  in result)
+            {
+
+                foreach (var tag in product.Tags)
+                {
+                    tag2.Add(tag.Name);
+                }
+
+                List<string> medias = new List<string>();
+                foreach (var medi in product.Medias)
+                {
+                    medias.Add(medi.Url);
+                }
+
+                GetProductDTO getProductDTO = new GetProductDTO()
+                {
+                    Id = product.Id,
+                    AccPrice = product.AccPrice,
+                    AccStrength = product.AccStrength,
+                    CoinsCount = product.CoinsCount,
+                    Description = product.Description,
+                    PlayerCount = product.PlayerCount,
+                    Medias = medias,
+                    Tags = tag2
+                };
+
+                getProductDTOs.Add(getProductDTO);
+            }
+
+            return getProductDTOs;
         }
 
         public async Task<GetProductDTO?> GetByIdAsync(int id)
@@ -192,6 +237,8 @@ namespace Application.Services
 
         public Task<List<GetProductDTO>> SearchByTagAsync(string tag)
         {
+
+
             throw new NotImplementedException();
         }
 
