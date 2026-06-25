@@ -32,14 +32,43 @@ namespace GameAccShop.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
+        [Authorize]
+        [HttpGet("id")]
         public async Task<IActionResult> GetByID(int id)
         {
             var result = await _productService.GetByIdAsync(id);    
 
             return Ok(result);
         }
-        
+
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _productService.GetAllAsync();
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpDelete("delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _productService.DeleteAsync(id);
+
+            return Ok(id);
+
+        }
+
+        [Authorize]
+        [ HttpPut("update")]
+        public async Task<IActionResult> UpdateAsync(UpdateProductDTO updateProductDTO)
+        {
+            var result = await _productService.UpdateAsync(updateProductDTO);   
+
+            return Ok(result);  
+
+        }
 
     }
 }

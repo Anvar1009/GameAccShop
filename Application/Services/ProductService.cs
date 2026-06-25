@@ -281,6 +281,17 @@ namespace Application.Services
         public async Task<GetProductDTO> UpdateAsync(UpdateProductDTO product)
         {
 
+            Product product2 = await _repository.GetByIdAsync(product.Id);
+
+            if (product2 == null)
+            {
+                throw new ProductNotFoundException();
+            }
+
+            if (product2.SellerId != product.SellerId)
+                throw new ForbiddenException();
+
+            product2.Tags.Clear();
 
             var list = product.Tags;
             ICollection<ProductTag> productTags = new HashSet<ProductTag>();
@@ -295,17 +306,33 @@ namespace Application.Services
             }
 
 
-            Product product1 = new Product()
+
+            product2.AccEmail = product.AccEmail;
+            product2.AccPasswordHash = _passwordHasher.HashPassword(product.AccPassword);
+            product2.AccPrice = product.AccPrice;
+            product2.AccStrength = product.AccStrength;
+            product2.CoinsCount = product.CoinsCount;
+            product2.Description = product.Description;
+            product2.PlayerCount = product.PlayerCount;
+            product2.Tags = productTags;
+
+
+            foreach (var media in product2.Medias.ToList())
             {
-                AccEmail=product.AccEmail,
-                AccPasswordHash=product.AccPassword,
-                AccPrice = product.AccPrice,
-                AccStrength = product.AccStrength,
-                CoinsCount = product.CoinsCount,
-                Description = product.Description,
-                PlayerCount = product.PlayerCount,
-                Tags = productTags,
-            };
+                var filePath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    media.Url.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+
+                _repository.RemoveMedia(media);
+            }
+
+            product2.Medias.Clear();
 
             foreach (var media in product.Medias)
             {
@@ -338,7 +365,7 @@ namespace Application.Services
                     type = MediaType.Video;
                 }
 
-                product1.Medias.Add(new ProductMedia
+                product2.Medias.Add(new ProductMedia
                 {
                     Url = $"/uploads/{fileName}",
                     Type = type
@@ -346,31 +373,30 @@ namespace Application.Services
 
             }
 
-            var result = await _repository.UpdateAsync(product1);
-
+            await _repository.SaveChangesAsync();
 
 
             List<string> tag2 = new List<string>();
 
-            foreach (var tag in result.Tags)
+            foreach (var tag in product2.Tags)
             {
                 tag2.Add(tag.Name);
             }
 
             List<string> medias = new List<string>();
-            foreach (var medi in result.Medias)
+            foreach (var medi in product2.Medias)
             {
                 medias.Add(medi.Url);
             }
 
             GetProductDTO getProductDTO = new GetProductDTO()
             {
-                Id = result.Id,
-                AccPrice = result.AccPrice,
-                AccStrength = result.AccStrength,
-                CoinsCount = result.CoinsCount,
-                Description = result.Description,
-                PlayerCount = result.PlayerCount,
+                Id = product2.Id,
+                AccPrice = product2.AccPrice,
+                AccStrength = product2.AccStrength,
+                CoinsCount = product2.CoinsCount,
+                Description = product2.Description,
+                PlayerCount = product2.PlayerCount,
                 Medias = medias,
                 Tags = tag2
             };

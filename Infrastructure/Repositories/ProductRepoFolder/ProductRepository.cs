@@ -83,5 +83,12 @@ namespace Infrastructure.Repositories.ProductRepoFolder
 
             return product;
         }
+
+        public void RemoveMedia(ProductMedia media)
+        {
+            _dbContext.ProductMedias.Remove(media);
+        }
+
+
     }
 }

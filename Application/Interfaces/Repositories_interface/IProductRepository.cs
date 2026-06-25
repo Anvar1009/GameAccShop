@@ -20,5 +20,7 @@ namespace Application.Interfaces.Repositories_interface
         Task DeleteAsync(Product product);
 
         Task SaveChangesAsync();
+
+        void RemoveMedia(ProductMedia media);
     }
 }

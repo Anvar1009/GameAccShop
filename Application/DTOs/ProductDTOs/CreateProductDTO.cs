@@ -28,6 +28,7 @@ namespace Application.DTOs.ProductDTOs
         [Required]
         public string AccPassword { get; set; }
 
+
         public List<string> Tags { get; set; } = new();
 
         [Required]

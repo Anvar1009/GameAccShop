@@ -8,6 +8,7 @@ namespace Application.DTOs.ProductDTOs
 {
     public class UpdateProductDTO
     {
+        public int Id { get; set; }
         public string AccEmail { get; set; }
 
         public string AccPassword { get; set; }
@@ -21,6 +22,9 @@ namespace Application.DTOs.ProductDTOs
         public decimal AccPrice { get; set; }
 
         public string Description { get; set; } = string.Empty;
+
+        public int SellerId { get; set; }
+
 
         public List<string> Tags { get; set; } = new();
 
