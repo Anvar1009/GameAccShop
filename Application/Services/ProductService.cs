@@ -103,8 +103,9 @@ namespace Application.Services
                     product1.Medias.Add(new ProductMedia
                     {
                         Url = $"/uploads/{fileName}",
-                        Type = type
+                        Type = type 
                     });
+
                 }
 
                 Product product2 = await _repository.CreateAsync(product1);
@@ -281,9 +282,100 @@ namespace Application.Services
         {
 
 
-            
+            var list = product.Tags;
+            ICollection<ProductTag> productTags = new HashSet<ProductTag>();
 
-            throw new NotImplementedException();
+            foreach (var tag in list)
+            {
+                ProductTag productTag = new ProductTag()
+                {
+                    Name = tag
+                };
+                productTags.Add(productTag);
+            }
+
+
+            Product product1 = new Product()
+            {
+                AccEmail=product.AccEmail,
+                AccPasswordHash=product.AccPassword,
+                AccPrice = product.AccPrice,
+                AccStrength = product.AccStrength,
+                CoinsCount = product.CoinsCount,
+                Description = product.Description,
+                PlayerCount = product.PlayerCount,
+                Tags = productTags,
+            };
+
+            foreach (var media in product.Medias)
+            {
+                var extension = Path.GetExtension(media.FileName);
+
+                var fileName = $"{Guid.NewGuid()}{extension}";
+
+                var filePath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "uploads",
+                    fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await media.CopyToAsync(stream);
+                }
+
+                MediaType type;
+
+                if (extension == ".jpg" ||
+                    extension == ".jpeg" ||
+                    extension == ".png" ||
+                    extension == ".webp")
+                {
+                    type = MediaType.Image;
+                }
+                else
+                {
+                    type = MediaType.Video;
+                }
+
+                product1.Medias.Add(new ProductMedia
+                {
+                    Url = $"/uploads/{fileName}",
+                    Type = type
+                });
+
+            }
+
+            var result = await _repository.UpdateAsync(product1);
+
+
+
+            List<string> tag2 = new List<string>();
+
+            foreach (var tag in result.Tags)
+            {
+                tag2.Add(tag.Name);
+            }
+
+            List<string> medias = new List<string>();
+            foreach (var medi in result.Medias)
+            {
+                medias.Add(medi.Url);
+            }
+
+            GetProductDTO getProductDTO = new GetProductDTO()
+            {
+                Id = result.Id,
+                AccPrice = result.AccPrice,
+                AccStrength = result.AccStrength,
+                CoinsCount = result.CoinsCount,
+                Description = result.Description,
+                PlayerCount = result.PlayerCount,
+                Medias = medias,
+                Tags = tag2
+            };
+
+            return getProductDTO;
         }
     }
 }

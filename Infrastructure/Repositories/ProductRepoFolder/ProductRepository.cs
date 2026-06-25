@@ -59,6 +59,11 @@ namespace Infrastructure.Repositories.ProductRepoFolder
             return result;
         }
 
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<List<Product>> SearchByTagAsync(string tag)
         {
             var products = await _dbContext.products.

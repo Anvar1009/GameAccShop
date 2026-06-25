@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Application.DTOs.ProductDTOs
 {
     public class UpdateProductDTO
     {
-        public int Id { get; set; }
+        public string AccEmail { get; set; }
+
+        public string AccPassword { get; set; }
 
         public int AccStrength { get; set; }
 
@@ -19,5 +23,7 @@ namespace Application.DTOs.ProductDTOs
         public string Description { get; set; } = string.Empty;
 
         public List<string> Tags { get; set; } = new();
+
+        public List<IFormFile> Medias { get; set; } = new();
     }
 }

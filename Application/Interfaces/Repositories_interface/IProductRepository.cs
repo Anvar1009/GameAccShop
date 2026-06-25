@@ -18,5 +18,7 @@ namespace Application.Interfaces.Repositories_interface
         Task<Product> UpdateAsync(Product product);
 
         Task DeleteAsync(Product product);
+
+        Task SaveChangesAsync();
     }
 }
