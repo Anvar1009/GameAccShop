@@ -235,15 +235,54 @@ namespace Application.Services
             return getProductDTO;
         }
 
-        public Task<List<GetProductDTO>> SearchByTagAsync(string tag)
+        public async Task<List<GetProductDTO>> SearchByTagAsync(string tag)
         {
+            var result = await _repository.SearchByTagAsync(tag);
 
+            if( result is null )
+                throw new ProductNotFoundException();
 
-            throw new NotImplementedException();
+            List<GetProductDTO> getProductDTOs = new List<GetProductDTO>();
+            List<string> tag2 = new List<string>();
+
+            foreach (var product in result)
+            {
+
+                foreach (var tag1 in product.Tags)
+                {
+                    tag2.Add(tag1.Name);
+                }
+
+                List<string> medias = new List<string>();
+                foreach (var medi in product.Medias)
+                {
+                    medias.Add(medi.Url);
+                }
+
+                GetProductDTO getProductDTO = new GetProductDTO()
+                {
+                    Id = product.Id,
+                    AccPrice = product.AccPrice,
+                    AccStrength = product.AccStrength,
+                    CoinsCount = product.CoinsCount,
+                    Description = product.Description,
+                    PlayerCount = product.PlayerCount,
+                    Medias = medias,
+                    Tags = tag2
+                };
+
+                getProductDTOs.Add(getProductDTO);
+            }
+            return getProductDTOs;
+
         }
 
-        public Task<GetProductDTO> UpdateAsync(UpdateProductDTO product)
+        public async Task<GetProductDTO> UpdateAsync(UpdateProductDTO product)
         {
+
+
+            
+
             throw new NotImplementedException();
         }
     }
