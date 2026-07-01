@@ -10,6 +10,10 @@ namespace Domain.Models.OrdersModel
     {
         public int Id { get; set; }
 
+        // Sotuvchi
+        public int SellerId { get; set; }
+        public User Seller { get; set; }
+
         // Xaridor
         public int BuyerId { get; set; }
 
@@ -25,6 +29,14 @@ namespace Domain.Models.OrdersModel
 
         public OrderStatus Status { get; set; }
 
+        // Buyer tasdiqlaganmi
+        public bool IsBuyerConfirmed { get; set; }
+
+        // Admin yakunlaganmi
+
+        public bool IsCompletedByAdmin { get; set; }
+
+        public DateTime? CompletedAt { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }
