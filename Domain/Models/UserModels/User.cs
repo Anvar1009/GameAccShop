@@ -31,8 +31,12 @@ namespace Domain.Models.UserModels
         public ICollection<Product> Products { get; set; }
             = new List<Product>();
 
-        // Xaridlari
-        public ICollection<Order> Orders { get; set; }
+        // Buyer sifatidagi buyurtmalar
+        public ICollection<Order> BuyOrders { get; set; }
+            = new List<Order>();
+
+        // Seller sifatidagi buyurtmalar
+        public ICollection<Order> SellOrders { get; set; }
             = new List<Order>();
     }
 }

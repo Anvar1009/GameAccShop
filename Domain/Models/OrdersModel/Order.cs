@@ -1,4 +1,5 @@
-﻿using Domain.Models.ProductsModels;
+﻿using Domain.Models.PaymentModel;
+using Domain.Models.ProductsModels;
 using Domain.Models.UserModels;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,9 @@ namespace Domain.Models.OrdersModel
 
         // Buyer tasdiqlaganmi
         public bool IsBuyerConfirmed { get; set; }
+
+        // Navigation
+        public Payment Payment { get; set; }
 
         // Admin yakunlaganmi
 
