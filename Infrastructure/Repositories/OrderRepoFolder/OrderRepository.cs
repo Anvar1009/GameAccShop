@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces.Repositories_interface;
 using Domain.Models.OrdersModel;
+using Infrastructure.EntityModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,29 +12,60 @@ namespace Infrastructure.Repositories.OrderRepoFolder
 {
     public class OrderRepository : IOrderRepository
     {
-        public Task CreateAsync(Order order)
+        private readonly DbContextModel _context;
+        public OrderRepository(DbContextModel dbContextModel)
         {
-            throw new NotImplementedException();
+            _context = dbContextModel;
+        }
+        public async Task CreateAsync(Order order)
+        {
+            await _context.orders.AddAsync(order);
         }
 
-        public Task<List<Order>> GetBuyerOrders(int buyerId)
+        public async Task<List<Order>> GetBuyerOrders(int buyerId)
         {
-            throw new NotImplementedException();
+            var orders = await _context.orders.AsNoTracking()
+                .Where(o => o.BuyerId == buyerId)
+                                       .Include(o => o.Product)
+                                            .ThenInclude(c=>c.Medias)
+                                       .Include(o => o.Seller)
+                                       .Include(o => o.Product)
+                                            .ThenInclude(c => c.Tags)
+                                       .Include(o => o.Payment)
+                                       .OrderByDescending(o => o.CreatedAt)
+                                       .ToListAsync();
+            return orders;
         }
 
-        public Task<Order?> GetByIdAsync(int id)
+        public async Task<Order?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var order = await _context.orders.AsNoTracking()
+                                       .Include(o => o.Product).ThenInclude(c => c.Medias)
+                                       .Include(o => o.Product).ThenInclude(c => c.Tags)
+                                       .Include(o => o.Seller)
+                                       .Include(o => o.Buyer)
+                                       .Include(o => o.Payment)
+                                       .FirstOrDefaultAsync(o => o.Id == id);
+            return order;
         }
 
-        public Task<List<Order>> GetSellerOrders(int sellerId)
+        public async Task<List<Order>> GetSellerOrders(int sellerId)
         {
-            throw new NotImplementedException();
+            var orders = await _context.orders.AsNoTracking()
+                .Where(o => o.SellerId == sellerId)
+                                        .Include(o => o.Product).ThenInclude(o=>o.Medias)
+                                        .Include(o => o.Product).ThenInclude(o=>o.Tags)
+                                        .Include(o => o.Buyer)
+                                        .Include(o=>o.Payment)
+                                        .OrderByDescending(o => o.CreatedAt)
+                                        .ToListAsync();
+            return orders;
         }
 
         public Task UpdateAsync(Order order)
         {
-            throw new NotImplementedException();
+            _context.orders.Update(order);
+            return Task.CompletedTask;
         }
     }
 }

@@ -14,11 +14,14 @@ namespace Application.DTOs.OrderDTO
 
         public int ProductId { get; set; }
 
-        // Mahsulotning asosiy rasmi
-        public string ProductImage { get; set; }
+        public List<string> Tags { get; set; } = new();
+
+        public List<string> Medias { get; set; } = new();
 
         // Masalan: "3190 Strength | 3500 Coins"
         public string ProductTitle { get; set; }
+
+        public string ProductDescription { get; set; }
 
         public decimal Price { get; set; }
 

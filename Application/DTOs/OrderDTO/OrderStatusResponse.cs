@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.OrderDTO
 {
-    internal class OrderStatusResponse
+    public class OrderStatusResponse
     {
     }
 }
