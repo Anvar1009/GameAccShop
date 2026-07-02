@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories.ProductRepoFolder
             {
                 throw new Exception(ex.InnerException?.Message ?? ex.Message);
             }
-
+    
             return product;
         }
 

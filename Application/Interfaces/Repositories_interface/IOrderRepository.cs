@@ -16,5 +16,7 @@ namespace Application.Interfaces.Repositories_interface
         Task<List<Order>> GetSellerOrders(int sellerId);
 
         Task<Order?> GetByIdAsync(int id);
+
+        Task UpdateAsync(Order order);
     }
 }

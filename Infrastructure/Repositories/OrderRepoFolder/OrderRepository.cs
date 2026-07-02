@@ -29,5 +29,10 @@ namespace Infrastructure.Repositories.OrderRepoFolder
         {
             throw new NotImplementedException();
         }
+
+        public Task UpdateAsync(Order order)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
