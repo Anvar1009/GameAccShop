@@ -15,9 +15,9 @@ namespace Application.Interfaces.ServiceInterface
 
         Task<List<SellerOrderResponse>> GetSellerOrdersAsync(int sellerId);
 
-        Task<BuyerOrderDetailsResponse> GetBuyerOrderDetailsAsync(int buyerId);
+        Task<BuyerOrderDetailsResponse> GetBuyerOrderDetailsAsync(int buyerId, int orderId);
 
-        Task<SellerOrderDetailsResponse> GetSellerOrderDetailsAsync(int sellerId);
+        Task<SellerOrderDetailsResponse> GetSellerOrderDetailsAsync(int sellerId, int orderId);
 
         Task CancelOrderAsync(int orderId);
 

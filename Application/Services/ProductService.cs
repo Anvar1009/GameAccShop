@@ -61,7 +61,7 @@ namespace Application.Services
                     Description = product.Description,
                     AccEmail = product.AccEmail,
                     AccPasswordHash = passHash,
-                    Status = ProductStatus.Available,
+                    Status = ProductStatus.Active,
                     CreatedAt = DateTime.UtcNow,
                     Tags = productTags,
                     SellerId = sellerId,

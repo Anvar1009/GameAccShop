@@ -226,9 +226,19 @@ namespace Application.Services
                    order.Status != OrderStatus.Cancelled;
         }
 
-        public async Task<BuyerOrderDetailsResponse> GetBuyerOrderDetailsAsync(int buyerId)
+        public async Task<BuyerOrderDetailsResponse> GetBuyerOrderDetailsAsync(int buyerId, int orderId)
         {
-            var order = await _orderRepository.GetByIdAsync(buyerId);
+            var order = await _orderRepository.GetByIdAsync(orderId);
+
+            if (order == null)
+            {
+                throw new OrderNotFoundException();
+            }
+
+            if(order.BuyerId != buyerId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to view this order.");
+            }
 
             BuyerOrderDetailsResponse response = new BuyerOrderDetailsResponse()
             {
@@ -255,9 +265,40 @@ namespace Application.Services
             return response;
         }
 
-        public Task<SellerOrderDetailsResponse> GetSellerOrderDetailsAsync(int sellerId)
+        public async Task<SellerOrderDetailsResponse> GetSellerOrderDetailsAsync(int sellerId, int orderId)
         {
-            throw new NotImplementedException();
+            var sellerOrder = await _orderRepository.GetByIdAsync(orderId);
+
+            if(sellerOrder == null)
+            {
+                throw new OrderNotFoundException();
+            }
+            if(sellerOrder.SellerId != sellerId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to view this order.");
+            }
+
+            SellerOrderDetailsResponse response = new SellerOrderDetailsResponse()
+            {
+                OrderId = sellerOrder.Id,
+                ProductId = sellerOrder.Product.Id,
+                Tags = sellerOrder.Product.Tags.Select(t => t.Name).ToList(),
+                Medias = sellerOrder.Product.Medias.Select(m => m.Url).ToList(),
+                ProductTitle = sellerOrder.Product.Description,
+                ProductDescription = sellerOrder.Product.Description,
+                Price = sellerOrder.Price,
+                BuyerId = sellerOrder.BuyerId,
+                BuyerName = $"{sellerOrder.Buyer.FirstName} {sellerOrder.Buyer.LastName}",
+                BuyerPhone = sellerOrder.Buyer.PhoneNumber,
+                Status = sellerOrder.Status,
+                PaymentStatus = sellerOrder.Payment.Status,
+                PaymentMethod = sellerOrder.Payment.PaymentMethod,
+                CreatedAt = sellerOrder.CreatedAt,
+                CanOpenChat = CanOpenChat(sellerOrder),
+                CanOpenDispute = CanOpenDispute(sellerOrder)
+            };
+
+            return response;
         }
 
         private bool CanConfirmOrder(Order order)
