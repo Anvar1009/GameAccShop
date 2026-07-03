@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces.Repositories_interface;
 using Domain.Models.PaymentModel;
+using Infrastructure.EntityModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,24 +12,35 @@ namespace Infrastructure.Repositories
 {
     public class PaymentAccountRepository : IPaymentAccountRepository
     {
-        public Task CreateAsync(PaymentAccount paymentAccount)
+        private readonly DbContextModel _dbContext;
+        public PaymentAccountRepository(DbContextModel dbContextModel)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContextModel;
         }
 
-        public Task<PaymentAccount?> GetActiveAsync()
+        public async  Task CreateAsync(PaymentAccount paymentAccount)
         {
-            throw new NotImplementedException();
+           await _dbContext.AddAsync(paymentAccount);
         }
 
-        public Task<PaymentAccount?> GetByIdAsync(int id)
+        public async Task<PaymentAccount?> GetActiveAsync()
         {
-            throw new NotImplementedException();
+            return await _dbContext.PaymentAccounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.IsActive);
+        }
+
+        public async Task<PaymentAccount?> GetByIdAsync(int id)
+        {
+            return await _dbContext.PaymentAccounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public Task UpdateAsync(PaymentAccount paymentAccount)
         {
-            throw new NotImplementedException();
+             _dbContext.Update(paymentAccount);
+            return Task.CompletedTask;
         }
     }
 }
