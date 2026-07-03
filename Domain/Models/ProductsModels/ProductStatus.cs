@@ -6,7 +6,8 @@ namespace Domain.Models.ProductsModels
 {
     public enum ProductStatus
     {
-        Available,
-        Sold
+        Active,      // Sotuvda
+        Reserved,    // Buyurtma berilgan
+        Sold        // Sotilgan
     }
 }

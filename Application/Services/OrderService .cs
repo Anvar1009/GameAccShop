@@ -1,7 +1,9 @@
 ﻿using Application.DTOs.OrderDTO;
+using Application.Exceptions;
 using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.ServiceInterface;
 using Application.Interfaces.UnitOfWorkFolder;
+using Domain.Models.ProductsModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,9 +45,44 @@ namespace Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<OrderResponse> CreateOrderAsync(CreateOrderRequest request)
+
+
+        public async Task<OrderResponse> CreateOrderAsync(int buyerId, CreateOrderRequest request)
         {
-            throw new NotImplementedException();
+            var result = await _productRepository.GetByIdAsync(request.ProductId);
+
+            if (result == null)
+            {
+                throw new ProductNotFoundException();
+            }
+
+            var product = await ValidateProductAsync(result,buyerId);
+
+        }
+
+
+
+        private async Task<Product> ValidateProductAsync(Product product , int id)
+        {
+
+            if(product.Status != Domain.Models.ProductsModels.ProductStatus.Active ||
+                product.Status == Domain.Models.ProductsModels.ProductStatus.Reserved)
+            {
+                throw new ProductNotAvailableException();
+            }
+
+            if(product.SellerId == id)
+            {
+                throw new InvalidOperationException("You cannot buy your own product.");
+            }
+
+            var paymentAccount = await _paymentAccountRepository.GetActiveAsync();
+
+            if (paymentAccount == null)
+            {
+                throw new Exception("No active payment account found.");
+            }
+            return product;
         }
 
         public Task<List<BuyerOrderResponse>> GetBuyerOrdersAsync(int buyerId)
