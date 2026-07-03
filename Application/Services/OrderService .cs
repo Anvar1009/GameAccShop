@@ -3,6 +3,8 @@ using Application.Exceptions;
 using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.ServiceInterface;
 using Application.Interfaces.UnitOfWorkFolder;
+using Domain.Models.OrdersModel;
+using Domain.Models.PaymentModel;
 using Domain.Models.ProductsModels;
 using System;
 using System.Collections.Generic;
@@ -57,9 +59,84 @@ namespace Application.Services
             }
 
             var product = await ValidateProductAsync(result,buyerId);
+            
 
+
+            var order =  CreateOrder(buyerId, product);
+
+            var paymentAccount = await _paymentAccountRepository.GetActiveAsync();
+
+            if (paymentAccount == null)
+            {
+                throw new PaymentAccountNotFoundException();
+            }
+
+            var payment = CreatePayment( order, paymentAccount);
+
+
+            await using var transaction = await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                await _orderRepository.CreateAsync(order);
+                await _paymentRepository.CreateAsync(payment);
+                product.Status = ProductStatus.Reserved;
+                await _productRepository.UpdateAsync(product);
+                await _unitOfWork.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
+            OrderResponse orderResponse = new OrderResponse()
+            {
+                OrderId = order.Id,
+                ProductId = order.ProductId,
+                Price = order.Price,
+                Status = order.Status,
+                PaymentStatus = payment.Status,
+                PaymentRequired = true,
+                CreatedAt = order.CreatedAt
+            };
+
+            return orderResponse;
         }
 
+
+
+
+        private  Order CreateOrder(int buyerId, Product product)
+        {
+            var order = new Order
+            {
+                BuyerId = buyerId,
+                SellerId = product.SellerId,
+                ProductId = product.Id,
+                Price = product.AccPrice,
+                Status = OrderStatus.WaitingPayment,
+                IsBuyerConfirmed = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            return order;
+        }
+
+
+        private Payment CreatePayment(Order order, PaymentAccount paymentAccount)
+        {
+            var payment = new Payment
+            {
+                OrderId = order.Id,
+                PaymentAccountId = paymentAccount.Id,
+                Amount = order.Price,
+                Status = PaymentStatus.Pending,
+                CreatedAt = DateTime.UtcNow
+            };
+            return payment;
+        }
 
 
         private async Task<Product> ValidateProductAsync(Product product , int id)

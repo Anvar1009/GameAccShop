@@ -6,8 +6,18 @@ namespace Domain.Models.OrdersModel
 {
     public enum OrderStatus
     {
-        Pending,
+        WaitingPayment,
+
+        PaymentConfirmed,
+
+        TransferInProgress,
+
+        BuyerConfirmed,
+
         Completed,
-        Cancelled
+
+        Cancelled,
+
+        Disputed
     }
 }
