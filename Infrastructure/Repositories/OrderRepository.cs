@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Repositories.OrderRepoFolder
+namespace Infrastructure.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
