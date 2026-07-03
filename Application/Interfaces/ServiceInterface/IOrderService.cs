@@ -9,13 +9,15 @@ namespace Application.Interfaces.ServiceInterface
 {
     public interface IOrderService
     {
-        Task<OrderResponse> CreateOrderAsync(int BuyerId, CreateOrderRequest request);
-
-        Task<OrderDetailsResponse> GetByIdAsync(int orderId);
+        Task<OrderResponse> CreateOrderAsync(int BuyerId, CreateOrderRequest request);       
 
         Task<List<BuyerOrderResponse>> GetBuyerOrdersAsync(int buyerId);
 
         Task<List<SellerOrderResponse>> GetSellerOrdersAsync(int sellerId);
+
+        Task<BuyerOrderDetailsResponse> GetBuyerOrderDetailsAsync(int buyerId);
+
+        Task<SellerOrderDetailsResponse> GetSellerOrderDetailsAsync(int sellerId);
 
         Task CancelOrderAsync(int orderId);
 

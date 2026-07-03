@@ -28,6 +28,15 @@ namespace Infrastructure.Repositories
             return result;  
         }
 
+        public async Task<User> GetUserByIdAsync(int userId)
+        {
+            var result = await _dbContextModel.Users.AsNoTracking()
+                .Include(o=>o.Products)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            
+            return result;  
+        }
+
         public async Task<User> Register(User user)
         {
             _dbContextModel.Users.Add(user);

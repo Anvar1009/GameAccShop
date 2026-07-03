@@ -162,19 +162,113 @@ namespace Application.Services
             return product;
         }
 
-        public Task<List<BuyerOrderResponse>> GetBuyerOrdersAsync(int buyerId)
+        public async Task<List<BuyerOrderResponse>> GetBuyerOrdersAsync(int buyerId)
+        {
+            var orders = await _orderRepository.GetBuyerOrders(buyerId);
+
+            var responses = new List<BuyerOrderResponse>();
+
+            foreach (var order in orders)
+            {
+                responses.Add(new BuyerOrderResponse
+                {
+                    SellerName = $"{order.Seller.FirstName} {order.Seller.LastName}",
+                    ProductDescription = order.Product.Description,
+                    Status = order.Status,
+                    Price = order.Price,
+                    PaymentStatus = order.Payment.Status,
+                    Tags = order.Product.Tags.Select(t => t.Name).ToList(),
+                    Medias = order.Product.Medias.Select(m => m.Url).ToList()
+                });
+            }
+
+            return responses;
+        }
+
+      
+
+        public async Task<List<SellerOrderResponse>> GetSellerOrdersAsync(int sellerId)
+        {
+            var orders = await _orderRepository.GetSellerOrders(sellerId);
+            var responses = new List<SellerOrderResponse>();
+            foreach(var order in orders)
+            {
+                responses.Add(new SellerOrderResponse
+                {
+                    OrderId = order.Id,
+                    ProductId = order.ProductId,
+                    ProductImage = order.Product.Medias.FirstOrDefault()?.Url,
+                    ProductTitle = order.Product.Description,
+                    Price = order.Price,
+                    BuyerId = order.BuyerId,
+                    BuyerName = $"{order.Buyer.FirstName} {order.Buyer.LastName}",
+                    Status = order.Status,
+                    PaymentStatus = order.Payment.Status,
+                    CreatedAt = order.CreatedAt,
+                    CanOpenChat = CanOpenChat(order), // Implement logic to determine if chat can be opened
+                    CanOpenDispute = CanOpenDispute(order) // Implement logic to determine if dispute can be opened
+                });
+            }
+
+            return responses;
+        }
+
+        private bool CanOpenChat(Order order)
+        {
+            return order.Status == OrderStatus.PaymentConfirmed ||
+                   order.Status == OrderStatus.TransferInProgress ||
+                   order.Status == OrderStatus.BuyerConfirmed;
+        }
+
+        private bool CanOpenDispute(Order order)
+        {
+            return order.Status != OrderStatus.Completed &&
+                   order.Status != OrderStatus.Cancelled;
+        }
+
+        public async Task<BuyerOrderDetailsResponse> GetBuyerOrderDetailsAsync(int buyerId)
+        {
+            var order = await _orderRepository.GetByIdAsync(buyerId);
+
+            BuyerOrderDetailsResponse response = new BuyerOrderDetailsResponse()
+            {
+                OrderId = order.Id,
+                ProductId = order.Product.Id,
+                Tags = order.Product.Tags.Select(t => t.Name).ToList(),
+                Medias = order.Product.Medias.Select(m => m.Url).ToList(),
+                ProductTitle = order.Product.Description,
+                ProductDescription = order.Product.Description,
+                Price = order.Price,
+                SellerId = order.SellerId,
+                SellerName = $"{order.Seller.FirstName} {order.Seller.LastName}",
+                SellerPhone = order.Seller.PhoneNumber,
+                Status = order.Status,
+                PaymentStatus = order.Payment.Status,
+                PaymentMethod = order.Payment.PaymentMethod,
+                CreatedAt = order.CreatedAt,
+                CanConfirmOrder = CanConfirmOrder(order),
+                CanCancelOrder = CanCancelOrder(order),
+                CanOpenChat = CanOpenChat(order),
+                CanOpenDispute = CanOpenDispute(order)
+            };
+
+            return response;
+        }
+
+        public Task<SellerOrderDetailsResponse> GetSellerOrderDetailsAsync(int sellerId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OrderDetailsResponse> GetByIdAsync(int orderId)
+        private bool CanConfirmOrder(Order order)
         {
-            throw new NotImplementedException();
+            return order.Status == OrderStatus.PaymentConfirmed
+                || order.Status == OrderStatus.TransferInProgress;
         }
 
-        public Task<List<SellerOrderResponse>> GetSellerOrdersAsync(int sellerId)
+        private bool CanCancelOrder(Order order)
         {
-            throw new NotImplementedException();
+            return  order.Status == OrderStatus.WaitingPayment;
         }
     }
 }

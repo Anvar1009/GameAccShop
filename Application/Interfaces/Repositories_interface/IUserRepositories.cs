@@ -10,5 +10,8 @@ namespace Application.Interfaces.Repositories_interface
     {
         public Task<User> Register(User user);
         public Task<User> GetByLoginAsycn(string login);
+        public Task<User> GetUserByIdAsync(int userId);
+
+        
     }
 }
