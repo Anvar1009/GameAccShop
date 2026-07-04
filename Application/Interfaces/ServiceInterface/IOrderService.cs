@@ -21,6 +21,6 @@ namespace Application.Interfaces.ServiceInterface
 
         Task CancelOrderAsync(int orderId, int buyerId);
 
-        Task ConfirmOrderAsync(int orderId);
+        Task ConfirmOrderAsync(int orderId, int buyerId);
     }
 }

@@ -91,9 +91,49 @@ namespace Application.Services
 
         }
 
-        public Task ConfirmOrderAsync(int orderId)
+        public async Task ConfirmOrderAsync(int orderId, int buyerId)
         {
-            throw new NotImplementedException();
+
+            var result = await _orderRepository.GetByIdAsync(orderId);
+
+            if (result == null)
+            {
+                throw new OrderNotFoundException();
+            }
+
+            if (buyerId != result.BuyerId)
+            {
+                throw new InvalidOperationException("You cannot confirm this order.");
+            }
+
+            if (result.Status != OrderStatus.TransferInProgress &&
+                result.Status != OrderStatus.PaymentConfirmed)
+            {
+                throw new InvalidOperationException("You cannot confirm this order.");
+            }
+            var product = await _productRepository.GetByIdAsync(result.ProductId);
+            if (product == null)
+            {
+                throw new ProductNotFoundException();
+            }
+
+
+            await using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                result.IsBuyerConfirmed = true;
+                result.Status = OrderStatus.BuyerConfirmed;
+                product.Status = ProductStatus.Sold;
+                await _orderRepository.UpdateAsync(result);
+                await _productRepository.UpdateAsync(product);
+                await _unitOfWork.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
 
