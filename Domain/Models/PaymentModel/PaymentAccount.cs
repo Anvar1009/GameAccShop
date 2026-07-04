@@ -11,6 +11,7 @@ namespace Domain.Models.PaymentModel
         public int Id { get; set; }
 
         public string Name { get; set; }          // Asaka Card, Click, Payme
+        public string OwnerName { get; set; }          // FIO
 
         public PaymentMethod Method { get; set; }
 

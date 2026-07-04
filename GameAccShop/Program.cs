@@ -3,11 +3,13 @@ using Application.Interfaces.Provider;
 using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.Security;
 using Application.Interfaces.ServiceInterface;
+using Application.Interfaces.UnitOfWorkFolder;
 using Application.Services;
 using GameAccShop.Middleware.GlobalExceptionMiddleware;
 using Infrastructure.EntityModel;
 using Infrastructure.Repositories;
 using Infrastructure.Security;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -45,6 +47,7 @@ namespace GameAccShop
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddScoped<IPaymentAccountRepository, PaymentAccountRepository>();
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 
             builder.Services.AddAuthentication(options =>

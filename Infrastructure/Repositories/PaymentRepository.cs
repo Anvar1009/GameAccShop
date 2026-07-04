@@ -42,7 +42,7 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.OrderId == orderId);
         }
 
-        public async Task<Payment?> GetDetailsAsync(int id)
+        public async Task<Payment?> GetDetailsAsync(int PaymentId)
         {
             var result = await _dbContext.Payment.AsNoTracking()
                .Include(o => o.Order)

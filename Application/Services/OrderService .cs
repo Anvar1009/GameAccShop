@@ -37,6 +37,16 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
+
+        /// <summary>
+        /// This Transaction is used to cancel an order. 
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="buyerid"></param>
+        /// <returns></returns>
+        /// <exception cref="OrderNotFoundException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ProductNotFoundException"></exception>
         public async Task CancelOrderAsync(int orderId , int buyerid)
         {
              
@@ -91,6 +101,18 @@ namespace Application.Services
 
         }
 
+
+
+
+        /// <summary>
+        /// This Transaction is used to confirm an order.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="buyerId"></param>
+        /// <returns></returns>
+        /// <exception cref="OrderNotFoundException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ProductNotFoundException"></exception>
         public async Task ConfirmOrderAsync(int orderId, int buyerId)
         {
 
@@ -138,6 +160,16 @@ namespace Application.Services
 
 
 
+        /// <summary>
+        /// This Transaction is used to create an order. 
+        /// It checks if the product is available, creates an order and payment, 
+        /// and updates the product status to reserved.
+        /// </summary>
+        /// <param name="buyerId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="ProductNotFoundException"></exception>
+        /// <exception cref="PaymentAccountNotFoundException"></exception>
         public async Task<OrderResponse> CreateOrderAsync(int buyerId, CreateOrderRequest request)
         {
             var result = await _productRepository.GetByIdAsync(request.ProductId);

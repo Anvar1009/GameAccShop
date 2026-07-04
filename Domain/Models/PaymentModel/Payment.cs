@@ -17,6 +17,7 @@ namespace Domain.Models.PaymentModel
 
         // To'lov summasi
         public decimal Amount { get; set; }
+        public string? ReceiptUrl { get; set; }
 
         // Manual, Click, Payme...
         public PaymentMethod PaymentMethod { get; set; }
