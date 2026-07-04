@@ -10,6 +10,7 @@ namespace Domain.Models.PaymentModel
     {
         Pending,
         Confirmed,
-        Released
+        Released,
+        Cancelled
     }
 }

@@ -19,7 +19,7 @@ namespace Application.Interfaces.ServiceInterface
 
         Task<SellerOrderDetailsResponse> GetSellerOrderDetailsAsync(int sellerId, int orderId);
 
-        Task CancelOrderAsync(int orderId);
+        Task CancelOrderAsync(int orderId, int buyerId);
 
         Task ConfirmOrderAsync(int orderId);
     }

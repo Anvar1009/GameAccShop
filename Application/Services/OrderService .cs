@@ -37,9 +37,58 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Task CancelOrderAsync(int orderId)
+        public async Task CancelOrderAsync(int orderId , int buyerid)
         {
-            throw new NotImplementedException();
+             
+            var result = await _orderRepository.GetByIdAsync(orderId);
+
+            if (result == null)
+            {
+                throw new OrderNotFoundException();
+            }
+
+            if(buyerid != result.BuyerId)
+            {
+                throw new InvalidOperationException("You cannot cancel this order.");
+            }
+
+            if (result.Status != OrderStatus.WaitingPayment)
+            {
+                throw new InvalidOperationException("You cannot cancel this order.");
+            }
+
+
+            var product = await _productRepository.GetByIdAsync(result.ProductId);
+            if (product == null)
+            {
+                throw new ProductNotFoundException();
+            }
+
+            var payment = await _paymentRepository.GetByOrderIdAsync(orderId);
+            if(payment == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            await using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                result.Status = OrderStatus.Cancelled;
+                product.Status = ProductStatus.Active;
+                payment.Status = PaymentStatus.Cancelled;
+                await _orderRepository.UpdateAsync(result);
+                await _productRepository.UpdateAsync(product);
+                await _paymentRepository.UpdateAsync(payment);
+                await _unitOfWork.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
         }
 
         public Task ConfirmOrderAsync(int orderId)
@@ -232,7 +281,7 @@ namespace Application.Services
 
             if (order == null)
             {
-                throw new OrderNotFoundException();
+                throw new OrderNotFoundException ();
             }
 
             if(order.BuyerId != buyerId)
