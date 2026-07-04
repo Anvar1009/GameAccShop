@@ -13,6 +13,7 @@ namespace Application.Interfaces.Repositories_interface
 
         Task UpdateAsync(Payment payment);
 
+        Task<List<Payment>> GetAllAsync();
         Task<Payment?> GetByIdAsync(int id);
 
         Task<Payment?> GetDetailsAsync(int id);
