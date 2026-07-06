@@ -6,6 +6,7 @@ using Application.Interfaces.ServiceInterface;
 using Application.Interfaces.UnitOfWorkFolder;
 using Domain.Models.OrdersModel;
 using Domain.Models.PaymentModel;
+using Domain.Models.ProductsModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +19,14 @@ namespace Application.Services
     {
         private readonly IPaymentRepository _paymentRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IProductRepository _productRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public AdminPaymentService(IPaymentRepository paymentRepository, IOrderRepository orderRepository, IUnitOfWork unitOfWork)
+        public AdminPaymentService(IPaymentRepository paymentRepository, IOrderRepository orderRepository, IUnitOfWork unitOfWork, IProductRepository productRepository)
         {
             _paymentRepository = paymentRepository;
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
+            _productRepository = productRepository;
         }
 
         public async Task<PaymentDetailsResponse> GetPaymentDetailsAsync(int buyerId, int orderId)
@@ -274,9 +277,47 @@ namespace Application.Services
             throw new NotImplementedException();
         }
 
-        public Task ConfirmPaymentAsync(int paymentId)
+        public async Task ConfirmPaymentAsync(int paymentId)
         {
-            throw new NotImplementedException();
+            var payment = await _paymentRepository.GetByIdAsync(paymentId);
+
+            if(payment == null)
+            {
+                throw new PaymentNotFoundException();
+            }
+            var order = payment.Order;
+            var product = order.Product;
+
+            if (payment.Status != PaymentStatus.Pending)
+            {
+                throw new InvalidOperationException("Payment has already been confirmed.");
+            }
+
+            if (order.Status != OrderStatus.WaitingPayment)
+            {
+                throw new InvalidOperationException("Order is not waiting for payment.");
+            }
+
+            await using var transaction = await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                payment.Status = PaymentStatus.Confirmed;
+                product.Status = ProductStatus.Reserved;
+                order.Status = OrderStatus.PaymentConfirmed;
+                await _productRepository.UpdateAsync(product);
+                await _paymentRepository.UpdateAsync(payment);
+                await _orderRepository.UpdateAsync(order);
+                await _unitOfWork.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
         }
 
     }
