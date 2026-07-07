@@ -36,18 +36,20 @@ namespace GameAccShop
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-            builder.Services.AddScoped<IUserRepositories, UserRepository>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 
+            builder.Services.AddScoped<IUserRepositories, UserRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-            builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddScoped<IPaymentAccountRepository, PaymentAccountRepository>();
+
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IPaymentService, AdminPaymentService>(); 
 
 
             builder.Services.AddAuthentication(options =>

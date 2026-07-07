@@ -215,7 +215,7 @@ namespace Application.Services
             OrderResponse orderResponse = new OrderResponse()
             {
                 OrderId = order.Id,
-                ProductId = order.ProductId,
+                ProductId = product.Id,
                 Price = order.Price,
                 Status = order.Status,
                 PaymentStatus = payment.Status,
@@ -250,7 +250,7 @@ namespace Application.Services
         {
             var payment = new Payment
             {
-                OrderId = order.Id,
+                Order = order,
                 PaymentAccountId = paymentAccount.Id,
                 Amount = order.Price,
                 Status = PaymentStatus.Pending,
@@ -293,11 +293,16 @@ namespace Application.Services
             {
                 responses.Add(new BuyerOrderResponse
                 {
+                    OrderId=order.Id,
+                    ProductId=order.ProductId,
+                    ProductTitle= order.Product.AccStrength+" "+order.Product.CoinsCount,
                     SellerName = $"{order.Seller.FirstName} {order.Seller.LastName}",
                     ProductDescription = order.Product.Description,
                     Status = order.Status,
                     Price = order.Price,
+                    SellerId = order.SellerId,
                     PaymentStatus = order.Payment.Status,
+                    CreatedAt= order.CreatedAt,
                     Tags = order.Product.Tags.Select(t => t.Name).ToList(),
                     Medias = order.Product.Medias.Select(m => m.Url).ToList()
                 });
