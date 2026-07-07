@@ -272,9 +272,50 @@ namespace Application.Services
         }
 
         
-        public Task ReleasePaymentAsync(int paymentId)
+        public async Task ReleasePaymentAsync(int paymentId)
         {
-            throw new NotImplementedException();
+            var payment = await _paymentRepository.GetByIdAsync(paymentId);
+
+            if (payment == null)
+            {
+                throw new PaymentNotFoundException();
+            }
+
+            var order = payment.Order;
+            var product = order.Product;
+
+            if (payment.Status != PaymentStatus.Confirmed)
+            {
+                throw new InvalidOperationException("Payment has already been confirmed.");
+            }
+
+            if (order.Status != OrderStatus.BuyerConfirmed)
+            {
+                throw new InvalidOperationException("Order is not waiting for payment.");
+            }
+
+            await using var transaction = await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                product.Status = ProductStatus.Sold;
+                payment.Status = PaymentStatus.Released;
+                payment.ReleasedAt = DateTime.UtcNow;
+                order.Status = OrderStatus.Completed;
+                order.CompletedAt = DateTime.UtcNow;
+                await _productRepository.UpdateAsync(product);
+                await _paymentRepository.UpdateAsync(payment);
+                await _orderRepository.UpdateAsync(order);
+                await _unitOfWork.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
         }
 
         public async Task ConfirmPaymentAsync(int paymentId)
@@ -303,9 +344,7 @@ namespace Application.Services
             try
             {
                 payment.Status = PaymentStatus.Confirmed;
-                product.Status = ProductStatus.Reserved;
                 order.Status = OrderStatus.PaymentConfirmed;
-                await _productRepository.UpdateAsync(product);
                 await _paymentRepository.UpdateAsync(payment);
                 await _orderRepository.UpdateAsync(order);
                 await _unitOfWork.SaveChangesAsync();
