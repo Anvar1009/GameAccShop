@@ -85,7 +85,18 @@ namespace GameAccShop.Controllers
             return Ok(result);
         }
 
-      
 
+        [HttpGet("details/{productId}")]
+        [Authorize]
+        public async Task<IActionResult> GetSellerProductDetails(int productId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userId == null || !int.TryParse(userId.Value, out var sellerId))
+            {
+                return Unauthorized();
+            }
+            var result = await _productService.GetSellerProductDetailsAsync(sellerId, productId);
+            return Ok(result);
+        }
     }
 }
