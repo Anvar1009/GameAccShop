@@ -57,5 +57,31 @@ namespace GameAccShop.Controllers
             return Ok(result);
         }
 
+        [Authorize]
+        [HttpPut("cancel/{orderId}")]
+        public async Task<IActionResult> CancelOrderAsync(int orderId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userId == null || !int.TryParse(userId.Value, out var buyerId))
+            {
+                return Unauthorized();
+            }
+            await _orderService.CancelOrderAsync(orderId, buyerId);
+            return Ok();
+        }
+
+        [HttpPut("confirm/{orderId}")]
+        [Authorize]
+        public async Task<IActionResult> ConfirmOrderAsync(int orderId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userId == null || !int.TryParse(userId.Value, out var buyerId))
+            {
+                return Unauthorized();
+            }
+            await _orderService.ConfirmOrderAsync(orderId, buyerId);
+            return Ok();
+        }
+
     }
 }
