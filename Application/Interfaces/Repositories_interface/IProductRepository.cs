@@ -13,6 +13,8 @@ namespace Application.Interfaces.Repositories_interface
 
         Task<Product?> GetByIdAsync(int id);
 
+        Task<List<Product>> GetSellerProductsAsync(int sellerId);
+
         Task<List<Product>> SearchByTagAsync(string tag);
 
         Task<Product> UpdateAsync(Product product);

@@ -70,5 +70,22 @@ namespace GameAccShop.Controllers
 
         }
 
+
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetSellerProducts()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userId == null || !int.TryParse(userId.Value, out var sellerId))
+            {
+                return Unauthorized();
+            }
+            var result = await _productService.GetSellerProductsAsync(sellerId);
+            return Ok(result);
+        }
+
+      
+
     }
 }

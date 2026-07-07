@@ -403,5 +403,63 @@ namespace Application.Services
 
             return getProductDTO;
         }
+
+        public async Task<List<GetProductDTO>> GetSellerProductsAsync(int sellerId)
+        {
+            var result = await _repository.GetSellerProductsAsync(sellerId);
+            if (result is null)
+            {
+                throw new ProductNotFoundException();
+            }
+            List<GetProductDTO> getProductDTOs = new List<GetProductDTO>();
+            List<string> tag2 = new List<string>();
+            foreach (var product in result)
+            {
+                foreach (var tag in product.Tags)
+                {
+                    tag2.Add(tag.Name);
+                }
+                List<string> medias = new List<string>();
+                foreach (var medi in product.Medias)
+                {
+                    medias.Add(medi.Url);
+                }
+                GetProductDTO getProductDTO = new GetProductDTO()
+                {
+                    Id = product.Id,
+                    AccPrice = product.AccPrice,
+                    AccStrength = product.AccStrength,
+                    CoinsCount = product.CoinsCount,
+                    Description = product.Description,
+                    PlayerCount = product.PlayerCount,
+                    Medias = medias,
+                    Tags = tag2
+                };
+                getProductDTOs.Add(getProductDTO);
+            }
+            return getProductDTOs;
+        }
+
+        public async Task<GetProductDTO> GetSellerProductDetailsAsync(int sellerId, int productId)
+        {
+            var result = await GetSellerProductsAsync(sellerId);
+            var product = result.FirstOrDefault(p => p.Id == productId);
+            if (product == null)
+                throw new ProductNotFoundException();
+
+            GetProductDTO GetProductDTO = new GetProductDTO()
+            {
+                Id = product.Id,
+                AccPrice = product.AccPrice,
+                AccStrength = product.AccStrength,
+                CoinsCount = product.CoinsCount,
+                Description = product.Description,
+                PlayerCount = product.PlayerCount,
+                Medias = product.Medias,
+                Tags = product.Tags
+            };
+             
+            return GetProductDTO;
+        }
     }
 }

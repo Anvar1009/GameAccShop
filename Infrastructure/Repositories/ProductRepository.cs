@@ -55,7 +55,7 @@ namespace Infrastructure.Repositories
             var result = await _dbContext.products.
                 Include(x => x.Tags).
                 Include(a => a.Medias).
-                FirstOrDefaultAsync(z => z.Id == id);
+                FirstOrDefaultAsync(z => z.Id == id);          
 
             return result;
         }
@@ -90,6 +90,15 @@ namespace Infrastructure.Repositories
             _dbContext.ProductMedias.Remove(media);
         }
 
+        public async Task<List<Product>> GetSellerProductsAsync(int sellerId)
+        {
+            var products = await _dbContext.products.AsNoTracking()
+                .Include(p => p.Tags)
+                .Include(p => p.Medias)
+                .Where(p => p.SellerId == sellerId)
+                .ToListAsync();
 
+            return (products);
+        }
     }
 }
