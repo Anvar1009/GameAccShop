@@ -61,7 +61,7 @@ namespace GameAccShop.Controllers
         }
 
         [Authorize]
-        [ HttpPut("update")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateAsync(UpdateProductDTO updateProductDTO)
         {
             var result = await _productService.UpdateAsync(updateProductDTO);   
