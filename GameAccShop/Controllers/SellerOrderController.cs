@@ -18,7 +18,7 @@ namespace GameAccShop.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetSellerOrdersAsync()
+        public async Task<IActionResult> GetOrdersAsync()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier);
 
@@ -29,6 +29,19 @@ namespace GameAccShop.Controllers
 
             var result = await _orderService.GetSellerOrdersAsync(sellerId);
 
+            return Ok(result);
+        }
+
+        [HttpGet("{orderId}")]
+        [Authorize]
+        public async Task<IActionResult> GetOrderDetailsAsync(int orderId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userId == null || !int.TryParse(userId.Value, out var sellerId))
+            {
+                return Unauthorized();
+            }
+            var result = await _orderService.GetSellerOrderDetailsAsync(sellerId, orderId);
             return Ok(result);
         }
     }
