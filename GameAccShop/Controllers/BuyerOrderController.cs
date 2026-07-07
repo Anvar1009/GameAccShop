@@ -44,7 +44,18 @@ namespace GameAccShop.Controllers
             return Ok(result);
         }
 
-       
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateOrderAsync([FromBody] CreateOrderRequest dto)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userId == null || !int.TryParse(userId.Value, out var buyerId))
+            {
+                return Unauthorized();
+            }
+            var result = await _orderService.CreateOrderAsync(buyerId, dto);
+            return Ok(result);
+        }
 
     }
 }
