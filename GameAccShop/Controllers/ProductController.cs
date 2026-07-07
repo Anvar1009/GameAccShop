@@ -17,23 +17,10 @@ namespace GameAccShop.Controllers
             _productService = product;              
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Create(
-        [FromForm] CreateProductDTO dto)
-        {
-            var userId = User.FindFirst(
-            ClaimTypes.NameIdentifier);
-
-            var sellerId = int.Parse(userId.Value);
-
-            var result = await _productService.CreateAsync(dto, sellerId);
-
-            return Ok(result);
-        }
+       
 
         [Authorize]
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetByID(int id)
         {
             var result = await _productService.GetByIdAsync(id);    
@@ -50,53 +37,11 @@ namespace GameAccShop.Controllers
             return Ok(result);
         }
 
-        [Authorize]
-        [HttpDelete("delete")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _productService.DeleteAsync(id);
+        
 
-            return Ok(id);
-
-        }
-
-        [Authorize]
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateAsync(UpdateProductDTO updateProductDTO)
-        {
-            var result = await _productService.UpdateAsync(updateProductDTO);   
-
-            return Ok(result);  
-
-        }
+        
 
 
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> GetSellerProducts()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userId == null || !int.TryParse(userId.Value, out var sellerId))
-            {
-                return Unauthorized();
-            }
-            var result = await _productService.GetSellerProductsAsync(sellerId);
-            return Ok(result);
-        }
-
-
-        [HttpGet("details/{productId}")]
-        [Authorize]
-        public async Task<IActionResult> GetSellerProductDetails(int productId)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userId == null || !int.TryParse(userId.Value, out var sellerId))
-            {
-                return Unauthorized();
-            }
-            var result = await _productService.GetSellerProductDetailsAsync(sellerId, productId);
-            return Ok(result);
-        }
     }
 }
