@@ -33,5 +33,13 @@ namespace GameAccShop.Controllers
             return Ok(payment);
         }
 
+        [HttpPut("{id}/confrim")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ConfirmPayment(int id)
+        {
+            await _paymentService.ConfirmPaymentAsync(id);
+            return Ok();
+        }
+
     }
 }

@@ -27,7 +27,9 @@ namespace Infrastructure.Repositories
         public Task<List<Payment>> GetAllAsync()
         {
             var result = _dbContext.Payment.AsNoTracking()
-                .Include(o => o.Order)
+                .Include(o => o.Order).ThenInclude(o => o.Product)
+                .Include(o => o.Order).ThenInclude(o => o.Seller)
+                .Include(o => o.Order).ThenInclude(o => o.Buyer)
                 .Include(o => o.PaymentAccount)
                 .ToListAsync();
             return result;
@@ -36,7 +38,11 @@ namespace Infrastructure.Repositories
         public async Task<Payment?> GetByIdAsync(int id)
         {
             var result = await _dbContext.Payment.AsNoTracking()
-                .Include(o=>o.Order)
+                .Include(o=>o.Order).ThenInclude(o => o.Seller)
+                .Include(o=>o.Order).ThenInclude(o => o.Buyer)
+                .Include(o=>o.Order).ThenInclude(o => o.Product)
+                .Include(o=>o.Order).ThenInclude(o => o.Product).ThenInclude(p => p.Medias)
+                .Include(o=>o.Order).ThenInclude(o => o.Product).ThenInclude(p => p.Tags)
                 .Include(o=>o.PaymentAccount)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
