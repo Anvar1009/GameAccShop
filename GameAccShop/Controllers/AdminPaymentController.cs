@@ -24,5 +24,14 @@ namespace GameAccShop.Controllers
             return Ok(payments);
         }
 
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]    
+        public async Task<IActionResult> GetPaymentDetails(int id)
+        {
+            var payment = await _paymentService.GetPaymentDetailsAsync(id);
+            
+            return Ok(payment);
+        }
+
     }
 }
