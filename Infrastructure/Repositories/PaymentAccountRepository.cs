@@ -23,6 +23,11 @@ namespace Infrastructure.Repositories
            await _dbContext.AddAsync(paymentAccount);
         }
 
+        public async Task DeleteAsync(PaymentAccount paymentAccount)
+        {
+            _dbContext.Remove(paymentAccount);
+        }
+
         public async Task<PaymentAccount?> GetActiveAsync()
         {
             return await _dbContext.PaymentAccounts

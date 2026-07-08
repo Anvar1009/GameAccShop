@@ -12,6 +12,7 @@ namespace Application.Interfaces.Repositories_interface
         Task CreateAsync(PaymentAccount paymentAccount);
 
         Task UpdateAsync(PaymentAccount paymentAccount);
+        Task DeleteAsync(PaymentAccount paymentAccount);
 
         Task<PaymentAccount?> GetByIdAsync(int id);
 
