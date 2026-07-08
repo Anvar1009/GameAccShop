@@ -50,6 +50,7 @@ namespace GameAccShop
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPaymentService, AdminPaymentService>(); 
+            builder.Services.AddScoped<IPaymentAccountService, PaymentAccountService>();
 
 
             builder.Services.AddAuthentication(options =>
