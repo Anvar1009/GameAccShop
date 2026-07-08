@@ -49,6 +49,21 @@ namespace Infrastructure.Repositories
             return order;
         }
 
+        public async Task<List<Order>> GetOrders()
+        {
+            
+            var orders = await _context.orders.AsNoTracking()
+                                       .Include(o => o.Product).ThenInclude(c => c.Medias)
+                                       .Include(o => o.Product).ThenInclude(c => c.Tags)
+                                       .Include(o => o.Seller)
+                                       .Include(o => o.Buyer)
+                                       .Include(o => o.Payment)
+                                       .OrderByDescending(o => o.CreatedAt)
+                                       .ToListAsync();
+
+            return orders;
+        }
+
         public async Task<List<Order>> GetSellerOrders(int sellerId)
         {
             var orders = await _context.orders.AsNoTracking()

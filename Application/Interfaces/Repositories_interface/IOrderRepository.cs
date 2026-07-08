@@ -11,6 +11,10 @@ namespace Application.Interfaces.Repositories_interface
     {
         Task CreateAsync(Order order);
 
+        // for admin panel
+        Task<List<Order>> GetOrders();
+
+
         Task<List<Order>> GetBuyerOrders(int buyerId);
 
         Task<List<Order>> GetSellerOrders(int sellerId);

@@ -21,6 +21,7 @@ namespace Infrastructure.Repositories
         public async  Task CreateAsync(PaymentAccount paymentAccount)
         {
            await _dbContext.AddAsync(paymentAccount);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(PaymentAccount paymentAccount)
@@ -42,10 +43,11 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public Task UpdateAsync(PaymentAccount paymentAccount)
+        public async Task UpdateAsync(PaymentAccount paymentAccount)
         {
-             _dbContext.Update(paymentAccount);
-            return Task.CompletedTask;
+            _dbContext.Update(paymentAccount);
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

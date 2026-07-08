@@ -13,7 +13,6 @@ namespace Application.Interfaces.ServiceInterface
 
         Task<AdminOrderDetailsResponse> GetOrderDetailsAsync(int orderId);
 
-        Task CancelOrderAsync(int orderId);
 
     }
 }
