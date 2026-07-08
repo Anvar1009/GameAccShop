@@ -41,5 +41,13 @@ namespace GameAccShop.Controllers
             return Ok();
         }
 
+
+        [HttpPut("{id}/released")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ReleasePayment(int id)
+        {
+            await _paymentService.ReleasePaymentAsync(id);
+            return Ok();
+        }
     }
 }
