@@ -69,7 +69,34 @@ namespace Application.Services
         {
             var orders = new List<AdminOrderResponse>();
 
-            var orderEntities = await _orderRepository.GetByIdAsync();
+            var orderEntities = await _orderRepository.GetOrders();
+
+            if(orderEntities== null)
+            {
+                return orders;
+            }
+
+            foreach (var orderEntity in orderEntities)
+            {
+                AdminOrderResponse orderResponse = new AdminOrderResponse
+                {
+                    OrderId = orderEntity.Id,
+                    Status = orderEntity.Status,
+                    Price = orderEntity.Price,
+                    CreatedAt = orderEntity.CreatedAt,
+                    BuyerId = orderEntity.BuyerId,
+                    BuyerName = orderEntity.Buyer?.FirstName,
+                    SellerId = orderEntity.SellerId,
+                    SellerName = orderEntity.Seller?.FirstName,
+                    ProductId = orderEntity.ProductId,
+                };
+
+                orders.Add(orderResponse);
+
+            }
+
+            return orders;
+
         }
     }
 }

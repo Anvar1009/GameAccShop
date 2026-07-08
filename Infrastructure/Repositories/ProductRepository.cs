@@ -85,9 +85,10 @@ namespace Infrastructure.Repositories
             return product;
         }
 
-        public void RemoveMedia(ProductMedia media)
+        public async void RemoveMedia(ProductMedia media)
         {
             _dbContext.ProductMedias.Remove(media);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<List<Product>> GetSellerProductsAsync(int sellerId)

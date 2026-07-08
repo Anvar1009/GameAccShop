@@ -20,6 +20,8 @@ namespace Infrastructure.Repositories
         public async Task CreateAsync(Order order)
         {
             await _context.orders.AddAsync(order);
+            await _context.SaveChangesAsync();
+
         }
 
         public async Task<List<Order>> GetBuyerOrders(int buyerId)
@@ -77,10 +79,10 @@ namespace Infrastructure.Repositories
             return orders;
         }
 
-        public Task UpdateAsync(Order order)
+        public async Task UpdateAsync(Order order)
         {
             _context.orders.Update(order);
-            return Task.CompletedTask;
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Infrastructure.Repositories
         public async Task CreateAsync(Payment payment)
         {
             await _dbContext.Payment.AddAsync(payment);
+            await _dbContext.SaveChangesAsync();
         }
 
         public Task<List<Payment>> GetAllAsync()
@@ -70,10 +71,10 @@ namespace Infrastructure.Repositories
             return result;
         }
 
-        public Task UpdateAsync(Payment payment)
+        public async Task UpdateAsync(Payment payment)
         {
              _dbContext.Payment.Update(payment);
-            return Task.CompletedTask;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
