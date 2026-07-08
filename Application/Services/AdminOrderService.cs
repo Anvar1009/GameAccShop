@@ -27,12 +27,13 @@ namespace Application.Services
                 throw new ArgumentException("Order ID must be greater than zero.", nameof(orderId));
             }
 
-            var order = await _orderRepository.GetByIdAsync(orderId);
+            var order = await _orderRepository.GetByIdAsync(orderId)
+                ?? throw new OrderNotFoundException();
 
-            if (order == null)
-            {
-                throw new KeyNotFoundException($"Order with ID {orderId} not found.");
-            }
+            var buyer = order.Buyer;
+            var seller = order.Seller;
+            var product = order.Product;
+            var payment = order.Payment;
 
             return new AdminOrderDetailsResponse
             {
@@ -40,29 +41,32 @@ namespace Application.Services
                 Status = order.Status,
                 Price = order.Price,
                 CreatedAt = order.CreatedAt,
+
                 BuyerId = order.BuyerId,
-                BuyerName = order.Buyer?.FirstName,
-                BuyerPhone = order.Buyer?.PhoneNumber,
+                BuyerName = $"{buyer?.FirstName} {buyer?.LastName}",
+                BuyerPhone = buyer?.PhoneNumber ?? string.Empty,
+
                 SellerId = order.SellerId,
-                SellerName = order.Seller?.FirstName,
-                SellerPhone = order.Seller?.PhoneNumber,
+                SellerName = $"{seller?.FirstName} {seller?.LastName}",
+                SellerPhone = seller?.PhoneNumber ?? string.Empty,
+
                 ProductId = order.ProductId,
-                ProductDescription = order.Product?.Description,
-                AccStrength = order.Product?.AccStrength ?? 0,
-                PlayerCount = order.Product?.PlayerCount ?? 0,
-                CoinsCount = order.Product?.CoinsCount ?? 0,
-                Tags = order.Product?.Tags.Select(t => t.Name).ToList() ?? new List<string>(),
-                Medias = order.Product?.Medias.Select(m => m.Url).ToList() ?? new List<string>(),
-                PaymentStatus = order.Payment?.Status ?? PaymentStatus.Pending,
-                PaymentMethod = order.Payment?.PaymentMethod ?? PaymentMethod.CardTransfer,
-                PaymentAmount = order.Payment?.Amount ?? 0m,
-                CardNumber = order.Payment?.PaymentAccount.AccountNumber,
+                ProductDescription = product?.Description ?? string.Empty,
+                AccStrength = product?.AccStrength ?? 0,
+                PlayerCount = product?.PlayerCount ?? 0,
+                CoinsCount = product?.CoinsCount ?? 0,
+                Tags = product?.Tags.Select(t => t.Name).ToList() ?? new(),
+                Medias = product?.Medias.Select(m => m.Url).ToList() ?? new(),
+
+                PaymentStatus = payment?.Status ?? PaymentStatus.Pending,
+                PaymentMethod = payment?.PaymentMethod ?? PaymentMethod.CardTransfer,
+                PaymentAmount = payment?.Amount ?? 0,
+                CardNumber = payment?.PaymentAccount?.AccountNumber ?? string.Empty,
+
                 IsBuyerConfirmed = order.IsBuyerConfirmed,
                 IsCompletedByAdmin = order.IsCompletedByAdmin,
-                CompletedAt = order.CompletedAt,
-            };  
-
-
+                CompletedAt = order.CompletedAt
+            };
         }
 
         public async Task<List<AdminOrderResponse>> GetOrdersAsync()
