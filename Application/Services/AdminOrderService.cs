@@ -35,6 +35,7 @@ namespace Application.Services
             var product = order.Product;
             var payment = order.Payment;
 
+
             return new AdminOrderDetailsResponse
             {
                 OrderId = order.Id,

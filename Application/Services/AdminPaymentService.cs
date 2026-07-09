@@ -7,6 +7,7 @@ using Application.Interfaces.UnitOfWorkFolder;
 using Domain.Models.OrdersModel;
 using Domain.Models.PaymentModel;
 using Domain.Models.ProductsModels;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace Application.Services
             _productRepository = productRepository;
         }
 
-        public async Task<PaymentDetailsResponse> GetPaymentDetailsAsync(int buyerId, int orderId)
+        public async Task<PaymentDetailsResponse> GetBuyerPaymentDetailsAsync(int buyerId, int orderId)
         {
             
             var order = await _orderRepository.GetByIdAsync(orderId);

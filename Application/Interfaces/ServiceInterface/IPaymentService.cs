@@ -9,7 +9,7 @@ namespace Application.Interfaces.ServiceInterface
 {
     public interface IPaymentService
     {
-        Task<PaymentDetailsResponse> GetPaymentDetailsAsync(int buyerId, int orderId);
+        Task<PaymentDetailsResponse> GetBuyerPaymentDetailsAsync(int buyerId, int orderId);
         Task UploadReceiptAsync(int buyerId, UploadReceiptRequest request);
         Task<PaymentStatusResponse> GetPaymentStatusAsync(int buyerId, int orderId);
 

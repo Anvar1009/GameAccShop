@@ -47,6 +47,7 @@ namespace Infrastructure.Repositories
                                        .Include(o => o.Seller)
                                        .Include(o => o.Buyer)
                                        .Include(o => o.Payment)
+                                       .Include(o=>o.Payment).ThenInclude(p=>p.PaymentAccount)
                                        .FirstOrDefaultAsync(o => o.Id == id);
             return order;
         }
