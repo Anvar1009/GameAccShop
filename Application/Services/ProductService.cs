@@ -163,12 +163,11 @@ namespace Application.Services
                 throw new ProductNotFoundException();
             }
 
-            List<string> tag2 = new List<string>();
-
-            List<GetProductDTO> getProductDTOs = new List<GetProductDTO>(); 
+            List<GetProductDTO> getProductDTOs = new List<GetProductDTO>();
 
             foreach (var product  in result)
             {
+                List<string> tag2 = new List<string>();
 
                 foreach (var tag in product.Tags)
                 {
@@ -244,10 +243,10 @@ namespace Application.Services
                 throw new ProductNotFoundException();
 
             List<GetProductDTO> getProductDTOs = new List<GetProductDTO>();
-            List<string> tag2 = new List<string>();
 
             foreach (var product in result)
             {
+                List<string> tag2 = new List<string>();
 
                 foreach (var tag1 in product.Tags)
                 {
@@ -412,9 +411,9 @@ namespace Application.Services
                 throw new ProductNotFoundException();
             }
             List<GetProductDTO> getProductDTOs = new List<GetProductDTO>();
-            List<string> tag2 = new List<string>();
             foreach (var product in result)
             {
+                List<string> tag2 = new List<string>();
                 foreach (var tag in product.Tags)
                 {
                     tag2.Add(tag.Name);

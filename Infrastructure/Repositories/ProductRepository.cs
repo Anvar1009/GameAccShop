@@ -43,11 +43,13 @@ namespace Infrastructure.Repositories
 
         public async  Task<List<Product>> GetAllAsync()
         {
-            var result = new List<Product>();
+            var result = await _dbContext.products
+                .Include(p => p.Tags)
+                .Include(p => p.Medias)
+                .Where(o => o.Status == ProductStatus.Active)
+                .ToListAsync();
 
-            result = await _dbContext.products.ToListAsync();
-            
-            return result;  
+            return result;
         }
 
         public async Task<Product?> GetByIdAsync(int id)

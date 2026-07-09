@@ -133,7 +133,7 @@ namespace Application.Services
             {
                 throw new InvalidOperationException("You cannot confirm this order.");
             }
-            var product = await _productRepository.GetByIdAsync(result.ProductId);
+            var product =  result.Product;
             if (product == null)
             {
                 throw new ProductNotFoundException();
@@ -172,7 +172,7 @@ namespace Application.Services
         /// <exception cref="PaymentAccountNotFoundException"></exception>
         public async Task<OrderResponse> CreateOrderAsync(int buyerId, CreateOrderRequest request)
         {
-            var result = await _productRepository.GetByIdAsync(request.ProductId);
+                 var result = await _productRepository.GetByIdAsync(request.ProductId);
 
             if (result == null)
             {
