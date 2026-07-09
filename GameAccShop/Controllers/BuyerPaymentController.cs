@@ -45,5 +45,17 @@ namespace GameAccShop.Controllers
         }
 
 
+        [Authorize]
+        [HttpPut("{orderId}/UploadReceipt")]
+        public async Task<IActionResult> UploadPaymentReceipt(int orderId, [FromForm] UploadReceiptRequest receipt)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userId == null || !int.TryParse(userId.Value, out var buyerId))
+            {
+                return Unauthorized();
+            }
+            await _paymentService.UploadReceiptAsync(buyerId, receipt);
+            return Ok();
+        }
     }
 }
