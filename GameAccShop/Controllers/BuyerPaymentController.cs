@@ -30,6 +30,20 @@ namespace GameAccShop.Controllers
             return Ok(paymentDetails);
         }
 
-      
+
+        [Authorize]
+        [HttpGet("{orderId}/PaymentStatus")]
+        public async Task<IActionResult> GetPaymentStatus(int orderId)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userId == null || !int.TryParse(userId.Value, out var buyerId))
+            {
+                return Unauthorized();
+            }
+            var paymentStatus = await _paymentService.GetPaymentStatusAsync(buyerId, orderId);
+            return Ok(paymentStatus);
+        }
+
+
     }
 }
