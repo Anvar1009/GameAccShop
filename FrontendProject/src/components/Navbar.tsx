@@ -54,14 +54,14 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-border/70 glass">
       <div className="container flex h-16 items-center justify-between gap-4">
-        <Link to={isAdmin ? "/admin" : "/"} className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-soft">
+        <Link to={isAdmin ? "/admin" : "/"} className="group flex items-center gap-2">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-gradient text-primary-foreground shadow-glow-sm transition-shadow group-hover:shadow-glow">
             <Gamepad2 className="h-5 w-5" />
           </span>
-          <span className="text-lg font-bold tracking-tight">
-            GameAcc<span className="text-primary">Shop</span>
+          <span className="font-display text-lg font-bold tracking-tight">
+            GameAcc<span className="text-gradient">Shop</span>
           </span>
           {isAdmin && (
             <span className="ml-1 hidden items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-primary sm:inline-flex">

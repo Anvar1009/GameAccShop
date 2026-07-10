@@ -12,15 +12,16 @@ export function ProductCard({ product }: { product: Product }) {
   const { t } = useTranslation();
   const tags = Array.from(new Set(product.tags ?? []));
   return (
-    <Card className="group flex flex-col overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-lift">
+    <Card className="group relative flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-glow">
       <Link to={`/products/${product.id}`} className="relative block aspect-[4/3] overflow-hidden">
         <ProductMedia
           src={product.medias?.[0]}
           alt={product.description || t("product.gameAccount")}
-          className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+          className="h-full w-full transition-transform duration-500 group-hover:scale-110"
         />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent opacity-80" />
         <div className="absolute right-3 top-3">
-          <Badge tone="info" className="bg-card/95 shadow-soft backdrop-blur">
+          <Badge className="border-0 bg-brand-gradient text-primary-foreground shadow-glow-sm">
             {formatPrice(product.accPrice)}
           </Badge>
         </div>
@@ -70,9 +71,9 @@ function Stat({
   value: string;
 }) {
   return (
-    <div className="rounded-lg bg-secondary/60 px-1.5 py-2">
+    <div className="rounded-lg border border-border/60 bg-secondary/50 px-1.5 py-2 transition-colors group-hover:border-primary/30">
       <Icon className="mx-auto h-4 w-4 text-primary" />
-      <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
+      <p className="mt-1 text-sm font-semibold tabular-nums text-foreground">{value}</p>
       <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</p>
     </div>
   );

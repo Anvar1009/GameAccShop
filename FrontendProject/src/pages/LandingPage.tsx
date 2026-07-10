@@ -24,14 +24,18 @@ export function LandingPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border bg-gradient-to-b from-accent/60 to-background">
-        <div className="container grid items-center gap-10 py-16 lg:grid-cols-2 lg:py-24">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card px-3 py-1 text-sm font-medium text-primary shadow-soft">
-              <Sparkles className="h-4 w-4" /> {t("landing.badge")}
+      <section className="relative overflow-hidden border-b border-border/70">
+        {/* ambient neon glows + tech grid */}
+        <div className="pointer-events-none absolute inset-0 bg-grid" />
+        <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-primary/25 blur-[100px] animate-glow-pulse" />
+        <div className="pointer-events-none absolute -right-16 top-24 h-72 w-72 rounded-full bg-brand2/20 blur-[100px] animate-glow-pulse" />
+        <div className="container relative grid items-center gap-10 py-16 lg:grid-cols-2 lg:py-24">
+          <div className="animate-fade-up">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/60 px-3 py-1 text-sm font-medium text-accent-foreground shadow-glow-sm backdrop-blur">
+              <Sparkles className="h-4 w-4 text-primary" /> {t("landing.badge")}
             </span>
-            <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl">
-              {t("landing.heroTitle")} <span className="text-primary">{t("landing.heroHighlight")}</span>
+            <h1 className="mt-5 font-display text-4xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              {t("landing.heroTitle")} <span className="text-gradient">{t("landing.heroHighlight")}</span>
             </h1>
             <p className="mt-5 max-w-lg text-lg text-muted-foreground">
               {t("landing.heroSubtitle")}
@@ -56,15 +60,17 @@ export function LandingPage() {
           </div>
 
           <div className="relative">
-            <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
+            <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-brand2/20 blur-3xl" />
             <div className="grid gap-4 sm:grid-cols-2">
               {[Gamepad2, ShieldCheck, CreditCard, BadgeCheck].map((Icon, i) => (
                 <div
                   key={i}
-                  className="rounded-xl border border-border bg-card p-6 shadow-card"
+                  className="rounded-xl border border-border bg-card/70 p-6 shadow-card backdrop-blur transition-all duration-300 hover:border-primary/50 hover:shadow-glow"
                   style={{ transform: i % 2 ? "translateY(1.5rem)" : undefined }}
                 >
-                  <Icon className="h-8 w-8 text-primary" />
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary ring-1 ring-inset ring-primary/25">
+                    <Icon className="h-6 w-6" />
+                  </span>
                   <div className="mt-4 h-2 w-2/3 rounded-full bg-secondary" />
                   <div className="mt-2 h-2 w-1/2 rounded-full bg-secondary" />
                 </div>
@@ -84,11 +90,11 @@ export function LandingPage() {
         </div>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, i) => (
-            <div key={step.titleKey} className="relative rounded-xl border border-border bg-card p-6 shadow-soft">
-              <span className="absolute right-4 top-4 text-3xl font-bold text-secondary">
+            <div key={step.titleKey} className="group relative rounded-xl border border-border bg-card/70 p-6 shadow-card backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-glow">
+              <span className="absolute right-4 top-4 font-display text-3xl font-bold text-foreground/10">
                 {i + 1}
               </span>
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-primary">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/15 text-primary ring-1 ring-inset ring-primary/25">
                 <step.icon className="h-5 w-5" />
               </div>
               <h3 className="mt-4 font-semibold">{t(step.titleKey)}</h3>
@@ -99,7 +105,7 @@ export function LandingPage() {
       </section>
 
       {/* Featured */}
-      <section className="border-t border-border bg-secondary/40 py-16">
+      <section className="border-t border-border/70 bg-card/20 py-16">
         <div className="container">
           <div className="mb-8 flex items-end justify-between">
             <div>
@@ -139,7 +145,7 @@ export function LandingPage() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-2xl font-bold text-foreground">{value}</p>
+      <p className="font-display text-2xl font-bold text-gradient">{value}</p>
       <p className="text-sm text-muted-foreground">{label}</p>
     </div>
   );

@@ -10,7 +10,7 @@ export function AppLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="border-t border-border bg-card">
+      <footer className="border-t border-border/70 bg-card/40 backdrop-blur-sm">
         <div className="container flex flex-col items-center justify-between gap-2 py-6 text-sm text-muted-foreground sm:flex-row">
           <p>{t("footer.copyright", { year: new Date().getFullYear() })}</p>
           <p className="text-xs">{t("footer.tagline")}</p>

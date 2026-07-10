@@ -4,38 +4,42 @@
 
 @layer base {
   :root {
-    --background: 210 40% 99%;
-    --foreground: 222 47% 11%;
+    /* Dark neon "gamer" theme — deep midnight surfaces + violet/cyan neon */
+    --background: 240 24% 6%;
+    --foreground: 220 30% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 240 20% 10%;
+    --card-foreground: 220 30% 96%;
 
-    --primary: 243 75% 59%; /* indigo-600 */
+    --primary: 258 90% 66%; /* violet-500 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
+    /* Secondary neon accent used in gradients / glows */
+    --brand-2: 190 95% 55%; /* cyan */
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --secondary: 240 16% 15%;
+    --secondary-foreground: 220 24% 90%;
 
-    --accent: 226 100% 97%;
-    --accent-foreground: 243 75% 59%;
+    --muted: 240 16% 15%;
+    --muted-foreground: 225 12% 62%;
 
-    --destructive: 0 72% 51%; /* red-600 */
+    --accent: 258 44% 18%; /* dark violet tint surface */
+    --accent-foreground: 258 95% 82%;
+
+    --destructive: 0 78% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 158 64% 39%; /* emerald-600 */
-    --success-foreground: 0 0% 100%;
+    --success: 158 70% 50%; /* emerald */
+    --success-foreground: 160 60% 8%;
 
-    --warning: 38 92% 50%; /* amber-500 */
-    --warning-foreground: 26 83% 14%;
+    --warning: 38 95% 58%; /* amber */
+    --warning-foreground: 30 60% 10%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 243 75% 59%;
+    --border: 240 16% 20%;
+    --input: 240 16% 20%;
+    --ring: 258 90% 66%;
 
-    --radius: 0.75rem;
+    --radius: 0.85rem;
   }
 }
 
@@ -45,12 +49,25 @@
   }
   html {
     scroll-behavior: smooth;
+    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-      "Helvetica Neue", Arial, sans-serif;
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* subtle ambient neon glow anchored top of the app */
+    background-image:
+      radial-gradient(60rem 40rem at 15% -10%, hsl(258 90% 60% / 0.12), transparent 60%),
+      radial-gradient(50rem 35rem at 100% 0%, hsl(190 95% 55% / 0.1), transparent 55%);
+    background-attachment: fixed;
+  }
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -64,5 +81,42 @@
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
     @apply rounded-full bg-border;
+  }
+
+  /* Violet→cyan gradient text for hero highlights & headings */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      100deg,
+      hsl(var(--primary)),
+      hsl(var(--brand-2))
+    );
+  }
+
+  /* Neon gradient surface (CTA buttons, badges) */
+  .bg-brand-gradient {
+    background-image: linear-gradient(
+      100deg,
+      hsl(var(--primary)),
+      hsl(280 90% 62%) 45%,
+      hsl(var(--brand-2))
+    );
+  }
+
+  /* Glassmorphism surface for cards / nav on dark */
+  .glass {
+    background-color: hsl(var(--card) / 0.7);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  /* Faint tech grid background */
+  .bg-grid {
+    background-image:
+      linear-gradient(hsl(var(--foreground) / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--foreground) / 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(70% 60% at 50% 0%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(70% 60% at 50% 0%, #000 40%, transparent 100%);
   }
 }

@@ -70,13 +70,18 @@ namespace Application.Services
             }
 
 
-            var product = await _productRepository.GetByIdAsync(result.ProductId);
+            // Reuse the entities from the order graph instead of re-fetching them.
+            // ProductRepository.GetByIdAsync tracks the entity, so a separate fetch
+            // would leave a second Product/Payment instance with the same key tracked,
+            // and _orderRepository.UpdateAsync(result) would then throw an EF Core
+            // "another instance with the same key value is already being tracked" error.
+            var product = result.Product;
             if (product == null)
             {
                 throw new ProductNotFoundException();
             }
 
-            var payment = await _paymentRepository.GetByOrderIdAsync(orderId);
+            var payment = result.Payment;
             if(payment == null)
             {
                 throw new InvalidOperationException();
@@ -88,9 +93,9 @@ namespace Application.Services
                 result.Status = OrderStatus.Cancelled;
                 product.Status = ProductStatus.Active;
                 payment.Status = PaymentStatus.Cancelled;
+                // Updating the order attaches its whole graph (product + payment) as
+                // Modified, so their status changes are persisted in one call.
                 await _orderRepository.UpdateAsync(result);
-                await _productRepository.UpdateAsync(product);
-                await _paymentRepository.UpdateAsync(payment);
                 await _unitOfWork.SaveChangesAsync();
                 await transaction.CommitAsync();
 

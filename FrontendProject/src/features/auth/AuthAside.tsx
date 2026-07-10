@@ -7,8 +7,9 @@ const pointKeys: TranslationKey[] = ["authAside.point1", "authAside.point2", "au
 export function AuthAside() {
   const { t } = useTranslation();
   return (
-    <div className="relative hidden overflow-hidden bg-primary lg:block">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_55%)]" />
+    <div className="relative hidden overflow-hidden bg-brand-gradient lg:block">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_55%)]" />
+      <div className="absolute inset-0 bg-grid opacity-40" />
       <div className="relative flex h-full flex-col justify-center px-12 text-primary-foreground">
         <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-medium backdrop-blur">
           <ShieldCheck className="h-4 w-4" />
