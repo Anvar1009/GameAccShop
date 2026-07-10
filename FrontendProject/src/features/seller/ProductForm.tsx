@@ -103,7 +103,7 @@ export function ProductForm({ mode, initial, submitting, onSubmit }: ProductForm
             </FormField>
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField label={t("productForm.priceUsd")} htmlFor="accPrice" error={errors.accPrice?.message && t(errors.accPrice.message as never)} required>
-                <Input id="accPrice" type="number" step="0.01" min="0" placeholder="199.99" {...register("accPrice")} />
+                <Input id="accPrice" type="number" step="1000" min="0" placeholder="1500000" {...register("accPrice")} />
               </FormField>
               <FormField label={t("productForm.accStrength")} htmlFor="accStrength" error={errors.accStrength?.message && t(errors.accStrength.message as never)} required>
                 <Input id="accStrength" type="number" min="0" placeholder="3190" {...register("accStrength")} />

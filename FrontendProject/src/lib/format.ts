@@ -8,10 +8,11 @@ export function mediaUrl(path?: string | null): string {
   return `${base}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
+// Prices are in Uzbek som (UZS). Som has no minor unit in practice, so no decimals.
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 2,
+  currency: "UZS",
+  maximumFractionDigits: 0,
 });
 
 export function formatPrice(value: number | string | null | undefined): string {
