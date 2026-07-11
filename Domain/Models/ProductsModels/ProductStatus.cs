@@ -8,6 +8,7 @@ namespace Domain.Models.ProductsModels
     {
         Active,      // Sotuvda
         Reserved,    // Buyurtma berilgan
-        Sold        // Sotilgan
+        Sold,        // Sotilgan
+        Deleted      // O'chirilgan (soft-delete)
     }
 }

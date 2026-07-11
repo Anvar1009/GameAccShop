@@ -23,6 +23,6 @@ namespace Application.Interfaces.Repositories_interface
 
         Task SaveChangesAsync();
 
-        void RemoveMedia(ProductMedia media);
+        Task RemoveMedia(ProductMedia media);
     }
 }

@@ -151,7 +151,11 @@ namespace Application.Services
             if (result == null)
                 throw new ProductNotFoundException();
 
-             await _repository.DeleteAsync(result);
+            // Soft-delete: productga bog'langan Order bo'lishi mumkin (Order.ProductId FK Restrict),
+            // shuning uchun jismonan o'chirmasdan statusni Deleted ga o'tkazamiz.
+            result.Status = ProductStatus.Deleted;
+
+            await _repository.SaveChangesAsync();
         }
 
         public async Task<List<GetProductDTO>> GetAllAsync()

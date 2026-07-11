@@ -1,13 +1,17 @@
 import { Outlet } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
+import { AnimatedBackground } from "@/components/AnimatedBackground";
+import { useAuth } from "@/features/auth/useAuth";
 import { useTranslation } from "@/i18n/useTranslation";
 
 export function AppLayout() {
   const { t } = useTranslation();
+  const { isAdmin } = useAuth();
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      <main className="flex-1">
+      <main className="relative isolate flex-1">
+        {!isAdmin && <AnimatedBackground />}
         <Outlet />
       </main>
       <footer className="border-t border-border/70 bg-card/40 backdrop-blur-sm">

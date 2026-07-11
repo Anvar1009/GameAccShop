@@ -30,6 +30,9 @@ const en = {
   "auth.signIn": "Sign in",
   "auth.getStarted": "Get started",
   "lang.label": "Language",
+  "theme.toggle": "Toggle theme",
+  "theme.light": "Light",
+  "theme.dark": "Dark",
   "footer.copyright": "© {year} GameAccShop. A secure game account marketplace.",
   "footer.tagline": "Payments are held until buyers confirm delivery.",
 
@@ -539,6 +542,9 @@ const uz: Record<TranslationKey, string> = {
   "auth.signIn": "Kirish",
   "auth.getStarted": "Boshlash",
   "lang.label": "Til",
+  "theme.toggle": "Mavzuni almashtirish",
+  "theme.light": "Yorug'",
+  "theme.dark": "Qorong'i",
   "footer.copyright": "© {year} GameAccShop. Xavfsiz o'yin akkauntlari bozori.",
   "footer.tagline": "To'lovlar xaridor yetkazishni tasdiqlaguncha ushlab turiladi.",
 
@@ -1016,6 +1022,9 @@ const ru: Record<TranslationKey, string> = {
   "auth.signIn": "Войти",
   "auth.getStarted": "Начать",
   "lang.label": "Язык",
+  "theme.toggle": "Переключить тему",
+  "theme.light": "Светлая",
+  "theme.dark": "Тёмная",
   "footer.copyright": "© {year} GameAccShop. Безопасный маркетплейс игровых аккаунтов.",
   "footer.tagline": "Платежи удерживаются до подтверждения доставки покупателем.",
 

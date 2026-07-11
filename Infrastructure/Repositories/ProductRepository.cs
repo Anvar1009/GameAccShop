@@ -87,10 +87,9 @@ namespace Infrastructure.Repositories
             return product;
         }
 
-        public async void RemoveMedia(ProductMedia media)
+        public async Task RemoveMedia(ProductMedia media)
         {
             _dbContext.ProductMedias.Remove(media);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<List<Product>> GetSellerProductsAsync(int sellerId)
@@ -98,7 +97,7 @@ namespace Infrastructure.Repositories
             var products = await _dbContext.products.AsNoTracking()
                 .Include(p => p.Tags)
                 .Include(p => p.Medias)
-                .Where(p => p.SellerId == sellerId)
+                .Where(p => p.SellerId == sellerId && p.Status != ProductStatus.Deleted)
                 .ToListAsync();
 
             return (products);

@@ -4,6 +4,45 @@
 
 @layer base {
   :root {
+    /* Light theme — bright surfaces keeping the violet/cyan brand accents */
+    --background: 240 40% 99%;
+    --foreground: 240 30% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 30% 12%;
+
+    --primary: 258 84% 60%; /* violet */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary brand accent used in gradients / glows */
+    --brand-2: 190 90% 42%; /* cyan */
+
+    --secondary: 240 24% 95%;
+    --secondary-foreground: 240 24% 22%;
+
+    --muted: 240 24% 95%;
+    --muted-foreground: 240 8% 46%;
+
+    --accent: 258 78% 95%; /* light violet tint surface */
+    --accent-foreground: 258 72% 42%;
+
+    --destructive: 0 74% 52%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 158 64% 38%; /* emerald */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 32 92% 44%; /* amber */
+    --warning-foreground: 0 0% 100%;
+
+    --border: 240 20% 89%;
+    --input: 240 20% 89%;
+    --ring: 258 84% 60%;
+
+    --radius: 0.85rem;
+  }
+
+  .dark {
     /* Dark neon "gamer" theme — deep midnight surfaces + violet/cyan neon */
     --background: 240 24% 6%;
     --foreground: 220 30% 96%;
@@ -38,8 +77,6 @@
     --border: 240 16% 20%;
     --input: 240 16% 20%;
     --ring: 258 90% 66%;
-
-    --radius: 0.85rem;
   }
 }
 
@@ -49,18 +86,23 @@
   }
   html {
     scroll-behavior: smooth;
-    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
       Roboto, "Helvetica Neue", Arial, sans-serif;
-    /* subtle ambient neon glow anchored top of the app */
+    /* subtle ambient brand glow anchored top of the app (light theme) */
+    background-image:
+      radial-gradient(60rem 40rem at 15% -10%, hsl(258 84% 60% / 0.06), transparent 60%),
+      radial-gradient(50rem 35rem at 100% 0%, hsl(190 90% 45% / 0.05), transparent 55%);
+    background-attachment: fixed;
+  }
+  .dark body {
+    /* stronger neon glow on the dark theme */
     background-image:
       radial-gradient(60rem 40rem at 15% -10%, hsl(258 90% 60% / 0.12), transparent 60%),
       radial-gradient(50rem 35rem at 100% 0%, hsl(190 95% 55% / 0.1), transparent 55%);
-    background-attachment: fixed;
   }
   h1,
   h2,
@@ -119,4 +161,19 @@
     -webkit-mask-image: radial-gradient(70% 60% at 50% 0%, #000 40%, transparent 100%);
     mask-image: radial-gradient(70% 60% at 50% 0%, #000 40%, transparent 100%);
   }
+}
+
+/* Animated decorative backdrop — floating particle "constellation" field.
+   Fixed to the viewport, sits behind page content, works in light & dark. */
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.animated-bg__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

@@ -4,6 +4,7 @@ import { Gamepad2, LogOut, Menu, ShieldCheck, User as UserIcon, X } from "lucide
 import { useAuth } from "@/features/auth/useAuth";
 import { useTranslation } from "@/i18n/useTranslation";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -141,6 +142,8 @@ export function Navbar() {
               </Button>
             </div>
           )}
+
+          <ThemeToggle />
 
           <LanguageSwitcher />
 
