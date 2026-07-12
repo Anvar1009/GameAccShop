@@ -38,5 +38,9 @@ namespace Domain.Models.UserModels
         // Seller sifatidagi buyurtmalar
         public ICollection<Order> SellOrders { get; set; }
             = new List<Order>();
+
+        // Sent Messages
+        public ICollection<Message> SentMessages { get; set; }
+        = new List<Message>();
     }
 }

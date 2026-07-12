@@ -1,4 +1,5 @@
-﻿using Domain.Models.OrdersModel;
+﻿using Domain.Models.ChatModels;
+using Domain.Models.OrdersModel;
 using Domain.Models.PaymentModel;
 using Domain.Models.ProductsModels;
 using Domain.Models.UserModels;
@@ -32,6 +33,7 @@ namespace Infrastructure.EntityModel
 
         public DbSet<ProductMedia> ProductMedias { get; set; }
 
+        public DbSet<Conversation> Conversations { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Dispute> Disputes { get; set; }

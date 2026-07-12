@@ -1,4 +1,5 @@
-﻿using Domain.Models.PaymentModel;
+﻿using Domain.Models.ChatModels;
+using Domain.Models.PaymentModel;
 using Domain.Models.ProductsModels;
 using Domain.Models.UserModels;
 using System;
@@ -37,8 +38,12 @@ namespace Domain.Models.OrdersModel
         public Payment Payment { get; set; }
 
         // Admin yakunlaganmi
-
         public bool IsCompletedByAdmin { get; set; }
+
+        // order chati
+        public Conversation? Conversation { get; set; }
+
+       
 
         public DateTime? CompletedAt { get; set; }
         public DateTime CreatedAt { get; set; }
