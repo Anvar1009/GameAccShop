@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces.ServiceInterface
+namespace Application.Interfaces.Repositories_interface
 {
     public interface IConversationRepository
     {
