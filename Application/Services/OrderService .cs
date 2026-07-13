@@ -21,6 +21,7 @@ namespace Application.Services
         private readonly IPaymentRepository _paymentRepository;
         private readonly IPaymentAccountRepository _paymentAccountRepository;
         private readonly IUserRepositories _currentUserService;
+        private readonly IChatService _chatService;
         private readonly IUnitOfWork _unitOfWork;
 
 
@@ -30,12 +31,15 @@ namespace Application.Services
             IProductRepository productRepository,
             IPaymentRepository paymentRepository,
             IPaymentAccountRepository paymentAccountRepository,
+            IConversationRepository conversationRepository,
+            IChatService chatService,
             IUnitOfWork unitOfWork)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _paymentRepository = paymentRepository;
             _paymentAccountRepository = paymentAccountRepository;
+            _chatService = chatService;
             _unitOfWork = unitOfWork;
         }
 
@@ -207,6 +211,7 @@ namespace Application.Services
             try
             {
                 await _orderRepository.CreateAsync(order);
+                await _chatService.CreateConversationAsync(order.Id);
                 await _paymentRepository.CreateAsync(payment);
                 product.Status = ProductStatus.Reserved;
                 await _productRepository.UpdateAsync(product);

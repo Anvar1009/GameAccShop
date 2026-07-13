@@ -3,6 +3,8 @@ using Application.Exceptions;
 using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.ServiceInterface;
 using Domain.Models.ChatModels;
+using Domain.Models.OrdersModel;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,14 +90,22 @@ namespace Application.Services
 
         public async Task<MessageResponse> SendMessageAsync(SendMessageRequest request, int senderId)
         {
-            Message message = new Message
+            var conv =  await _conversationRepository.GetByOrderIdAsync(request.OrderId);
+            var order = conv.Order;
+
+            if (senderId != order.BuyerId &&
+                senderId != order.SellerId)
             {
+                throw new UnauthorizedAccessException();
+            }
+            Message message = new Message
+            {   
                 ConversationId = request.OrderId,
                 SenderId = senderId,
                 Text = request.Text,
                 CreatedAt = DateTime.UtcNow
             };
-
+         
             var createdMessage = await _messageRepository.CreateAsync(message);
 
             return new MessageResponse

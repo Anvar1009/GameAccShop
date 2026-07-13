@@ -17,6 +17,8 @@ namespace Domain.Models.ChatModels
 
         public DateTime CreatedAt { get; set; }
 
+        public bool IsClosed { get; set; }= false;
+
         public ICollection<Message> Messages { get; set; }
     }
 }

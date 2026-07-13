@@ -21,7 +21,6 @@ namespace Infrastructure.Repositories
         public async Task<Conversation> CreateAsync(Conversation conversation)
         {
             await _dbContext.Conversations.AddAsync(conversation);
-            await _dbContext.SaveChangesAsync();
             return conversation!;
         }
 

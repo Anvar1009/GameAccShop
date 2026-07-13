@@ -21,13 +21,20 @@ namespace Application.Services
         private readonly IPaymentRepository _paymentRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IChatService _chatService;
         private readonly IUnitOfWork _unitOfWork;
-        public AdminPaymentService(IPaymentRepository paymentRepository, IOrderRepository orderRepository, IUnitOfWork unitOfWork, IProductRepository productRepository)
+        public AdminPaymentService(
+            IPaymentRepository paymentRepository, 
+            IOrderRepository orderRepository,
+            IUnitOfWork unitOfWork, 
+            IProductRepository productRepository,
+            IChatService chatService )
         {
             _paymentRepository = paymentRepository;
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
             _productRepository = productRepository;
+            _chatService = chatService;
         }
 
         public async Task<PaymentDetailsResponse> GetBuyerPaymentDetailsAsync(int buyerId, int orderId)
@@ -286,6 +293,7 @@ namespace Application.Services
             var order = payment.Order;
             var product = order.Product;
 
+
             if (payment.Status != PaymentStatus.Confirmed)
             {
                 throw new InvalidOperationException("Payment has already been confirmed.");
@@ -304,6 +312,7 @@ namespace Application.Services
                 payment.Status = PaymentStatus.Released;
                 payment.ReleasedAt = DateTime.UtcNow;
                 order.Status = OrderStatus.Completed;
+                order.Conversation.IsClosed =true;
                 order.CompletedAt = DateTime.UtcNow;
                 await _productRepository.UpdateAsync(product);
                 await _paymentRepository.UpdateAsync(payment);
