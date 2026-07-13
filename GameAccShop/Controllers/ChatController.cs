@@ -1,4 +1,6 @@
-﻿using Application.Interfaces.ServiceInterface;
+﻿using Application.DTOs.ChatDTOs;
+using Application.Interfaces.ServiceInterface;
+using Domain.Models.ChatModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +45,33 @@ namespace GameAccShop.Controllers
             var messages = await _chatService.GetMessagesAsync(conversationId, currentUserId);
 
             return Ok(messages);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SendMessage(SendMessageRequest message)
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null || !int.TryParse(claim.Value, out var currentUserId))
+                return Unauthorized();
+
+            var mes = await _chatService.SendMessageAsync(message, currentUserId);
+            return Ok(mes);
+        }
+
+        [HttpPut("{conversationId}/ReadMessage")]
+        [Authorize]
+        public async Task<IActionResult> Read( int conversationId)
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null || !int.TryParse(claim.Value, out var currentUserId))
+                return Unauthorized();
+
+            await _chatService.MarkAsReadAsync(conversationId, currentUserId);
+
+            return Ok();    
         }
 
 
