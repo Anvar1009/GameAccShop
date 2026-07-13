@@ -69,7 +69,7 @@ namespace GameAccShop.Controllers
             if (claim == null || !int.TryParse(claim.Value, out var currentUserId))
                 return Unauthorized();
 
-            await _chatService.MarkAsReadAsync(conversationId, currentUserId);
+            await _chatService.MarkAsReadAsync(conversationId, currentUserId);   
 
             return Ok();    
         }

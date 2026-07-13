@@ -45,6 +45,8 @@ namespace GameAccShop
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddScoped<IPaymentAccountRepository, PaymentAccountRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
@@ -52,6 +54,7 @@ namespace GameAccShop
             builder.Services.AddScoped<IPaymentService, AdminPaymentService>(); 
             builder.Services.AddScoped<IPaymentAccountService, PaymentAccountService>();
             builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
 
 
             builder.Services.AddAuthentication(options =>
