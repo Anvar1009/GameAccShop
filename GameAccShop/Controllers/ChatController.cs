@@ -74,6 +74,17 @@ namespace GameAccShop.Controllers
             return Ok();    
         }
 
+        [HttpGet("{conversationId}/UnReadMessageCount")]
+        [Authorize]
+        public async Task<IActionResult> UnReadCount(int conversationId)
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
 
+            if (claim == null || !int.TryParse(claim.Value, out var currentUserId))
+                return Unauthorized();
+
+            var count = await _chatService.GetUnreadCountAsync(conversationId, currentUserId);
+            return Ok(count);
+        }
     }
 }
