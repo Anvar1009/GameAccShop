@@ -31,5 +31,11 @@ namespace Infrastructure.Repositories
                        .Include(c => c.Order)
                        .FirstOrDefaultAsync(c => c.OrderId == orderId);
         }
+        public async Task<Conversation?> GetByIdAsync(int conversationId)
+        {
+            return await _dbContext.Conversations
+                .Include(c => c.Order)
+                .FirstOrDefaultAsync(c => c.Id == conversationId);
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Application.Interfaces.ServiceInterface
 
         Task<MessageResponse> SendMessageAsync(SendMessageRequest request, int senderId);
 
-        Task<List<MessageResponse>> GetMessagesAsync(int conversationId);
+        Task<List<MessageResponse>> GetMessagesAsync(int conversationId, int currentUserId);
 
         Task<int> GetUnreadCountAsync(int conversationId, int userId);
 

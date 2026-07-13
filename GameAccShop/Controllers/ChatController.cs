@@ -30,5 +30,21 @@ namespace GameAccShop.Controllers
 
             return Ok(conv);
         }
+
+        [Authorize]
+        [HttpGet("{conversationId}/messages")]
+        public async Task<IActionResult> GetMessages(int conversationId)
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null || !int.TryParse(claim.Value, out var currentUserId))
+                return Unauthorized();
+
+            var messages = await _chatService.GetMessagesAsync(conversationId, currentUserId);
+
+            return Ok(messages);
+        }
+
+
     }
 }

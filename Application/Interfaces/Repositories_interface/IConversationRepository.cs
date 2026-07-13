@@ -11,5 +11,6 @@ namespace Application.Interfaces.Repositories_interface
     {
         Task<Conversation?> GetByOrderIdAsync(int orderId);
         Task<Conversation> CreateAsync(Conversation conversation);
+        Task<Conversation?> GetByIdAsync(int conversationId);
     }
 }

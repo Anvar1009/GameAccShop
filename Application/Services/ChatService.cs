@@ -61,8 +61,19 @@ namespace Application.Services
             return conversationResponse;
         }
 
-        public async Task<List<MessageResponse>> GetMessagesAsync(int conversationId)
+        public async Task<List<MessageResponse>> GetMessagesAsync(int conversationId, int userId)
         {
+            var conversation = await _conversationRepository.GetByIdAsync(conversationId);
+
+            if (conversation == null)
+                throw new ConversationNotFoundException();
+
+            if (conversation.Order.BuyerId != userId &&
+                conversation.Order.SellerId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not a participant of this conversation.");
+            }
+
             var messages = await _messageRepository.GetMessagesAsync(conversationId);
 
             return messages.Select(message => new MessageResponse
@@ -71,12 +82,23 @@ namespace Application.Services
                 SenderId = message.SenderId,
                 SenderName = $"{message.Sender.FirstName} {message.Sender.LastName}",
                 Text = message.Text,
-                CreatedAt = message.CreatedAt
+                CreatedAt = message.CreatedAt,
+                IsMine = message.SenderId == userId
             }).ToList();
         }
 
         public async Task<int> GetUnreadCountAsync(int conversationId, int userId)
         {
+            var conversation = await _conversationRepository.GetByIdAsync(conversationId);
+
+            if (conversation == null)
+                throw new ConversationNotFoundException();
+
+            if (conversation.Order.BuyerId != userId &&
+                conversation.Order.SellerId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not a participant of this conversation.");
+            }
             var unreadCount = await _messageRepository.GetUnreadCountAsync(conversationId, userId);
 
             return unreadCount;
@@ -84,6 +106,16 @@ namespace Application.Services
 
         public async Task MarkAsReadAsync(int conversationId, int userId)
         {
+            var conversation = await _conversationRepository.GetByIdAsync(conversationId);
+
+            if (conversation == null)
+                throw new ConversationNotFoundException();
+
+            if (conversation.Order.BuyerId != userId &&
+                conversation.Order.SellerId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not a participant of this conversation.");
+            }
             await _messageRepository.MarkAsReadAsync(conversationId, userId);
 
         }
