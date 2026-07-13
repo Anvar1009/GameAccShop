@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces.Repositories_interface;
-using Domain.Models.OrdersModel;
+using Domain.Models.ChatModels;
 using Infrastructure.EntityModel;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,8 +27,9 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Message>> GetMessagesAsync(int conversationId)
         {
-            return await _dbContext.Messages
+            return await _dbContext.Messages.AsNoTracking()
                 .Where(m => m.ConversationId == conversationId)
+                .Include(o=> o.Sender)
                 .OrderBy(m => m.CreatedAt)
                 .ToListAsync();
         }

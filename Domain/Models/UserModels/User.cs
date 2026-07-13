@@ -1,4 +1,5 @@
 ﻿using Domain.Models.Abstracts;
+using Domain.Models.ChatModels;
 using Domain.Models.OrdersModel;
 using Domain.Models.ProductsModels;
 using System;

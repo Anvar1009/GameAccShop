@@ -1,12 +1,11 @@
-﻿using Domain.Models.ChatModels;
-using Domain.Models.UserModels;
+﻿using Domain.Models.UserModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Models.OrdersModel
+namespace Domain.Models.ChatModels
 {
     public class Message
     {

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Domain.Models.OrdersModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Models.OrdersModel
+namespace Domain.Models.ChatModels
 {
     public class ChatRoom
     {

@@ -27,9 +27,10 @@ namespace Infrastructure.Repositories
 
         public async Task<Conversation?> GetByOrderIdAsync(int orderId)
         {
-            return await _dbContext.Conversations
-                       .Include(c => c.Messages)
-                        .FirstOrDefaultAsync(c => c.OrderId == orderId);
+            return await _dbContext.Conversations.AsNoTracking()
+                       .Include(c => c.Messages).ThenInclude(o => o.Sender)
+                       .Include(c => c.Order)
+                       .FirstOrDefaultAsync(c => c.OrderId == orderId);
         }
     }
 }
