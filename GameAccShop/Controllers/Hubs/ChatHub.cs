@@ -55,6 +55,7 @@ namespace GameAccShop.Controllers.Hubs
 
         public async Task LeaveConversation(int conversationId)
         {
+
             await Groups.RemoveFromGroupAsync(
                 Context.ConnectionId,
                 $"conversation-{conversationId}");
@@ -83,5 +84,8 @@ namespace GameAccShop.Controllers.Hubs
             .Group($"conversation-{response.ConversationId}")
                 .SendAsync("ReceiveMessage", response);
         }
+
+
+     
     }
 }
