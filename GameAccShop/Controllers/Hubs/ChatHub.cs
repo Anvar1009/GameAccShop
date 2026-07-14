@@ -1,4 +1,6 @@
-﻿using Application.Interfaces.ServiceInterface;
+﻿using Application.DTOs.ChatDTOs;
+using Application.Interfaces.ServiceInterface;
+using Domain.Models.ChatModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +58,30 @@ namespace GameAccShop.Controllers.Hubs
             await Groups.RemoveFromGroupAsync(
                 Context.ConnectionId,
                 $"conversation-{conversationId}");
+        }
+
+
+
+        public async Task SendMessage(SendMessageRequest request)
+        {
+            // 1. UserId olish
+            var claim = Context.User?.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null)
+                throw new HubException("Unauthorized");
+
+            int userId = int.Parse(claim.Value);
+
+          
+            // 2. ChatService.SendMessageAsync()
+
+            var response = await _chatService.SendMessageAsync(request, userId);
+
+            // 3. Clients.Group(...).SendAsync(...)
+
+            await Clients
+            .Group($"conversation-{response.ConversationId}")
+                .SendAsync("ReceiveMessage", response);
         }
     }
 }

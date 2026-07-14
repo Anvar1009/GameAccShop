@@ -12,6 +12,8 @@ namespace Application.DTOs.ChatDTOs
 
         public int SenderId { get; set; }
 
+        public int ConversationId { get; set; }
+
         public string SenderName { get; set; } = string.Empty;
 
         public string Text { get; set; } = string.Empty;
