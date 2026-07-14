@@ -86,6 +86,12 @@ namespace GameAccShop.Controllers.Hubs
         }
 
 
-     
+        public async Task Typing(int conversationId)
+        {
+            await Clients
+                .OthersInGroup($"conversation-{conversationId}")
+                .SendAsync("Typing");
+        }
+
     }
 }
