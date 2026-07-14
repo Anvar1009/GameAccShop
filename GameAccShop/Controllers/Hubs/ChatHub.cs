@@ -1,13 +1,51 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Application.Interfaces.ServiceInterface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace GameAccShop.Controllers.Hubs
 {
+    [Authorize]
     public class ChatHub : Hub
     {
+        private readonly IChatService _chatService;
+
+        public ChatHub(IChatService chatService)
+        {
+            _chatService = chatService;
+        }
+
+
+        public override async Task OnConnectedAsync()
+        {
+            Console.WriteLine($"Connected: {Context.ConnectionId}");
+
+            await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            Console.WriteLine($"Disconnected: {Context.ConnectionId}");
+
+            await base.OnDisconnectedAsync(exception);
+        }
+
+
+
+
         public async Task JoinConversation(int conversationId)
         {
+            var claim = Context.User?.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null)
+                throw new HubException("Unauthorized");
+
+            int userId = int.Parse(claim.Value);
+
+            await _chatService.ValidateConversationAccessAsync(conversationId, userId);
+
             await Groups.AddToGroupAsync(
                 Context.ConnectionId,
                 $"conversation-{conversationId}");

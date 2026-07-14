@@ -5,6 +5,7 @@ using Application.Interfaces.Security;
 using Application.Interfaces.ServiceInterface;
 using Application.Interfaces.UnitOfWorkFolder;
 using Application.Services;
+using GameAccShop.Controllers.Hubs;
 using GameAccShop.Middleware.GlobalExceptionMiddleware;
 using Infrastructure.EntityModel;
 using Infrastructure.Repositories;
@@ -28,6 +29,8 @@ namespace GameAccShop
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddSignalR();
 
             builder.Services.AddEndpointsApiExplorer();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -140,6 +143,7 @@ namespace GameAccShop
 
 
             app.MapControllers();
+            app.MapHub<ChatHub>("/chatHub");
 
             app.Run();
         }

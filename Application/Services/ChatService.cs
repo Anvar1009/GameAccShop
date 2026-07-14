@@ -149,5 +149,20 @@ namespace Application.Services
                 CreatedAt = createdMessage.CreatedAt
             };
         }
+
+
+        public async Task ValidateConversationAccessAsync(int conversationId, int userId)
+        {
+            var conversation = await _conversationRepository.GetByIdAsync(conversationId);
+
+            if (conversation == null)
+                throw new ConversationNotFoundException();
+
+            if (conversation.Order.BuyerId != userId &&
+                conversation.Order.SellerId != userId)
+            {
+                throw new UnauthorizedAccessException();
+            }
+        }
     }
 }

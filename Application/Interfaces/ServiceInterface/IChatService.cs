@@ -21,5 +21,7 @@ namespace Application.Interfaces.ServiceInterface
         Task<int> GetUnreadCountAsync(int conversationId, int userId);
 
         Task MarkAsReadAsync(int conversationId, int userId);
+
+        Task ValidateConversationAccessAsync(int conversationId, int userId);   
     }
 }
