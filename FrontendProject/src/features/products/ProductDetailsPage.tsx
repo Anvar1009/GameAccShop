@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Coins, Expand, Lock, ShieldCheck, ShoppingCart, Users, Zap } from "lucide-react";
+import { ArrowLeft, Coins, Expand, Lock, MessageCircle, ShieldCheck, ShoppingCart, Users, Zap } from "lucide-react";
 import { useProduct } from "./products-hooks";
 import { useAuth } from "@/features/auth/useAuth";
-import { useCreateOrder } from "@/features/buyer/buyer-hooks";
+import { useBuyerOrders, useCreateOrder } from "@/features/buyer/buyer-hooks";
+import { ChatPanel } from "@/features/chat/ChatPanel";
 import { useTranslation } from "@/i18n/useTranslation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -191,7 +192,44 @@ export function ProductDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Chat with the seller (order-scoped). */}
+      {!isAdmin && <ProductChatSection productId={productId} />}
     </div>
+  );
+}
+
+function ProductChatSection({ productId }: { productId: number }) {
+  const { t } = useTranslation();
+  const { data: orders } = useBuyerOrders();
+
+  // Chat is tied to an order between this buyer and the seller. Surface the
+  // most recent order the current user has for this product, if any.
+  const related = (orders ?? []).filter((o) => o.productId === productId);
+  const order = related.length ? related[related.length - 1] : null;
+
+  return (
+    <section className="mx-auto mt-10 max-w-2xl">
+      <div className="mb-3 flex items-center gap-2">
+        <MessageCircle className="h-5 w-5 text-primary" />
+        <h2 className="text-lg font-semibold">{t("chat.sellerHeading")}</h2>
+      </div>
+
+      {order ? (
+        <ChatPanel orderId={order.orderId} peerName={order.sellerName} />
+      ) : (
+        <Card>
+          <CardContent className="flex flex-col items-center gap-3 py-10 text-center">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-primary">
+              <MessageCircle className="h-5 w-5" />
+            </div>
+            <p className="max-w-sm text-sm text-muted-foreground">
+              {t("chat.availableAfterOrder")}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+    </section>
   );
 }
 

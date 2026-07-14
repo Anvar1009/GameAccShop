@@ -519,6 +519,28 @@ const en = {
   "toast.accountUpdateError": "Could not update the payment account",
   "toast.accountDeleted": "Payment account deleted",
   "toast.accountDeleteError": "Could not delete the payment account",
+
+  // ── Chat ───────────────────────────────────────────────────────────
+  "chat.title": "Chat",
+  "chat.sellerHeading": "Chat with the seller",
+  "chat.orderRef": "Order #{id}",
+  "chat.live": "Live",
+  "chat.connecting": "Connecting…",
+  "chat.offline": "Offline",
+  "chat.liveConnected": "Real-time messaging is active",
+  "chat.liveDisconnected": "Offline — messages are sent over the network and refresh periodically",
+  "chat.loadError": "Could not load the conversation",
+  "chat.empty": "No messages yet. Say hello!",
+  "chat.typing": "Typing…",
+  "chat.placeholder": "Write a message…",
+  "chat.send": "Send",
+  "chat.hint": "Enter to send · Shift+Enter for a new line",
+  "chat.back": "Back",
+  "chat.pageTitle": "Conversation",
+  "chat.pageDesc": "Messages between the buyer and the seller for this order.",
+  "chat.invalidOrder": "Invalid order.",
+  "chat.availableAfterOrder":
+    "Chat with the seller becomes available once you place an order for this account.",
 } as const;
 
 export type TranslationKey = keyof typeof en;
@@ -1001,6 +1023,28 @@ const uz: Record<TranslationKey, string> = {
   "toast.accountUpdateError": "To'lov hisobini yangilab bo'lmadi",
   "toast.accountDeleted": "To'lov hisobi o'chirildi",
   "toast.accountDeleteError": "To'lov hisobini o'chirib bo'lmadi",
+
+  // ── Chat ───────────────────────────────────────────────────────────
+  "chat.title": "Chat",
+  "chat.sellerHeading": "Sotuvchi bilan suhbat",
+  "chat.orderRef": "Buyurtma #{id}",
+  "chat.live": "Onlayn",
+  "chat.connecting": "Ulanmoqda…",
+  "chat.offline": "Oflayn",
+  "chat.liveConnected": "Real vaqtli xabar almashinuvi faol",
+  "chat.liveDisconnected": "Oflayn — xabarlar tarmoq orqali yuboriladi va vaqti-vaqti bilan yangilanadi",
+  "chat.loadError": "Suhbatni yuklab bo'lmadi",
+  "chat.empty": "Hali xabarlar yo'q. Salom yozing!",
+  "chat.typing": "Yozmoqda…",
+  "chat.placeholder": "Xabar yozing…",
+  "chat.send": "Yuborish",
+  "chat.hint": "Yuborish uchun Enter · yangi qator uchun Shift+Enter",
+  "chat.back": "Orqaga",
+  "chat.pageTitle": "Suhbat",
+  "chat.pageDesc": "Ushbu buyurtma bo'yicha xaridor va sotuvchi o'rtasidagi xabarlar.",
+  "chat.invalidOrder": "Buyurtma noto'g'ri.",
+  "chat.availableAfterOrder":
+    "Sotuvchi bilan suhbat ushbu akkaunt uchun buyurtma bergandan so'ng ochiladi.",
 };
 
 const ru: Record<TranslationKey, string> = {
@@ -1480,6 +1524,28 @@ const ru: Record<TranslationKey, string> = {
   "toast.accountUpdateError": "Не удалось обновить платёжный счёт",
   "toast.accountDeleted": "Платёжный счёт удалён",
   "toast.accountDeleteError": "Не удалось удалить платёжный счёт",
+
+  // ── Chat ───────────────────────────────────────────────────────────
+  "chat.title": "Чат",
+  "chat.sellerHeading": "Чат с продавцом",
+  "chat.orderRef": "Заказ #{id}",
+  "chat.live": "В сети",
+  "chat.connecting": "Подключение…",
+  "chat.offline": "Не в сети",
+  "chat.liveConnected": "Обмен сообщениями в реальном времени активен",
+  "chat.liveDisconnected": "Не в сети — сообщения отправляются по сети и обновляются периодически",
+  "chat.loadError": "Не удалось загрузить переписку",
+  "chat.empty": "Сообщений пока нет. Поздоровайтесь!",
+  "chat.typing": "Печатает…",
+  "chat.placeholder": "Напишите сообщение…",
+  "chat.send": "Отправить",
+  "chat.hint": "Enter — отправить · Shift+Enter — новая строка",
+  "chat.back": "Назад",
+  "chat.pageTitle": "Переписка",
+  "chat.pageDesc": "Сообщения между покупателем и продавцом по этому заказу.",
+  "chat.invalidOrder": "Неверный заказ.",
+  "chat.availableAfterOrder":
+    "Чат с продавцом станет доступен после оформления заказа на этот аккаунт.",
 };
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {

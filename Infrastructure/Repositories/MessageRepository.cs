@@ -22,6 +22,8 @@ namespace Infrastructure.Repositories
         {
             await _dbContext.Messages.AddAsync(message);
             await _dbContext.SaveChangesAsync();
+            // Load the Sender so callers can build SenderName without a NRE.
+            await _dbContext.Entry(message).Reference(m => m.Sender).LoadAsync();
             return message;
         }
 

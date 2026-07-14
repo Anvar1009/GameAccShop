@@ -9,6 +9,7 @@ import { ProductMedia } from "@/components/ProductMedia";
 import { OrderStatusBadge, PaymentStatusBadge } from "@/components/StatusBadge";
 import { OrderTimeline } from "@/components/OrderTimeline";
 import { ErrorState, PageLoader } from "@/components/states";
+import { ChatPanel } from "@/features/chat/ChatPanel";
 import { formatDateTime, formatPrice } from "@/lib/format";
 import { OrderStatus, PaymentStatus, isOrderStatus, isPaymentStatus, paymentMethodKey } from "@/lib/enums";
 
@@ -80,6 +81,9 @@ export function SellerOrderDetailsPage() {
               <OrderTimeline status={order.status} />
             </CardContent>
           </Card>
+
+          {/* Chat with the buyer */}
+          <ChatPanel orderId={order.orderId} peerName={order.buyerName} />
         </div>
 
         <div className="space-y-6">

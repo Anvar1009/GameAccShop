@@ -49,6 +49,33 @@ export interface OrderResponse {
   createdAt: string;
 }
 
+// ── Chat (SignalR + REST) ────────────────────────────────────────────
+// MessageResponse. Note: the SignalR "ReceiveMessage" broadcast does not set
+// `isMine` reliably (it is false for every recipient), so the client recomputes
+// it from the current user id — see chat-hooks. Treat `isMine` here as a hint.
+export interface ChatMessage {
+  id: number;
+  senderId: number;
+  conversationId: number;
+  senderName: string;
+  text: string;
+  isMine: boolean;
+  createdAt: string;
+}
+
+// ConversationResponse
+export interface ChatConversation {
+  conversationId: number;
+  orderId: number;
+  messages: ChatMessage[];
+}
+
+// SendMessageRequest (Hub + POST /api/Chat)
+export interface SendChatMessage {
+  orderId: number;
+  text: string;
+}
+
 // BuyerOrderResponse
 export interface BuyerOrder {
   orderId: number;

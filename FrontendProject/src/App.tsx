@@ -11,6 +11,8 @@ import { RegisterPage } from "@/features/auth/RegisterPage";
 import { ProductCatalogPage } from "@/features/products/ProductCatalogPage";
 import { ProductDetailsPage } from "@/features/products/ProductDetailsPage";
 
+import { ChatPage } from "@/features/chat/ChatPage";
+
 import { BuyerDashboardPage } from "@/features/buyer/BuyerDashboardPage";
 import { BuyerOrdersPage } from "@/features/buyer/BuyerOrdersPage";
 import { BuyerOrderDetailsPage } from "@/features/buyer/BuyerOrderDetailsPage";
@@ -50,6 +52,7 @@ export default function App() {
           <Route path="/orders" element={<BuyerOrdersPage />} />
           <Route path="/orders/:orderId" element={<BuyerOrderDetailsPage />} />
           <Route path="/payment/:orderId" element={<PaymentPage />} />
+          <Route path="/chat/:orderId" element={<ChatPage />} />
 
           <Route path="/seller" element={<SellerDashboardPage />} />
           <Route path="/seller/products" element={<SellerProductsPage />} />

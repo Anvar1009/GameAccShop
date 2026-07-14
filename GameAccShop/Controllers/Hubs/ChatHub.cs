@@ -81,7 +81,7 @@ namespace GameAccShop.Controllers.Hubs
             // 3. Clients.Group(...).SendAsync(...)
 
             await Clients
-            .Group($"conversation-{response.ConversationId}")
+            .Group($"conversation   -{response.ConversationId}")
                 .SendAsync("ReceiveMessage", response);
         }
 

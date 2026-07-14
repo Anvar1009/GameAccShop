@@ -123,6 +123,10 @@ namespace Application.Services
         public async Task<MessageResponse> SendMessageAsync(SendMessageRequest request, int senderId)
         {
             var conv =  await _conversationRepository.GetByOrderIdAsync(request.OrderId);
+
+            if (conv == null)
+                throw new ConversationNotFoundException();
+
             var order = conv.Order;
 
             if (senderId != order.BuyerId &&
@@ -131,21 +135,28 @@ namespace Application.Services
                 throw new UnauthorizedAccessException();
             }
             Message message = new Message
-            {   
-                ConversationId = request.OrderId,
+            {
+                // Bind to the conversation's real Id, not the orderId — otherwise
+                // messages are stored under a ConversationId that never matches
+                // and the chat appears empty.
+                ConversationId = conv.Id,
                 SenderId = senderId,
                 Text = request.Text,
                 CreatedAt = DateTime.UtcNow
             };
-         
+
             var createdMessage = await _messageRepository.CreateAsync(message);
 
             return new MessageResponse
             {
                 Id = createdMessage.Id,
                 SenderId = createdMessage.SenderId,
-                SenderName = $"{createdMessage.Sender.FirstName} {createdMessage.Sender.LastName}",
+                ConversationId = createdMessage.ConversationId,
+                SenderName = createdMessage.Sender != null
+                    ? $"{createdMessage.Sender.FirstName} {createdMessage.Sender.LastName}"
+                    : string.Empty,
                 Text = createdMessage.Text,
+                IsMine = true,
                 CreatedAt = createdMessage.CreatedAt
             };
         }
