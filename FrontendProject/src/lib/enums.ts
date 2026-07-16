@@ -27,6 +27,24 @@ export enum PaymentStatus {
   Cancelled = 3,
 }
 
+// Domain.Models.ChatModels.NotificationType
+export enum NotificationType {
+  NewOrder = 0,
+  PaymentUploaded = 1,
+  PaymentConfirmed = 2,
+  BuyerConfirmed = 3,
+  PaymentReleased = 4,
+}
+
+// Domain.Models.ChatModels.NotificationAudience — which side of the order the
+// recipient is on. The type alone is ambiguous (PaymentConfirmed goes to both
+// buyer and seller), so this is what decides where a notification links to.
+export enum NotificationAudience {
+  Buyer = 0,
+  Seller = 1,
+  Admin = 2,
+}
+
 // Domain.Models.PaymentModel.PaymentMethod (explicit values start at 1)
 export enum PaymentMethod {
   CardTransfer = 1,
@@ -59,6 +77,56 @@ const PAYMENT_STATUS_META: Record<PaymentStatus, Meta> = {
   [PaymentStatus.Released]: { labelKey: "status.payment.released", tone: "success" },
   [PaymentStatus.Cancelled]: { labelKey: "status.payment.cancelled", tone: "danger" },
 };
+
+/**
+ * Notification copy is localized on the client: the backend stores one Uzbek
+ * string per notification, but the reader may be on ru/en. Body keys take an
+ * `{id}` param (the order number).
+ */
+type NotificationMeta = {
+  titleKey: TranslationKey;
+  bodyKey: TranslationKey;
+  tone: BadgeTone;
+};
+
+const NOTIFICATION_META: Record<NotificationType, NotificationMeta> = {
+  [NotificationType.NewOrder]: {
+    titleKey: "notif.newOrder.title",
+    bodyKey: "notif.newOrder.body",
+    tone: "info",
+  },
+  [NotificationType.PaymentUploaded]: {
+    titleKey: "notif.paymentUploaded.title",
+    bodyKey: "notif.paymentUploaded.body",
+    tone: "warning",
+  },
+  [NotificationType.PaymentConfirmed]: {
+    titleKey: "notif.paymentConfirmed.title",
+    bodyKey: "notif.paymentConfirmed.body",
+    tone: "success",
+  },
+  [NotificationType.BuyerConfirmed]: {
+    titleKey: "notif.buyerConfirmed.title",
+    bodyKey: "notif.buyerConfirmed.body",
+    tone: "success",
+  },
+  [NotificationType.PaymentReleased]: {
+    titleKey: "notif.paymentReleased.title",
+    bodyKey: "notif.paymentReleased.body",
+    tone: "success",
+  },
+};
+
+/**
+ * Returns localizable meta for a notification type, or undefined for a type the
+ * client does not know — callers then fall back to the server's own text.
+ */
+export function notificationMeta(
+  value: number | string | null | undefined
+): NotificationMeta | undefined {
+  const key = normalize<NotificationType>(value, NotificationType as never);
+  return key != null ? NOTIFICATION_META[key] : undefined;
+}
 
 const PAYMENT_METHOD_KEY: Record<PaymentMethod, TranslationKey> = {
   [PaymentMethod.CardTransfer]: "method.card",

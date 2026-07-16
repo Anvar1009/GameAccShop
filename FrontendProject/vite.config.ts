@@ -29,8 +29,14 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           secure: false,
         },
-        // SignalR chat hub. ws:true upgrades the WebSocket transport.
+        // SignalR hubs. ws:true upgrades the WebSocket transport.
         "/chatHub": {
+          target,
+          changeOrigin: true,
+          secure: false,
+          ws: true,
+        },
+        "/notificationHub": {
           target,
           changeOrigin: true,
           secure: false,

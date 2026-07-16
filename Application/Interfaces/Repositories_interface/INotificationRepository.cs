@@ -1,4 +1,4 @@
-﻿using Domain.Models.ChatModels;
+using Domain.Models.ChatModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace Application.Interfaces.Repositories_interface
         Task CreateAsync(Notification notification);
 
         Task<List<Notification>> GetByUseridAsync(int userId);
-        Task<int> GetUnreadCountAsync();
+        Task<int> GetUnreadCountAsync(int userId);
         Task MarkAsReadAsync(int userId);
     }
 }

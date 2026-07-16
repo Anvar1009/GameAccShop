@@ -43,6 +43,9 @@ namespace Infrastructure.Repositories
                 .Include(o=>o.Order).ThenInclude(o => o.Product)
                 .Include(o=>o.Order).ThenInclude(o => o.Product).ThenInclude(p => p.Medias)
                 .Include(o=>o.Order).ThenInclude(o => o.Product).ThenInclude(p => p.Tags)
+                // ReleasePaymentAsync closes the order's conversation, so the
+                // conversation has to come along or it dereferences null.
+                .Include(o=>o.Order).ThenInclude(o => o.Conversation)
                 .Include(o=>o.PaymentAccount)
                 .FirstOrDefaultAsync(p => p.Id == id);
 

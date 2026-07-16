@@ -22,6 +22,7 @@ namespace Application.Services
         private readonly IPaymentAccountRepository _paymentAccountRepository;
         private readonly IUserRepositories _currentUserService;
         private readonly IChatService _chatService;
+        private readonly INotificationService _notificationService;
         private readonly IUnitOfWork _unitOfWork;
 
 
@@ -33,6 +34,7 @@ namespace Application.Services
             IPaymentAccountRepository paymentAccountRepository,
             IConversationRepository conversationRepository,
             IChatService chatService,
+            INotificationService notificationService,
             IUnitOfWork unitOfWork)
         {
             _orderRepository = orderRepository;
@@ -40,6 +42,7 @@ namespace Application.Services
             _paymentRepository = paymentRepository;
             _paymentAccountRepository = paymentAccountRepository;
             _chatService = chatService;
+            _notificationService = notificationService;
             _unitOfWork = unitOfWork;
         }
 
@@ -167,6 +170,10 @@ namespace Application.Services
                 await transaction.RollbackAsync();
                 throw;
             }
+
+            // Commit'dan keyin: rollback bo'lgan holat uchun bildirishnoma
+            // yuborilib qolmasin.
+            await _notificationService.NotifyBuyerConfirmedAsync(result);
         }
 
 
@@ -223,6 +230,9 @@ namespace Application.Services
                 await transaction.RollbackAsync();
                 throw;
             }
+
+            // order.Id faqat commit'dan keyin mavjud.
+            await _notificationService.NotifyNewOrderAsync(order);
 
             OrderResponse orderResponse = new OrderResponse()
             {

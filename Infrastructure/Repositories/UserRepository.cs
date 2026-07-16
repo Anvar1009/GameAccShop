@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.RegisterDTO;
 using Application.Interfaces.Repositories_interface;
+using Domain.Models.Abstracts;
 using Domain.Models.UserModels;
 using Infrastructure.EntityModel;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,13 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Id == userId);
             
             return result;  
+        }
+
+        public async Task<List<User>> GetAdminsAsync()
+        {
+            return await _dbContextModel.Users.AsNoTracking()
+                .Where(u => u.Role == Role.Admin || u.Role == Role.Super_Aamin)
+                .ToListAsync();
         }
 
         public async Task<User> Register(User user)

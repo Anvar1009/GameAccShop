@@ -544,6 +544,25 @@ const en = {
   "chat.invalidOrder": "Invalid order.",
   "chat.availableAfterOrder":
     "Chat with the seller becomes available once you place an order for this account.",
+
+  // ── Notifications ──────────────────────────────────────────────────
+  // Bodies take {id}, the order number. The backend stores its own Uzbek copy
+  // as a fallback; these are what the bell actually renders.
+  "notif.title": "Notifications",
+  "notif.open": "Open notifications",
+  "notif.empty": "No notifications yet.",
+  "notif.loadError": "Could not load notifications",
+  "notif.readError": "Could not mark notifications as read",
+  "notif.newOrder.title": "New order",
+  "notif.newOrder.body": "Order #{id} was placed for your account. Waiting for the buyer's payment.",
+  "notif.paymentUploaded.title": "Receipt uploaded",
+  "notif.paymentUploaded.body": "The buyer uploaded a payment receipt for order #{id}. It needs review.",
+  "notif.paymentConfirmed.title": "Payment confirmed",
+  "notif.paymentConfirmed.body": "The payment for order #{id} is confirmed.",
+  "notif.buyerConfirmed.title": "Buyer confirmed",
+  "notif.buyerConfirmed.body": "The buyer confirmed order #{id}.",
+  "notif.paymentReleased.title": "Payment released",
+  "notif.paymentReleased.body": "Order #{id} is complete and the payment has been released.",
 } as const;
 
 export type TranslationKey = keyof typeof en;
@@ -1051,6 +1070,22 @@ const uz: Record<TranslationKey, string> = {
   "chat.invalidOrder": "Buyurtma noto'g'ri.",
   "chat.availableAfterOrder":
     "Sotuvchi bilan suhbat ushbu akkaunt uchun buyurtma bergandan so'ng ochiladi.",
+
+  "notif.title": "Bildirishnomalar",
+  "notif.open": "Bildirishnomalarni ochish",
+  "notif.empty": "Hozircha bildirishnoma yo'q.",
+  "notif.loadError": "Bildirishnomalarni yuklab bo'lmadi",
+  "notif.readError": "Bildirishnomalarni o'qilgan deb belgilab bo'lmadi",
+  "notif.newOrder.title": "Yangi buyurtma",
+  "notif.newOrder.body": "Akkauntingizga #{id} raqamli buyurtma tushdi. Xaridor to'lovi kutilmoqda.",
+  "notif.paymentUploaded.title": "To'lov cheki yuklandi",
+  "notif.paymentUploaded.body": "#{id} raqamli buyurtma uchun xaridor to'lov chekini yukladi. Tekshirish kerak.",
+  "notif.paymentConfirmed.title": "To'lov tasdiqlandi",
+  "notif.paymentConfirmed.body": "#{id} raqamli buyurtma to'lovi tasdiqlandi.",
+  "notif.buyerConfirmed.title": "Xaridor tasdiqladi",
+  "notif.buyerConfirmed.body": "#{id} raqamli buyurtmani xaridor tasdiqladi.",
+  "notif.paymentReleased.title": "To'lov chiqarildi",
+  "notif.paymentReleased.body": "#{id} raqamli buyurtma yakunlandi va to'lov chiqarildi.",
 };
 
 const ru: Record<TranslationKey, string> = {
@@ -1555,6 +1590,22 @@ const ru: Record<TranslationKey, string> = {
   "chat.invalidOrder": "Неверный заказ.",
   "chat.availableAfterOrder":
     "Чат с продавцом станет доступен после оформления заказа на этот аккаунт.",
+
+  "notif.title": "Уведомления",
+  "notif.open": "Открыть уведомления",
+  "notif.empty": "Уведомлений пока нет.",
+  "notif.loadError": "Не удалось загрузить уведомления",
+  "notif.readError": "Не удалось отметить уведомления прочитанными",
+  "notif.newOrder.title": "Новый заказ",
+  "notif.newOrder.body": "На ваш аккаунт оформлен заказ №{id}. Ожидается оплата покупателя.",
+  "notif.paymentUploaded.title": "Загружен чек",
+  "notif.paymentUploaded.body": "Покупатель загрузил чек об оплате по заказу №{id}. Требуется проверка.",
+  "notif.paymentConfirmed.title": "Оплата подтверждена",
+  "notif.paymentConfirmed.body": "Оплата по заказу №{id} подтверждена.",
+  "notif.buyerConfirmed.title": "Покупатель подтвердил",
+  "notif.buyerConfirmed.body": "Покупатель подтвердил заказ №{id}.",
+  "notif.paymentReleased.title": "Выплата произведена",
+  "notif.paymentReleased.body": "Заказ №{id} завершён, выплата произведена.",
 };
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {

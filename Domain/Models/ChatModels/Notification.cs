@@ -17,5 +17,12 @@ namespace Domain.Models.ChatModels
         public NotificationType notificationType { get; set; }
         public bool IsRead { get; set; }
 
+        // Har bir bildirishnoma bitta buyurtmaga tegishli — front bosilganda
+        // shu buyurtma sahifasiga o'tadi.
+        public int? OrderId { get; set; }
+
+        // Oluvchi shu buyurtmada kim: xaridor, sotuvchi yoki admin.
+        public NotificationAudience Audience { get; set; }
+
     }
 }

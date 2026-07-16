@@ -78,6 +78,24 @@ export interface SendChatMessage {
   text: string;
 }
 
+// ── Notifications (SignalR + REST) ───────────────────────────────────
+// NotificationResponse. `title`/`message` are the server's Uzbek fallback text;
+// the UI renders localized copy keyed off `notificationType` instead (see
+// notificationMeta in src/lib/enums.ts) and falls back to these for a type it
+// does not know.
+export interface AppNotification {
+  id: number;
+  title: string;
+  message: string;
+  notificationType: number;
+  /** NotificationAudience — whether I am the buyer, seller or admin here. */
+  audience: number;
+  isRead: boolean;
+  createdAt: string;
+  /** The order this notification is about — drives the click-through link. */
+  orderId: number | null;
+}
+
 // BuyerOrderResponse
 export interface BuyerOrder {
   orderId: number;

@@ -22,19 +22,22 @@ namespace Application.Services
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IChatService _chatService;
+        private readonly INotificationService _notificationService;
         private readonly IUnitOfWork _unitOfWork;
         public AdminPaymentService(
-            IPaymentRepository paymentRepository, 
+            IPaymentRepository paymentRepository,
             IOrderRepository orderRepository,
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
             IProductRepository productRepository,
-            IChatService chatService )
+            IChatService chatService,
+            INotificationService notificationService )
         {
             _paymentRepository = paymentRepository;
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
             _productRepository = productRepository;
             _chatService = chatService;
+            _notificationService = notificationService;
         }
 
         public async Task<PaymentDetailsResponse> GetBuyerPaymentDetailsAsync(int buyerId, int orderId)
@@ -186,6 +189,8 @@ namespace Application.Services
             await _paymentRepository.UpdateAsync(payment);
 
             await _unitOfWork.SaveChangesAsync();
+
+            await _notificationService.NotifyPaymentUploadedAsync(order);
         }
 
 
@@ -327,6 +332,8 @@ namespace Application.Services
                 throw;
             }
 
+            await _notificationService.NotifyPaymentReleasedAsync(order);
+
         }
 
         public async Task ConfirmPaymentAsync(int paymentId)
@@ -367,6 +374,8 @@ namespace Application.Services
                 await transaction.RollbackAsync();
                 throw;
             }
+
+            await _notificationService.NotifyPaymentConfirmedAsync(order);
 
         }
 

@@ -1,4 +1,4 @@
-﻿using Application.Interfaces.Repositories_interface;
+using Application.Interfaces.Repositories_interface;
 using Domain.Models.ChatModels;
 using Infrastructure.EntityModel;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
         public NotificationRepository(DbContextModel dbContextModel)
         {
             _dbContextModel = dbContextModel;
-            
+
         }
         public async Task CreateAsync(Notification notification)
         {
@@ -27,14 +27,19 @@ namespace Infrastructure.Repositories
         {
             var result = await _dbContextModel.notifications
                 .AsNoTracking()
-                .Where(o => o.userId == userId).ToListAsync();
+                .Where(o => o.userId == userId)
+                .OrderByDescending(o => o.CreatedAt)
+                .ThenByDescending(o => o.Id)
+                .ToListAsync();
 
             return result;
         }
 
-        public async Task<int> GetUnreadCountAsync()
+        public async Task<int> GetUnreadCountAsync(int userId)
         {
-            var count = await _dbContextModel.notifications.Where(o=>o.IsRead==false).CountAsync();
+            var count = await _dbContextModel.notifications
+                .Where(o => o.userId == userId && o.IsRead == false)
+                .CountAsync();
 
             return count;
         }
@@ -42,7 +47,7 @@ namespace Infrastructure.Repositories
         public async Task MarkAsReadAsync(int userId)
         {
             await _dbContextModel.notifications
-                .Where(o=> o.userId == userId)
+                .Where(o=> o.userId == userId && o.IsRead == false)
                 .ExecuteUpdateAsync(s=>s.SetProperty(n=>n.IsRead, true));
         }
     }

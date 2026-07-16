@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Gamepad2, LogOut, Menu, ShieldCheck, User as UserIcon, X } from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
+import { NotificationBell } from "@/features/notifications/NotificationBell";
 import { useTranslation } from "@/i18n/useTranslation";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -92,6 +93,8 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {isAuthenticated && <NotificationBell />}
+
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

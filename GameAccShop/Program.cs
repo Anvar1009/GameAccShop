@@ -1,4 +1,5 @@
 
+using Application.Interfaces.Notifications;
 using Application.Interfaces.Provider;
 using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.Security;
@@ -7,6 +8,7 @@ using Application.Interfaces.UnitOfWorkFolder;
 using Application.Services;
 using GameAccShop.Controllers.Hubs;
 using GameAccShop.Middleware.GlobalExceptionMiddleware;
+using GameAccShop.Notifications;
 using Infrastructure.EntityModel;
 using Infrastructure.Repositories;
 using Infrastructure.Security;
@@ -50,6 +52,7 @@ namespace GameAccShop
             builder.Services.AddScoped<IPaymentAccountRepository, PaymentAccountRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
             builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
@@ -58,6 +61,8 @@ namespace GameAccShop
             builder.Services.AddScoped<IPaymentAccountService, PaymentAccountService>();
             builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
             builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<INotificationPublisher, SignalRNotificationPublisher>();
 
 
             builder.Services.AddAuthentication(options =>
@@ -91,7 +96,7 @@ namespace GameAccShop
     };
 
     // SignalR WebSockets can't send an Authorization header, so the JWT
-    // arrives as an `access_token` query parameter on the /chatHub request.
+    // arrives as an `access_token` query parameter on the hub requests.
     options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
@@ -100,7 +105,8 @@ namespace GameAccShop
             var path = context.HttpContext.Request.Path;
 
             if (!string.IsNullOrEmpty(accessToken) &&
-                path.StartsWithSegments("/chatHub"))
+                (path.StartsWithSegments("/chatHub") ||
+                 path.StartsWithSegments("/notificationHub")))
             {
                 context.Token = accessToken;
             }
@@ -163,6 +169,7 @@ namespace GameAccShop
 
             app.MapControllers();
             app.MapHub<ChatHub>("/chatHub");
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.Run();
         }
