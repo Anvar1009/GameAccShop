@@ -19,6 +19,21 @@ namespace GameAccShop.Controllers.Hubs
             _chatService = chatService;
         }
 
+        // Every join/broadcast must agree on the group name, so it is built in
+        // exactly one place.
+        public static string GroupName(int conversationId) =>
+            $"conversation-{conversationId}";
+
+        private int CurrentUserId()
+        {
+            var claim = Context.User?.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null)
+                throw new HubException("Unauthorized");
+
+            return int.Parse(claim.Value);
+        }
+
 
         public override async Task OnConnectedAsync()
         {
@@ -39,18 +54,13 @@ namespace GameAccShop.Controllers.Hubs
 
         public async Task JoinConversation(int conversationId)
         {
-            var claim = Context.User?.FindFirst(ClaimTypes.NameIdentifier);
-
-            if (claim == null)
-                throw new HubException("Unauthorized");
-
-            int userId = int.Parse(claim.Value);
+            int userId = CurrentUserId();
 
             await _chatService.ValidateConversationAccessAsync(conversationId, userId);
 
             await Groups.AddToGroupAsync(
                 Context.ConnectionId,
-                $"conversation-{conversationId}");
+                GroupName(conversationId));
         }
 
         public async Task LeaveConversation(int conversationId)
@@ -58,30 +68,21 @@ namespace GameAccShop.Controllers.Hubs
 
             await Groups.RemoveFromGroupAsync(
                 Context.ConnectionId,
-                $"conversation-{conversationId}");
+                GroupName(conversationId));
         }
 
 
 
         public async Task SendMessage(SendMessageRequest request)
         {
-            // 1. UserId olish
-            var claim = Context.User?.FindFirst(ClaimTypes.NameIdentifier);
-
-            if (claim == null)
-                throw new HubException("Unauthorized");
-
-            int userId = int.Parse(claim.Value);
-
-          
-            // 2. ChatService.SendMessageAsync()
+            int userId = CurrentUserId();
 
             var response = await _chatService.SendMessageAsync(request, userId);
 
-            // 3. Clients.Group(...).SendAsync(...)
-
+            // Goes to the whole group, sender included — the sender's own client
+            // replaces its optimistic bubble with this persisted copy.
             await Clients
-            .Group($"conversation   -{response.ConversationId}")
+                .Group(GroupName(response.ConversationId))
                 .SendAsync("ReceiveMessage", response);
         }
 
@@ -89,8 +90,24 @@ namespace GameAccShop.Controllers.Hubs
         public async Task Typing(int conversationId)
         {
             await Clients
-                .OthersInGroup($"conversation-{conversationId}")
+                .OthersInGroup(GroupName(conversationId))
                 .SendAsync("Typing");
+        }
+
+
+        /// <summary>
+        /// The reader marks the other party's messages as seen; the sender is
+        /// told live so its ticks can turn to "read".
+        /// </summary>
+        public async Task MarkAsRead(int conversationId)
+        {
+            int userId = CurrentUserId();
+
+            await _chatService.MarkAsReadAsync(conversationId, userId);
+
+            await Clients
+                .OthersInGroup(GroupName(conversationId))
+                .SendAsync("MessagesRead", conversationId, userId);
         }
 
     }

@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, Send, Wifi, WifiOff } from "lucide-react";
+import {
+  Check,
+  CheckCheck,
+  Clock,
+  MessageCircle,
+  Send,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
 import { useChat } from "./chat-hooks";
 import { useTranslation } from "@/i18n/useTranslation";
 import { Button } from "@/components/ui/button";
@@ -148,7 +156,8 @@ export function ChatPanel({
                   "max-w-[75%] rounded-2xl px-3 py-2 text-sm shadow-soft",
                   m.isMine
                     ? "rounded-br-sm bg-primary text-primary-foreground"
-                    : "rounded-bl-sm bg-card text-foreground"
+                    : "rounded-bl-sm bg-card text-foreground",
+                  m.pending && "opacity-70"
                 )}
               >
                 {!m.isMine && m.senderName && (
@@ -159,13 +168,24 @@ export function ChatPanel({
                 <p className="whitespace-pre-wrap break-words">{m.text}</p>
                 <p
                   className={cn(
-                    "mt-1 text-[10px]",
+                    "mt-1 flex items-center justify-end gap-1 text-[10px]",
                     m.isMine
                       ? "text-primary-foreground/70"
                       : "text-muted-foreground"
                   )}
                 >
-                  {formatDateTime(m.createdAt)}
+                  {m.pending ? t("chat.sending") : formatDateTime(m.createdAt)}
+                  {m.isMine &&
+                    (m.pending ? (
+                      <Clock className="h-3 w-3" aria-label={t("chat.sending")} />
+                    ) : m.isRead ? (
+                      <CheckCheck
+                        className="h-3.5 w-3.5 text-sky-300"
+                        aria-label={t("chat.read")}
+                      />
+                    ) : (
+                      <Check className="h-3.5 w-3.5" aria-label={t("chat.sent")} />
+                    ))}
                 </p>
               </div>
             </div>

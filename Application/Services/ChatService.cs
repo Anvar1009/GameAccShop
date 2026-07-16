@@ -51,9 +51,11 @@ namespace Application.Services
                 {
                     Id = m.Id,
                     SenderId = m.SenderId,
+                    ConversationId = m.ConversationId,
                     CreatedAt = m.CreatedAt,
                     Text = m.Text,
-                    IsMine = m.SenderId==currentUserId, 
+                    IsMine = m.SenderId==currentUserId,
+                    IsRead = m.IsRead,
                     SenderName = $"{m.Sender.FirstName} {m.Sender.LastName}"
                 }).ToList()
             };
@@ -80,10 +82,12 @@ namespace Application.Services
             {
                 Id = message.Id,
                 SenderId = message.SenderId,
+                ConversationId = message.ConversationId,
                 SenderName = $"{message.Sender.FirstName} {message.Sender.LastName}",
                 Text = message.Text,
                 CreatedAt = message.CreatedAt,
-                IsMine = message.SenderId == userId
+                IsMine = message.SenderId == userId,
+                IsRead = message.IsRead
             }).ToList();
         }
 
@@ -157,6 +161,7 @@ namespace Application.Services
                     : string.Empty,
                 Text = createdMessage.Text,
                 IsMine = true,
+                IsRead = createdMessage.IsRead,
                 CreatedAt = createdMessage.CreatedAt
             };
         }

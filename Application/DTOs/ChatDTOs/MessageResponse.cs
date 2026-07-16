@@ -20,6 +20,9 @@ namespace Application.DTOs.ChatDTOs
 
         public bool IsMine { get; set; }
 
+        /// <summary>True once the other participant has seen the message.</summary>
+        public bool IsRead { get; set; }
+
         public DateTime CreatedAt { get; set; }
     }
 }

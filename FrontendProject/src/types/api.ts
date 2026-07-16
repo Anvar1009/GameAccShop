@@ -60,6 +60,8 @@ export interface ChatMessage {
   senderName: string;
   text: string;
   isMine: boolean;
+  /** True once the other participant has seen it — drives the read ticks. */
+  isRead: boolean;
   createdAt: string;
 }
 

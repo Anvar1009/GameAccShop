@@ -12,14 +12,67 @@ export const chatKeys = {
 
 export type ChatConnectionState = "connecting" | "connected" | "disconnected";
 
-/** Union two message lists by id, keeping chronological order. */
-function mergeMessages(a: ChatMessage[], b: ChatMessage[]): ChatMessage[] {
-  const byId = new Map<number, ChatMessage>();
-  for (const m of a) byId.set(m.id, m);
-  for (const m of b) byId.set(m.id, m);
-  return Array.from(byId.values()).sort((x, y) => {
+/**
+ * A message as rendered: either persisted (positive id, from REST or the hub)
+ * or optimistic — shown the instant the user hits send, with a temporary
+ * negative id, until its server copy arrives.
+ */
+export type ChatMessageView = ChatMessage & {
+  pending?: boolean;
+  /**
+   * Highest persisted id present when an optimistic bubble was created. Only a
+   * message newer than this can be its server copy, so sending the same text
+   * twice pairs each bubble with the right one.
+   */
+  afterId?: number;
+};
+
+let tempIdSeq = 0;
+const nextTempId = () => --tempIdSeq;
+
+/**
+ * Union the current list with freshly received messages, dropping optimistic
+ * entries once their persisted copy shows up (matched on sender + text, one
+ * server message per pending bubble so repeated texts stay intact).
+ */
+function mergeMessages(
+  current: ChatMessageView[],
+  incoming: ChatMessage[]
+): ChatMessageView[] {
+  const byId = new Map<number, ChatMessageView>();
+  const pending: ChatMessageView[] = [];
+  for (const m of current) {
+    if (m.pending) pending.push(m);
+    else byId.set(m.id, m);
+  }
+  for (const m of incoming) {
+    const known = byId.get(m.id);
+    // A message never goes back to unread: a refetch that raced a "MessagesRead"
+    // event would otherwise clear the ticks we just lit.
+    byId.set(m.id, known?.isRead ? { ...m, isRead: true } : m);
+  }
+
+  const confirmed = Array.from(byId.values());
+  const claimed = new Set<number>();
+  const stillPending = pending.filter((p) => {
+    const match = confirmed.find(
+      (c) =>
+        !claimed.has(c.id) &&
+        c.id > (p.afterId ?? 0) &&
+        c.senderId === p.senderId &&
+        c.text === p.text
+    );
+    if (!match) return true;
+    claimed.add(match.id);
+    return false;
+  });
+
+  return [...confirmed, ...stillPending].sort((x, y) => {
     const t = new Date(x.createdAt).getTime() - new Date(y.createdAt).getTime();
-    return t !== 0 ? t : x.id - y.id;
+    if (t !== 0) return t;
+    // Optimistic bubbles always trail their peers at the same timestamp.
+    if (!!x.pending !== !!y.pending) return x.pending ? 1 : -1;
+    return x.id - y.id;
   });
 }
 
@@ -35,7 +88,7 @@ export function useChat(orderId: number) {
   const { user } = useAuth();
   const currentUserId = user?.userId ?? null;
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessageView[]>([]);
   const [connectionState, setConnectionState] =
     useState<ChatConnectionState>("connecting");
   const [typing, setTyping] = useState(false);
@@ -43,6 +96,8 @@ export function useChat(orderId: number) {
 
   const connectionRef = useRef<HubConnection | null>(null);
   const typingTimeout = useRef<number | undefined>(undefined);
+  const lastTypingSent = useRef(0);
+  const reconcileTimeouts = useRef(new Set<number>());
 
   // Recompute `isMine` from the current user id — the hub broadcast leaves it
   // false for every recipient.
@@ -64,6 +119,21 @@ export function useChat(orderId: number) {
   });
 
   const conversationId = convQuery.data?.conversationId;
+
+  const refetchRef = useRef(convQuery.refetch);
+  refetchRef.current = convQuery.refetch;
+
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+
+  // Drop scheduled reconcile refetches if the panel unmounts first.
+  useEffect(() => {
+    const timeouts = reconcileTimeouts.current;
+    return () => {
+      for (const handle of timeouts) window.clearTimeout(handle);
+      timeouts.clear();
+    };
+  }, []);
 
   // Seed / reconcile from the (re)fetched history without dropping live msgs.
   useEffect(() => {
@@ -88,6 +158,14 @@ export function useChat(orderId: number) {
       setTyping(true);
       window.clearTimeout(typingTimeout.current);
       typingTimeout.current = window.setTimeout(() => setTyping(false), 3000);
+    });
+    // The other side opened the chat: light up the ticks on everything we sent.
+    connection.on("MessagesRead", (_convId: number, readerId: number) => {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.senderId !== readerId && !m.isRead ? { ...m, isRead: true } : m
+        )
+      );
     });
     connection.onreconnecting(() => setConnectionState("connecting"));
     connection.onreconnected(async () => {
@@ -118,6 +196,7 @@ export function useChat(orderId: number) {
       window.clearTimeout(typingTimeout.current);
       connection.off("ReceiveMessage");
       connection.off("Typing");
+      connection.off("MessagesRead");
       if (connection.state === HubConnectionState.Connected) {
         connection.invoke("LeaveConversation", conversationId).catch(() => {});
       }
@@ -126,45 +205,107 @@ export function useChat(orderId: number) {
     };
   }, [conversationId, withMine]);
 
-  // Mark the other side's messages as read whenever a new one arrives.
+  const unreadIncoming = messages.reduce(
+    (n, m) => (!m.isMine && !m.isRead ? n + 1 : n),
+    0
+  );
+
+  // Reading the other side's messages: over the hub when it is up, so the
+  // sender's ticks flip live; the REST endpoint broadcasts the same event.
   useEffect(() => {
-    if (!conversationId) return;
-    const hasIncoming = messages.some((m) => !m.isMine);
-    if (hasIncoming) chatApi.markAsRead(conversationId).catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationId, messages.length]);
+    if (!conversationId || unreadIncoming === 0) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const conn = connectionRef.current;
+        if (conn && conn.state === HubConnectionState.Connected) {
+          await conn.invoke("MarkAsRead", conversationId);
+        } else {
+          await chatApi.markAsRead(conversationId);
+        }
+        if (cancelled) return;
+        // Settle locally so this does not re-fire on every render.
+        setMessages((prev) =>
+          prev.map((m) => (!m.isMine && !m.isRead ? { ...m, isRead: true } : m))
+        );
+      } catch {
+        // Left unread; the next incoming message retries.
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [conversationId, unreadIncoming]);
 
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmed = text.trim();
       if (!trimmed) return;
+
+      // Show the message straight away; the server copy replaces it on arrival.
+      const optimistic: ChatMessageView = {
+        id: nextTempId(),
+        senderId: currentUserId ?? -1,
+        conversationId: conversationId ?? 0,
+        senderName: user?.login ?? "",
+        text: trimmed,
+        isMine: true,
+        isRead: false,
+        createdAt: new Date().toISOString(),
+        pending: true,
+      };
+      setMessages((prev) => {
+        const afterId = prev.reduce(
+          (max, m) => (m.pending ? max : Math.max(max, m.id)),
+          0
+        );
+        return mergeMessages([...prev, { ...optimistic, afterId }], []);
+      });
       setSending(true);
+
       try {
         const conn = connectionRef.current;
         if (conn && conn.state === HubConnectionState.Connected) {
-          // Hub re-broadcasts to the group (incl. us) → ReceiveMessage appends.
           await conn.invoke("SendMessage", { orderId, text: trimmed });
+          // The hub broadcasts to the group, but it may not echo back to the
+          // sender's own connection — pull the persisted copy so the bubble
+          // stops being optimistic and picks up its real id/timestamp.
+          const handle = window.setTimeout(() => {
+            reconcileTimeouts.current.delete(handle);
+            const echoed = !messagesRef.current.some(
+              (m) => m.id === optimistic.id
+            );
+            if (!echoed) void refetchRef.current();
+          }, 800);
+          reconcileTimeouts.current.add(handle);
         } else {
           // REST persists but does not broadcast, so append locally.
           const saved = await chatApi.sendMessage({ orderId, text: trimmed });
           setMessages((prev) => mergeMessages(prev, [withMine(saved)]));
         }
+      } catch (err) {
+        // Drop the bubble so the composer can restore the draft for a retry.
+        setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
+        throw err;
       } finally {
         setSending(false);
       }
     },
-    [orderId, withMine]
+    [orderId, withMine, conversationId, currentUserId, user?.login]
   );
 
   const notifyTyping = useCallback(() => {
     const conn = connectionRef.current;
-    if (
-      conn &&
-      conn.state === HubConnectionState.Connected &&
-      conversationId
-    ) {
-      conn.invoke("Typing", conversationId).catch(() => {});
-    }
+    if (!conn || conn.state !== HubConnectionState.Connected || !conversationId)
+      return;
+    // The peer's indicator lives for 3s, so one ping per second is plenty —
+    // without this every keystroke would hit the hub.
+    const now = Date.now();
+    if (now - lastTypingSent.current < 1000) return;
+    lastTypingSent.current = now;
+    conn.invoke("Typing", conversationId).catch(() => {});
   }, [conversationId]);
 
   return {

@@ -1,9 +1,11 @@
 ﻿using Application.DTOs.ChatDTOs;
 using Application.Interfaces.ServiceInterface;
 using Domain.Models.ChatModels;
+using GameAccShop.Controllers.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
 namespace GameAccShop.Controllers
@@ -13,9 +15,12 @@ namespace GameAccShop.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
-        public ChatController(IChatService chatService)
+        private readonly IHubContext<ChatHub> _chatHub;
+
+        public ChatController(IChatService chatService, IHubContext<ChatHub> chatHub)
         {
-            _chatService = chatService;            
+            _chatService = chatService;
+            _chatHub = chatHub;
         }
 
         [HttpGet("{orderId}")]
@@ -69,9 +74,15 @@ namespace GameAccShop.Controllers
             if (claim == null || !int.TryParse(claim.Value, out var currentUserId))
                 return Unauthorized();
 
-            await _chatService.MarkAsReadAsync(conversationId, currentUserId);   
+            await _chatService.MarkAsReadAsync(conversationId, currentUserId);
 
-            return Ok();    
+            // The reader may not be on the hub (this is the REST fallback), but
+            // the sender still needs its ticks updated live.
+            await _chatHub.Clients
+                .Group(ChatHub.GroupName(conversationId))
+                .SendAsync("MessagesRead", conversationId, currentUserId);
+
+            return Ok();
         }
 
         [HttpGet("{conversationId}/UnReadMessageCount")]
