@@ -34,7 +34,6 @@ namespace Infrastructure.Repositories
 
         public async Task<int> GetUnreadCountAsync()
         {
-
             var count = await _dbContextModel.notifications.Where(o=>o.IsRead==false).CountAsync();
 
             return count;
