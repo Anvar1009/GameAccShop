@@ -36,6 +36,8 @@ namespace Infrastructure.EntityModel
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Notification> notifications { get; set; }
+
         public DbSet<Dispute> Disputes { get; set; }
         public DbSet<Payment> Payment { get; set; }
         public DbSet<PaymentAccount> PaymentAccounts { get; set; }

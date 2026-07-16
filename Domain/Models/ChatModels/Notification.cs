@@ -14,6 +14,7 @@ namespace Domain.Models.ChatModels
         public string Title { get; set; }
         public string Message { get; set; }
         public DateTime CreatedAt { get; set; }
+        public NotificationType notificationType { get; set; }
         public bool IsRead { get; set; }
 
     }
