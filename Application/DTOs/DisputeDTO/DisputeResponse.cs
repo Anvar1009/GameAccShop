@@ -40,5 +40,7 @@ namespace Application.DTOs.DisputeDTO
         public DateTime CreatedAt { get; set; }
 
         public DateTime? ResolvedAt { get; set; }
+
+        public List<DisputeEvidenceResponse> Evidence { get; set; } = new();
     }
 }

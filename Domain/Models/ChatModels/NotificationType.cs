@@ -26,6 +26,8 @@ namespace Domain.Models.ChatModels
 
         DisputeResolved,
 
-        DisputeClosed
+        DisputeClosed,
+
+        DisputeEvidenceUploaded
     }
 }

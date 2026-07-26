@@ -1,4 +1,5 @@
 using Application.DTOs.DisputeDTO;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace Application.Interfaces.ServiceInterface
         Task<List<DisputeListResponse>> GetMyDisputesAsync(int userId);
 
         Task<DisputeResponse> GetDisputeByIdAsync(int disputeId, int userId, bool isAdmin);
+
+        Task<DisputeResponse> UploadEvidenceAsync(int disputeId, int userId, List<IFormFile> files);
 
         // ── Admin ────────────────────────────────────────────────────────
         Task<List<DisputeListResponse>> GetAllDisputesAsync();

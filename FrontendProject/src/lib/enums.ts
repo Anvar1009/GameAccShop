@@ -39,6 +39,7 @@ export enum NotificationType {
   DisputeEvidenceRequested = 7,
   DisputeResolved = 8,
   DisputeClosed = 9,
+  DisputeEvidenceUploaded = 10,
 }
 
 // Domain.Models.OrdersModel.DisputeStatus (explicit values start at 1)
@@ -163,6 +164,11 @@ const NOTIFICATION_META: Record<NotificationType, NotificationMeta> = {
     titleKey: "notif.disputeClosed.title",
     bodyKey: "notif.disputeClosed.body",
     tone: "neutral",
+  },
+  [NotificationType.DisputeEvidenceUploaded]: {
+    titleKey: "notif.disputeEvidenceUploaded.title",
+    bodyKey: "notif.disputeEvidenceUploaded.body",
+    tone: "info",
   },
 };
 

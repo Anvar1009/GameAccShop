@@ -29,6 +29,8 @@ namespace Domain.Models.OrdersModel
         public DisputeStatus Status { get; set; } = DisputeStatus.Open;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public ICollection<DisputeEvidence> Evidence { get; set; } = new List<DisputeEvidence>();
     }
 
 

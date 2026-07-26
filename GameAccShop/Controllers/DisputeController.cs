@@ -63,6 +63,20 @@ namespace GameAccShop.Controllers
             return Ok(result);
         }
 
+        [HttpPost("{id}/evidence")]
+        [Authorize]
+        public async Task<IActionResult> UploadEvidenceAsync(int id, [FromForm] UploadDisputeEvidenceRequest request)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userId == null || !int.TryParse(userId.Value, out var currentUserId))
+            {
+                return Unauthorized();
+            }
+
+            var result = await _disputeService.UploadEvidenceAsync(id, currentUserId, request.Files);
+            return Ok(result);
+        }
+
 
         // ── Admin ────────────────────────────────────────────────────────
 

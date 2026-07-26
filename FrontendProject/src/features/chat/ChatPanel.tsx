@@ -23,6 +23,12 @@ interface ChatPanelProps {
   className?: string;
   /** Tailwind height for the scrollable message area. */
   bodyHeight?: string;
+  /**
+   * For viewers who aren't a participant on the conversation (e.g. an admin
+   * reviewing a dispute): hides the composer and skips the live hub join /
+   * read-receipts, which the backend only allows the buyer and seller to use.
+   */
+  readOnly?: boolean;
 }
 
 export function ChatPanel({
@@ -30,6 +36,7 @@ export function ChatPanel({
   peerName,
   className,
   bodyHeight = "h-80",
+  readOnly = false,
 }: ChatPanelProps) {
   const { t } = useTranslation();
   const {
@@ -42,7 +49,7 @@ export function ChatPanel({
     notifyTyping,
     isLoading,
     isError,
-  } = useChat(orderId);
+  } = useChat(orderId, { readOnly });
 
   const [draft, setDraft] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -93,28 +100,30 @@ export function ChatPanel({
             </p>
           </div>
         </div>
-        <span
-          className={cn(
-            "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
-            isLive
-              ? "bg-success/10 text-success"
-              : "bg-secondary text-muted-foreground"
-          )}
-          title={
-            isLive ? t("chat.liveConnected") : t("chat.liveDisconnected")
-          }
-        >
-          {isLive ? (
-            <Wifi className="h-3 w-3" />
-          ) : (
-            <WifiOff className="h-3 w-3" />
-          )}
-          {isLive
-            ? t("chat.live")
-            : connectionState === "connecting"
-            ? t("chat.connecting")
-            : t("chat.offline")}
-        </span>
+        {!readOnly && (
+          <span
+            className={cn(
+              "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
+              isLive
+                ? "bg-success/10 text-success"
+                : "bg-secondary text-muted-foreground"
+            )}
+            title={
+              isLive ? t("chat.liveConnected") : t("chat.liveDisconnected")
+            }
+          >
+            {isLive ? (
+              <Wifi className="h-3 w-3" />
+            ) : (
+              <WifiOff className="h-3 w-3" />
+            )}
+            {isLive
+              ? t("chat.live")
+              : connectionState === "connecting"
+              ? t("chat.connecting")
+              : t("chat.offline")}
+          </span>
+        )}
       </div>
 
       {/* Messages */}
@@ -201,34 +210,36 @@ export function ChatPanel({
       </div>
 
       {/* Composer */}
-      <div className="border-t border-border p-3">
-        <div className="flex items-end gap-2">
-          <Textarea
-            value={draft}
-            onChange={(e) => {
-              setDraft(e.target.value);
-              notifyTyping();
-            }}
-            onKeyDown={handleKeyDown}
-            placeholder={t("chat.placeholder")}
-            rows={1}
-            className="max-h-32 min-h-[42px] resize-none"
-          />
-          <Button
-            type="button"
-            size="icon"
-            onClick={handleSend}
-            disabled={!draft.trim() || sending}
-            loading={sending}
-            aria-label={t("chat.send")}
-          >
-            {!sending && <Send className="h-4 w-4" />}
-          </Button>
+      {!readOnly && (
+        <div className="border-t border-border p-3">
+          <div className="flex items-end gap-2">
+            <Textarea
+              value={draft}
+              onChange={(e) => {
+                setDraft(e.target.value);
+                notifyTyping();
+              }}
+              onKeyDown={handleKeyDown}
+              placeholder={t("chat.placeholder")}
+              rows={1}
+              className="max-h-32 min-h-[42px] resize-none"
+            />
+            <Button
+              type="button"
+              size="icon"
+              onClick={handleSend}
+              disabled={!draft.trim() || sending}
+              loading={sending}
+              aria-label={t("chat.send")}
+            >
+              {!sending && <Send className="h-4 w-4" />}
+            </Button>
+          </div>
+          <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
+            {t("chat.hint")}
+          </p>
         </div>
-        <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
-          {t("chat.hint")}
-        </p>
-      </div>
+      )}
     </div>
   );
 }

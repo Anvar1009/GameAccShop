@@ -5,6 +5,7 @@ import {
   BadgeCheck,
   FileSearch,
   Gavel,
+  ImagePlus,
   ReceiptText,
   ShieldAlert,
   ShoppingCart,
@@ -41,6 +42,7 @@ const ICONS: Record<NotificationType, typeof Bell> = {
   [NotificationType.DisputeEvidenceRequested]: FileSearch,
   [NotificationType.DisputeResolved]: Gavel,
   [NotificationType.DisputeClosed]: Gavel,
+  [NotificationType.DisputeEvidenceUploaded]: ImagePlus,
 };
 
 const TONE_CLASS: Record<BadgeTone, string> = {

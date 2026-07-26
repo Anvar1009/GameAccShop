@@ -280,6 +280,16 @@ export interface AdminOrderDetails {
   isChatOpened: boolean;
 }
 
+// DisputeEvidenceResponse
+export interface DisputeEvidenceItem {
+  id: number;
+  uploadedById: number;
+  uploadedByName: string;
+  url: string;
+  type: number;
+  createdAt: string;
+}
+
 // DisputeResponse
 export interface Dispute {
   id: number;
@@ -298,6 +308,7 @@ export interface Dispute {
   status: number;
   createdAt: string;
   resolvedAt: string | null;
+  evidence: DisputeEvidenceItem[];
 }
 
 // DisputeListResponse

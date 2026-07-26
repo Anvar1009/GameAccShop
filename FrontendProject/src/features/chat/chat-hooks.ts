@@ -84,7 +84,8 @@ function mergeMessages(
  * WebSocket `access_token` query handling), sending falls back to the REST
  * endpoint and history is polled every few seconds so the chat still works.
  */
-export function useChat(orderId: number) {
+export function useChat(orderId: number, options?: { readOnly?: boolean }) {
+  const readOnly = options?.readOnly ?? false;
   const { user } = useAuth();
   const currentUserId = user?.userId ?? null;
 
@@ -143,9 +144,12 @@ export function useChat(orderId: number) {
     );
   }, [convQuery.data, withMine]);
 
-  // Live SignalR connection, scoped to this conversation.
+  // Live SignalR connection, scoped to this conversation. Read-only viewers
+  // (e.g. an admin reviewing a dispute) are not a participant on the
+  // conversation, so JoinConversation would be rejected server-side — skip
+  // the hub entirely and rely on the REST poll below instead.
   useEffect(() => {
-    if (!conversationId) return;
+    if (!conversationId || readOnly) return;
     let cancelled = false;
     const connection = createChatConnection();
     connectionRef.current = connection;
@@ -212,8 +216,10 @@ export function useChat(orderId: number) {
 
   // Reading the other side's messages: over the hub when it is up, so the
   // sender's ticks flip live; the REST endpoint broadcasts the same event.
+  // Read-only viewers aren't a participant, so the backend would reject this
+  // (every message looks "incoming" to them) — skip it entirely.
   useEffect(() => {
-    if (!conversationId || unreadIncoming === 0) return;
+    if (readOnly || !conversationId || unreadIncoming === 0) return;
     let cancelled = false;
 
     (async () => {

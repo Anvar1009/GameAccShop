@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   FileSearch,
   Gavel,
+  ImagePlus,
   MessageSquareWarning,
+  MessagesSquare,
+  Paperclip,
   ShieldCheck,
   ShieldX,
   UserCheck,
@@ -16,6 +20,7 @@ import {
   useResolveBuyer,
   useResolveSeller,
   useStartReview,
+  useUploadEvidence,
 } from "./disputes-hooks";
 import { useAuth } from "@/features/auth/useAuth";
 import { useTranslation } from "@/i18n/useTranslation";
@@ -35,8 +40,13 @@ import {
 } from "@/components/ui/dialog";
 import { DisputeStatusBadge, OrderStatusBadge } from "@/components/StatusBadge";
 import { ErrorState, PageLoader } from "@/components/states";
+import { ProductMedia } from "@/components/ProductMedia";
+import { ChatPanel } from "@/features/chat/ChatPanel";
 import { formatDateTime } from "@/lib/format";
 import { DisputeStatus, isDisputeStatus } from "@/lib/enums";
+
+const ALLOWED_EVIDENCE = [".jpg", ".jpeg", ".png", ".webp", ".mp4", ".webm", ".mov"];
+const MAX_EVIDENCE_SIZE = 20 * 1024 * 1024;
 
 type ResolveKind = "buyer" | "seller" | null;
 
@@ -52,10 +62,12 @@ export function DisputeDetailsPage() {
   const resolveBuyer = useResolveBuyer();
   const resolveSeller = useResolveSeller();
   const closeDispute = useCloseDispute();
+  const uploadEvidence = useUploadEvidence();
 
   const [resolveKind, setResolveKind] = useState<ResolveKind>(null);
   const [closeOpen, setCloseOpen] = useState(false);
   const [adminComment, setAdminComment] = useState("");
+  const evidenceInputRef = useRef<HTMLInputElement>(null);
 
   if (isLoading) return <PageLoader label={t("disputeDetails.loading")} />;
   if (isError || !dispute)
@@ -81,6 +93,28 @@ export function DisputeDetailsPage() {
     : user?.userId === dispute.buyerId
     ? `/orders/${dispute.orderId}`
     : `/seller/orders/${dispute.orderId}`;
+
+  const canUploadEvidence = !isAdmin && !isFinal;
+
+  const handleEvidenceFiles = (fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0) return;
+    const files = Array.from(fileList);
+
+    for (const file of files) {
+      const ext = "." + (file.name.split(".").pop() ?? "").toLowerCase();
+      if (!ALLOWED_EVIDENCE.includes(ext)) {
+        toast.error(t("toast.evidenceInvalidType"));
+        return;
+      }
+      if (file.size > MAX_EVIDENCE_SIZE) {
+        toast.error(t("toast.evidenceTooLarge"));
+        return;
+      }
+    }
+
+    uploadEvidence.mutate({ id: disputeId, files });
+    if (evidenceInputRef.current) evidenceInputRef.current.value = "";
+  };
 
   const openResolveDialog = (kind: ResolveKind) => {
     setAdminComment("");
@@ -154,6 +188,74 @@ export function DisputeDetailsPage() {
               </CardHeader>
               <CardContent className="text-sm">
                 <p className="whitespace-pre-wrap text-foreground">{dispute.adminComment}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Paperclip className="h-5 w-5 text-primary" /> {t("disputeDetails.evidence")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {dispute.evidence.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t("disputeDetails.evidenceEmpty")}</p>
+              ) : (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {dispute.evidence.map((item) => (
+                    <div key={item.id} className="space-y-1">
+                      <div className="aspect-square overflow-hidden rounded-lg bg-secondary">
+                        <ProductMedia src={item.url} alt={item.uploadedByName} className="h-full w-full" />
+                      </div>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {t("disputeDetails.uploadedBy", { name: item.uploadedByName })}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {canUploadEvidence && (
+                <>
+                  <Separator />
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground">{t("disputeDetails.evidenceHint")}</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      loading={uploadEvidence.isPending}
+                      onClick={() => evidenceInputRef.current?.click()}
+                    >
+                      <ImagePlus className="h-4 w-4" /> {t("disputeDetails.uploadEvidence")}
+                    </Button>
+                    <input
+                      ref={evidenceInputRef}
+                      type="file"
+                      multiple
+                      accept={ALLOWED_EVIDENCE.join(",")}
+                      className="hidden"
+                      onChange={(e) => handleEvidenceFiles(e.target.files)}
+                    />
+                    <p className="text-center text-xs text-muted-foreground">
+                      {t("disputeDetails.evidenceTypes")}
+                    </p>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {isAdmin && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessagesSquare className="h-5 w-5 text-primary" /> {t("disputeDetails.conversation")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChatPanel orderId={dispute.orderId} readOnly bodyHeight="h-72" />
               </CardContent>
             </Card>
           )}

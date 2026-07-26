@@ -4,11 +4,14 @@ using Application.Exceptions;
 using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.ServiceInterface;
 using Application.Interfaces.UnitOfWorkFolder;
+using Domain.Models.Abstracts;
 using Domain.Models.OrdersModel;
 using Domain.Models.PaymentModel;
 using Domain.Models.ProductsModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -124,6 +127,106 @@ namespace Application.Services
             }
 
             return MapToResponse(dispute, dispute.Order);
+        }
+
+
+        private const long MaxEvidenceFileSize = 20 * 1024 * 1024; // 20 MB
+
+        private static readonly string[] AllowedEvidenceImageExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
+        private static readonly string[] AllowedEvidenceVideoExtensions = { ".mp4", ".webm", ".mov" };
+
+        /// <summary>
+        /// Lets the buyer or seller attach proof (screenshots, recordings) to
+        /// their own dispute — most useful once an admin has requested it via
+        /// RequestEvidenceAsync, but not restricted to that status so either
+        /// side can get ahead of the request.
+        /// </summary>
+        /// <exception cref="DisputeNotFoundException"></exception>
+        /// <exception cref="ForbiddenException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="BadRequestException"></exception>
+        public async Task<DisputeResponse> UploadEvidenceAsync(int disputeId, int userId, List<IFormFile> files)
+        {
+            var dispute = await _disputeRepository.GetByIdAsync(disputeId)
+                ?? throw new DisputeNotFoundException();
+
+            if (userId != dispute.Order.BuyerId && userId != dispute.Order.SellerId)
+            {
+                throw new ForbiddenException();
+            }
+
+            EnsureNotFinal(dispute);
+
+            if (files == null || files.Count == 0)
+            {
+                throw new BadRequestException("At least one file is required.");
+            }
+
+            // Validate every file before writing any of them to disk.
+            var planned = new List<(IFormFile File, string Extension, MediaType Type)>();
+            foreach (var file in files)
+            {
+                if (file.Length == 0)
+                {
+                    throw new BadRequestException("Uploaded file is empty.");
+                }
+
+                if (file.Length > MaxEvidenceFileSize)
+                {
+                    throw new BadRequestException("Each file must be 20 MB or smaller.");
+                }
+
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                MediaType type;
+                if (AllowedEvidenceImageExtensions.Contains(extension))
+                {
+                    type = MediaType.Image;
+                }
+                else if (AllowedEvidenceVideoExtensions.Contains(extension))
+                {
+                    type = MediaType.Video;
+                }
+                else
+                {
+                    throw new BadRequestException("Only JPG, JPEG, PNG, WEBP, MP4, WEBM and MOV files are allowed.");
+                }
+
+                planned.Add((file, extension, type));
+            }
+
+            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "dispute-evidence");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            foreach (var item in planned)
+            {
+                var fileName = $"{Guid.NewGuid()}{item.Extension}";
+                var filePath = Path.Combine(uploadFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await item.File.CopyToAsync(stream);
+                }
+
+                await _disputeRepository.AddEvidenceAsync(new DisputeEvidence
+                {
+                    DisputeId = dispute.Id,
+                    UploadedById = userId,
+                    Url = $"/uploads/dispute-evidence/{fileName}",
+                    Type = item.Type,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+
+            await _notificationService.NotifyDisputeEvidenceUploadedAsync(dispute, userId);
+
+            var updated = await _disputeRepository.GetByIdAsync(disputeId)
+                ?? throw new DisputeNotFoundException();
+
+            return MapToResponse(updated, updated.Order);
         }
 
 
@@ -334,7 +437,21 @@ namespace Application.Services
             AdminComment = dispute.AdminComment,
             Status = dispute.Status,
             CreatedAt = dispute.CreatedAt,
-            ResolvedAt = dispute.ResolvedAt
+            ResolvedAt = dispute.ResolvedAt,
+            Evidence = dispute.Evidence
+                .OrderBy(e => e.CreatedAt)
+                .Select(e => new DisputeEvidenceResponse
+                {
+                    Id = e.Id,
+                    UploadedById = e.UploadedById,
+                    UploadedByName = e.UploadedById == order.BuyerId
+                        ? $"{order.Buyer?.FirstName} {order.Buyer?.LastName}"
+                        : $"{order.Seller?.FirstName} {order.Seller?.LastName}",
+                    Url = e.Url,
+                    Type = e.Type,
+                    CreatedAt = e.CreatedAt
+                })
+                .ToList()
         };
 
         private static DisputeListResponse MapToListResponse(Dispute dispute) => new DisputeListResponse

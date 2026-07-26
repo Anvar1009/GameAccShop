@@ -33,4 +33,10 @@ export const disputesApi = {
     api.put(`/api/Dispute/${id}/resolve-seller`, payload).then((r) => r.data),
 
   close: (id: number) => api.put(`/api/Dispute/${id}/close`).then((r) => r.data),
+
+  uploadEvidence: (id: number, files: File[]) => {
+    const fd = new FormData();
+    files.forEach((file) => fd.append("Files", file));
+    return api.post<Dispute>(`/api/Dispute/${id}/evidence`, fd).then((r) => r.data);
+  },
 };

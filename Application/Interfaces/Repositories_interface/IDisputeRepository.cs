@@ -23,5 +23,7 @@ namespace Application.Interfaces.Repositories_interface
         Task UpdateAsync(Dispute dispute);
 
         Task<bool> ExistsOpenDisputeAsync(int orderId);
+
+        Task AddEvidenceAsync(DisputeEvidence evidence);
     }
 }

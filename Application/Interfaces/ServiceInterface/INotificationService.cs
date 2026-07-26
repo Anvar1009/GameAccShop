@@ -47,5 +47,8 @@ namespace Application.Interfaces.ServiceInterface
 
         /// <summary>Admin dispute'ni yopdi → buyer va sellerga.</summary>
         Task NotifyDisputeClosedAsync(Dispute dispute);
+
+        /// <summary>Buyer yoki Seller isbot yukladi → adminlarga.</summary>
+        Task NotifyDisputeEvidenceUploadedAsync(Dispute dispute, int uploadedById);
     }
 }

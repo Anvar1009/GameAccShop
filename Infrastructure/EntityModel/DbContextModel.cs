@@ -39,6 +39,7 @@ namespace Infrastructure.EntityModel
         public DbSet<Notification> notifications { get; set; }
 
         public DbSet<Dispute> Disputes { get; set; }
+        public DbSet<DisputeEvidence> DisputeEvidences { get; set; }
         public DbSet<Payment> Payment { get; set; }
         public DbSet<PaymentAccount> PaymentAccounts { get; set; }
     }

@@ -112,6 +112,19 @@ export function useResolveSeller() {
   });
 }
 
+export function useUploadEvidence() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (args: { id: number; files: File[] }) =>
+      disputesApi.uploadEvidence(args.id, args.files),
+    onSuccess: (dispute) => {
+      qc.setQueryData(disputeKeys.detail(dispute.id), dispute);
+      toast.success(translate("toast.evidenceUploaded"));
+    },
+    onError: (e) => toast.error(getErrorMessage(e, translate("toast.evidenceUploadError"))),
+  });
+}
+
 export function useCloseDispute() {
   const qc = useQueryClient();
   return useMutation({

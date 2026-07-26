@@ -237,6 +237,21 @@ namespace Application.Services
         }
 
 
+        public async Task NotifyDisputeEvidenceUploadedAsync(Dispute dispute, int uploadedById)
+        {
+            var order = dispute.Order;
+            var uploaderLabel = uploadedById == order.BuyerId ? "Xaridor" : "Sotuvchi";
+
+            var admins = await BuildForAdminsAsync(
+                NotificationType.DisputeEvidenceUploaded,
+                "Isbot yuklandi",
+                $"{uploaderLabel} #{dispute.OrderId} raqamli buyurtma dispute'i uchun isbot yukladi.",
+                dispute.OrderId);
+
+            await DispatchAsync(admins.ToArray());
+        }
+
+
         private static Notification Build(
             int userId,
             NotificationAudience audience,

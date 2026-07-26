@@ -582,6 +582,8 @@ const en = {
   "notif.disputeResolved.body": "The dispute for order #{id} has been resolved.",
   "notif.disputeClosed.title": "Dispute closed",
   "notif.disputeClosed.body": "The dispute for order #{id} was closed.",
+  "notif.disputeEvidenceUploaded.title": "Evidence uploaded",
+  "notif.disputeEvidenceUploaded.body": "New evidence was uploaded for the order #{id} dispute.",
 
   // ── Disputes ───────────────────────────────────────────────────────
   "orderDetails.openDispute": "Report a problem",
@@ -650,6 +652,18 @@ const en = {
   "toast.disputeResolveError": "Could not resolve the dispute",
   "toast.disputeClosed": "Dispute closed",
   "toast.disputeCloseError": "Could not close the dispute",
+
+  "disputeDetails.evidence": "Evidence",
+  "disputeDetails.evidenceEmpty": "No evidence has been uploaded yet.",
+  "disputeDetails.uploadEvidence": "Upload evidence",
+  "disputeDetails.evidenceHint": "Images or short video clips that support your side of the dispute.",
+  "disputeDetails.evidenceTypes": "JPG, PNG, WEBP, MP4, WEBM or MOV · max 20 MB each",
+  "disputeDetails.uploadedBy": "Uploaded by {name}",
+  "toast.evidenceUploaded": "Evidence uploaded",
+  "toast.evidenceUploadError": "Could not upload the evidence",
+  "toast.evidenceInvalidType": "Only JPG, PNG, WEBP, MP4, WEBM or MOV files are allowed.",
+  "toast.evidenceTooLarge": "Each file must be 20 MB or smaller.",
+  "disputeDetails.conversation": "Conversation between buyer and seller",
 } as const;
 
 export type TranslationKey = keyof typeof en;
@@ -1191,6 +1205,8 @@ const uz: Record<TranslationKey, string> = {
   "notif.disputeResolved.body": "#{id} raqamli buyurtma bo'yicha dispute hal qilindi.",
   "notif.disputeClosed.title": "Dispute yopildi",
   "notif.disputeClosed.body": "#{id} raqamli buyurtma bo'yicha dispute yopildi.",
+  "notif.disputeEvidenceUploaded.title": "Isbot yuklandi",
+  "notif.disputeEvidenceUploaded.body": "#{id} raqamli buyurtma dispute'i uchun yangi isbot yuklandi.",
 
   "orderDetails.openDispute": "Muammo haqida xabar berish",
   "orderDetails.disputeOpenNote": "Bu buyurtma bo'yicha ochiq dispute mavjud.",
@@ -1258,6 +1274,18 @@ const uz: Record<TranslationKey, string> = {
   "toast.disputeResolveError": "Dispute'ni hal qilib bo'lmadi",
   "toast.disputeClosed": "Dispute yopildi",
   "toast.disputeCloseError": "Dispute'ni yopib bo'lmadi",
+
+  "disputeDetails.evidence": "Isbotlar",
+  "disputeDetails.evidenceEmpty": "Hali hech qanday isbot yuklanmagan.",
+  "disputeDetails.uploadEvidence": "Isbot yuklash",
+  "disputeDetails.evidenceHint": "Sizning tomoningizni tasdiqlaydigan rasm yoki qisqa video kliplar.",
+  "disputeDetails.evidenceTypes": "JPG, PNG, WEBP, MP4, WEBM yoki MOV · har biri maks 20 MB",
+  "disputeDetails.uploadedBy": "{name} tomonidan yuklangan",
+  "toast.evidenceUploaded": "Isbot yuklandi",
+  "toast.evidenceUploadError": "Isbotni yuklab bo'lmadi",
+  "toast.evidenceInvalidType": "Faqat JPG, PNG, WEBP, MP4, WEBM yoki MOV fayllariga ruxsat berilgan.",
+  "toast.evidenceTooLarge": "Har bir fayl 20 MB yoki undan kichik bo'lishi kerak.",
+  "disputeDetails.conversation": "Xaridor va sotuvchi o'rtasidagi yozishmalar",
 };
 
 const ru: Record<TranslationKey, string> = {
@@ -1796,6 +1824,8 @@ const ru: Record<TranslationKey, string> = {
   "notif.disputeResolved.body": "Спор по заказу №{id} решён.",
   "notif.disputeClosed.title": "Спор закрыт",
   "notif.disputeClosed.body": "Спор по заказу №{id} закрыт.",
+  "notif.disputeEvidenceUploaded.title": "Загружены доказательства",
+  "notif.disputeEvidenceUploaded.body": "По спору заказа №{id} загружены новые доказательства.",
 
   "orderDetails.openDispute": "Сообщить о проблеме",
   "orderDetails.disputeOpenNote": "По этому заказу открыт спор.",
@@ -1863,6 +1893,18 @@ const ru: Record<TranslationKey, string> = {
   "toast.disputeResolveError": "Не удалось решить спор",
   "toast.disputeClosed": "Спор закрыт",
   "toast.disputeCloseError": "Не удалось закрыть спор",
+
+  "disputeDetails.evidence": "Доказательства",
+  "disputeDetails.evidenceEmpty": "Доказательства пока не загружены.",
+  "disputeDetails.uploadEvidence": "Загрузить доказательства",
+  "disputeDetails.evidenceHint": "Изображения или короткие видео, подтверждающие вашу позицию в споре.",
+  "disputeDetails.evidenceTypes": "JPG, PNG, WEBP, MP4, WEBM или MOV · макс 20 МБ каждый",
+  "disputeDetails.uploadedBy": "Загрузил(а) {name}",
+  "toast.evidenceUploaded": "Доказательства загружены",
+  "toast.evidenceUploadError": "Не удалось загрузить доказательства",
+  "toast.evidenceInvalidType": "Разрешены только файлы JPG, PNG, WEBP, MP4, WEBM или MOV.",
+  "toast.evidenceTooLarge": "Каждый файл должен быть не более 20 МБ.",
+  "disputeDetails.conversation": "Переписка между покупателем и продавцом",
 };
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {

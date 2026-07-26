@@ -38,6 +38,7 @@ namespace Infrastructure.Repositories
                                        .Include(d => d.Order).ThenInclude(o => o.Seller)
                                        .Include(d => d.Order).ThenInclude(o => o.Product)
                                        .Include(d => d.OpenedBy)
+                                       .Include(d => d.Evidence).ThenInclude(e => e.UploadedBy)
                                        .FirstOrDefaultAsync(d => d.Id == id);
             return dispute;
         }
@@ -49,6 +50,7 @@ namespace Infrastructure.Repositories
                                        .Include(d => d.Order).ThenInclude(o => o.Seller)
                                        .Include(d => d.Order).ThenInclude(o => o.Product)
                                        .Include(d => d.OpenedBy)
+                                       .Include(d => d.Evidence).ThenInclude(e => e.UploadedBy)
                                        .Where(d => d.OrderId == orderId)
                                        .OrderByDescending(d => d.CreatedAt)
                                        .FirstOrDefaultAsync();
@@ -96,6 +98,12 @@ namespace Infrastructure.Repositories
         {
             return await _context.Disputes.AsNoTracking()
                                        .AnyAsync(d => d.OrderId == orderId && OpenStatuses.Contains(d.Status));
+        }
+
+        public async Task AddEvidenceAsync(DisputeEvidence evidence)
+        {
+            await _context.DisputeEvidences.AddAsync(evidence);
+            await _context.SaveChangesAsync();
         }
     }
 }
