@@ -37,5 +37,12 @@ namespace Infrastructure.Repositories
                 .Include(c => c.Order)
                 .FirstOrDefaultAsync(c => c.Id == conversationId);
         }
+
+        public async Task CloseByOrderIdAsync(int orderId)
+        {
+            await _dbContext.Conversations
+                .Where(c => c.OrderId == orderId)
+                .ExecuteUpdateAsync(s => s.SetProperty(c => c.IsClosed, true));
+        }
     }
 }

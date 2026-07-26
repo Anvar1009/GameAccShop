@@ -22,17 +22,20 @@ namespace Application.Services
     {
         private readonly IDisputeRepository _disputeRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IConversationRepository _conversationRepository;
         private readonly INotificationService _notificationService;
         private readonly IUnitOfWork _unitOfWork;
 
         public DisputeService(
             IDisputeRepository disputeRepository,
             IOrderRepository orderRepository,
+            IConversationRepository conversationRepository,
             INotificationService notificationService,
             IUnitOfWork unitOfWork)
         {
             _disputeRepository = disputeRepository;
             _orderRepository = orderRepository;
+            _conversationRepository = conversationRepository;
             _notificationService = notificationService;
             _unitOfWork = unitOfWork;
         }
@@ -375,6 +378,10 @@ namespace Application.Services
                 }
 
                 await _orderRepository.UpdateAsync(order);
+
+                // Order is Completed from here on — same as the normal
+                // ReleasePaymentAsync flow, no more messages should go through.
+                await _conversationRepository.CloseByOrderIdAsync(order.Id);
 
                 await _unitOfWork.SaveChangesAsync();
                 await transaction.CommitAsync();

@@ -47,6 +47,7 @@ namespace Application.Services
             {
                 ConversationId = conversation.Id,
                 OrderId = conversation.OrderId,
+                IsClosed = conversation.IsClosed,
                 Messages = conversation.Messages.Select(m => new MessageResponse
                 {
                     Id = m.Id,
@@ -137,6 +138,11 @@ namespace Application.Services
                 senderId != order.SellerId)
             {
                 throw new UnauthorizedAccessException();
+            }
+
+            if (conv.IsClosed)
+            {
+                throw new ConversationClosedException();
             }
             Message message = new Message
             {

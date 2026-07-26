@@ -69,6 +69,7 @@ export interface ChatMessage {
 export interface ChatConversation {
   conversationId: number;
   orderId: number;
+  isClosed: boolean;
   messages: ChatMessage[];
 }
 

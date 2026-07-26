@@ -3,6 +3,7 @@ import {
   Check,
   CheckCheck,
   Clock,
+  Lock,
   MessageCircle,
   Send,
   Wifi,
@@ -43,6 +44,7 @@ export function ChatPanel({
     messages,
     connectionState,
     isLive,
+    isClosed,
     typing,
     sending,
     sendMessage,
@@ -210,36 +212,42 @@ export function ChatPanel({
       </div>
 
       {/* Composer */}
-      {!readOnly && (
-        <div className="border-t border-border p-3">
-          <div className="flex items-end gap-2">
-            <Textarea
-              value={draft}
-              onChange={(e) => {
-                setDraft(e.target.value);
-                notifyTyping();
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder={t("chat.placeholder")}
-              rows={1}
-              className="max-h-32 min-h-[42px] resize-none"
-            />
-            <Button
-              type="button"
-              size="icon"
-              onClick={handleSend}
-              disabled={!draft.trim() || sending}
-              loading={sending}
-              aria-label={t("chat.send")}
-            >
-              {!sending && <Send className="h-4 w-4" />}
-            </Button>
+      {!readOnly &&
+        (isClosed ? (
+          <div className="flex items-center gap-2 border-t border-border bg-secondary/40 px-4 py-3 text-sm text-muted-foreground">
+            <Lock className="h-4 w-4 shrink-0" />
+            {t("chat.closed")}
           </div>
-          <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
-            {t("chat.hint")}
-          </p>
-        </div>
-      )}
+        ) : (
+          <div className="border-t border-border p-3">
+            <div className="flex items-end gap-2">
+              <Textarea
+                value={draft}
+                onChange={(e) => {
+                  setDraft(e.target.value);
+                  notifyTyping();
+                }}
+                onKeyDown={handleKeyDown}
+                placeholder={t("chat.placeholder")}
+                rows={1}
+                className="max-h-32 min-h-[42px] resize-none"
+              />
+              <Button
+                type="button"
+                size="icon"
+                onClick={handleSend}
+                disabled={!draft.trim() || sending}
+                loading={sending}
+                aria-label={t("chat.send")}
+              >
+                {!sending && <Send className="h-4 w-4" />}
+              </Button>
+            </div>
+            <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
+              {t("chat.hint")}
+            </p>
+          </div>
+        ))}
     </div>
   );
 }

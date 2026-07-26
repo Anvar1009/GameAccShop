@@ -319,6 +319,7 @@ export function useChat(orderId: number, options?: { readOnly?: boolean }) {
     conversationId,
     connectionState,
     isLive: connectionState === "connected",
+    isClosed: convQuery.data?.isClosed ?? false,
     typing,
     sending,
     sendMessage,

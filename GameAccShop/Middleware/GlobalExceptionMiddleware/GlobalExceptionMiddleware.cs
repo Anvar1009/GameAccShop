@@ -96,6 +96,20 @@ namespace GameAccShop.Middleware.GlobalExceptionMiddleware
                 response.StatusCode = 403;
                 response.Message = ex.Message;
             }
+            else if (ex is ConversationNotFoundException)
+            {
+                context.Response.StatusCode = 404;
+
+                response.StatusCode = 404;
+                response.Message = ex.Message;
+            }
+            else if (ex is ConversationClosedException)
+            {
+                context.Response.StatusCode = 400;
+
+                response.StatusCode = 400;
+                response.Message = ex.Message;
+            }
             else
             {
                 context.Response.StatusCode = 500;

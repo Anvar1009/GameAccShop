@@ -553,6 +553,7 @@ const en = {
   "chat.invalidOrder": "Invalid order.",
   "chat.availableAfterOrder":
     "Chat with the seller becomes available once you place an order for this account.",
+  "chat.closed": "This conversation is closed — the order is complete.",
 
   // ── Notifications ──────────────────────────────────────────────────
   // Bodies take {id}, the order number. The backend stores its own Uzbek copy
@@ -1179,6 +1180,7 @@ const uz: Record<TranslationKey, string> = {
   "chat.invalidOrder": "Buyurtma noto'g'ri.",
   "chat.availableAfterOrder":
     "Sotuvchi bilan suhbat ushbu akkaunt uchun buyurtma bergandan so'ng ochiladi.",
+  "chat.closed": "Bu yozishmalar yopilgan — buyurtma yakunlangan.",
 
   "notif.title": "Bildirishnomalar",
   "notif.open": "Bildirishnomalarni ochish",
@@ -1798,6 +1800,7 @@ const ru: Record<TranslationKey, string> = {
   "chat.invalidOrder": "Неверный заказ.",
   "chat.availableAfterOrder":
     "Чат с продавцом станет доступен после оформления заказа на этот аккаунт.",
+  "chat.closed": "Эта переписка закрыта — заказ завершён.",
 
   "notif.title": "Уведомления",
   "notif.open": "Открыть уведомления",

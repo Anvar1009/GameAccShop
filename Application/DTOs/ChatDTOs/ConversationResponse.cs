@@ -12,6 +12,8 @@ namespace Application.DTOs.ChatDTOs
 
         public int OrderId { get; set; }
 
+        public bool IsClosed { get; set; }
+
         public List<MessageResponse> Messages { get; set; }
             = new();
     }
