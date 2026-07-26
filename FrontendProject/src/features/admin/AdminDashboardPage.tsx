@@ -1,6 +1,15 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, CreditCard, DollarSign, FileCheck2, ShieldAlert, Wallet } from "lucide-react";
-import { useAdminPayments } from "./admin-hooks";
+import {
+  ArrowRight,
+  ClipboardList,
+  CreditCard,
+  FileCheck2,
+  Package,
+  ShieldAlert,
+  Users,
+  Wallet,
+} from "lucide-react";
+import { useAdminOrders, useAdminPayments, useAdminStats } from "./admin-hooks";
 import { useTranslation } from "@/i18n/useTranslation";
 import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
@@ -8,27 +17,91 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState, ErrorState, PageLoader } from "@/components/states";
 import { PaymentStatusBadge } from "@/components/StatusBadge";
+import { DonutChart, type DonutSegment } from "@/components/charts/DonutChart";
+import { LineChart } from "@/components/charts/LineChart";
 import { formatDate, formatPrice } from "@/lib/format";
-import { PaymentStatus, isPaymentStatus } from "@/lib/enums";
+import {
+  OrderStatus,
+  PaymentStatus,
+  ProductStatus,
+  isPaymentStatus,
+  orderStatusMeta,
+  paymentStatusMeta,
+  productStatusMeta,
+} from "@/lib/enums";
+
+const ORDER_STATUSES = [
+  OrderStatus.WaitingPayment,
+  OrderStatus.PaymentConfirmed,
+  OrderStatus.TransferInProgress,
+  OrderStatus.BuyerConfirmed,
+  OrderStatus.Completed,
+  OrderStatus.Cancelled,
+  OrderStatus.Disputed,
+];
+
+const PAYMENT_STATUSES = [
+  PaymentStatus.Pending,
+  PaymentStatus.Confirmed,
+  PaymentStatus.Released,
+  PaymentStatus.Cancelled,
+];
 
 export function AdminDashboardPage() {
   const { t } = useTranslation();
-  const { data, isLoading, isError, refetch } = useAdminPayments();
+  const statsQuery = useAdminStats();
+  const paymentsQuery = useAdminPayments();
+  const ordersQuery = useAdminOrders();
+
+  const isLoading = statsQuery.isLoading || paymentsQuery.isLoading || ordersQuery.isLoading;
+  const isError = statsQuery.isError || paymentsQuery.isError || ordersQuery.isError;
 
   if (isLoading) return <PageLoader label={t("adminDash.loading")} />;
-  if (isError)
+  if (isError || !statsQuery.data)
     return (
       <div className="page-container">
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState
+          onRetry={() => {
+            statsQuery.refetch();
+            paymentsQuery.refetch();
+            ordersQuery.refetch();
+          }}
+        />
       </div>
     );
 
-  const payments = data ?? [];
+  const stats = statsQuery.data;
+  const payments = paymentsQuery.data ?? [];
+  const orders = ordersQuery.data ?? [];
+
   const pending = payments.filter((p) => isPaymentStatus(p.status, PaymentStatus.Pending));
-  const confirmed = payments.filter((p) => isPaymentStatus(p.status, PaymentStatus.Confirmed));
   const released = payments.filter((p) => isPaymentStatus(p.status, PaymentStatus.Released));
-  const volume = released.reduce((sum, p) => sum + (p.amount ?? 0), 0);
+  const releasedVolume = released.reduce((sum, p) => sum + (p.amount ?? 0), 0);
   const queue = [...pending].sort((a, b) => b.paymentId - a.paymentId).slice(0, 6);
+
+  const orderSegments: DonutSegment[] = ORDER_STATUSES.map((status) => ({
+    key: String(status),
+    label: t(orderStatusMeta(status).labelKey),
+    value: orders.filter((o) => o.status === status).length,
+  }));
+
+  const paymentSegments: DonutSegment[] = PAYMENT_STATUSES.map((status) => ({
+    key: String(status),
+    label: t(paymentStatusMeta(status).labelKey),
+    value: payments.filter((p) => p.status === status).length,
+  }));
+
+  const productSegments: DonutSegment[] = [
+    { key: "active", label: t(productStatusMeta(ProductStatus.Active).labelKey), value: stats.activeProducts },
+    { key: "reserved", label: t(productStatusMeta(ProductStatus.Reserved).labelKey), value: stats.reservedProducts },
+    { key: "sold", label: t(productStatusMeta(ProductStatus.Sold).labelKey), value: stats.soldProducts },
+    { key: "deleted", label: t(productStatusMeta(ProductStatus.Deleted).labelKey), value: stats.deletedProducts },
+  ];
+
+  const registrationPoints = stats.userRegistrationTrend.map((p) => ({
+    date: p.date,
+    value: p.count,
+  }));
 
   return (
     <div className="page-container">
@@ -38,11 +111,58 @@ export function AdminDashboardPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label={t("adminDash.awaitingReview")} value={pending.length} icon={FileCheck2} tone="warning" hint={t("adminDash.awaitingReviewHint")} />
-        <StatCard label={t("adminDash.confirmed")} value={confirmed.length} icon={CreditCard} tone="primary" />
-        <StatCard label={t("adminDash.released")} value={released.length} icon={Wallet} tone="success" />
-        <StatCard label={t("adminDash.releasedVolume")} value={formatPrice(volume)} icon={DollarSign} tone="success" />
+        <StatCard label={t("adminDash.totalUsers")} value={stats.totalUsers} icon={Users} tone="primary" />
+        <StatCard label={t("adminDash.totalProducts")} value={stats.totalProducts} icon={Package} tone="primary" />
+        <StatCard label={t("adminDash.totalOrders")} value={orders.length} icon={ClipboardList} tone="primary" />
+        <StatCard
+          label={t("adminDash.pendingPayments")}
+          value={pending.length}
+          icon={FileCheck2}
+          tone="warning"
+          hint={t("adminDash.awaitingReviewHint")}
+        />
       </div>
+
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("adminDash.ordersByStatus")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DonutChart segments={orderSegments} centerLabel={t("table.order")} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("adminDash.paymentsByStatus")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <DonutChart segments={paymentSegments} centerLabel={t("adminReview.payment")} />
+            <p className="border-t border-border pt-3 text-center text-xs text-muted-foreground">
+              {t("adminDash.releasedVolume")}: <span className="font-semibold text-foreground">{formatPrice(releasedVolume)}</span>
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("adminDash.productsByStatus")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DonutChart segments={productSegments} centerLabel={t("adminDash.totalProducts")} />
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle>{t("adminDash.registrationTrend")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <LineChart points={registrationPoints} />
+        </CardContent>
+      </Card>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">

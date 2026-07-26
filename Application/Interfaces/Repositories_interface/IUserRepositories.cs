@@ -18,6 +18,10 @@ namespace Application.Interfaces.Repositories_interface
         /// </summary>
         public Task<List<User>> GetAdminsAsync();
 
+        public Task<int> CountAsync();
+
+        /// <summary>Registrations per calendar day (UTC), for users created on or after <paramref name="fromDateUtc"/>.</summary>
+        public Task<Dictionary<DateTime, int>> GetRegistrationCountsByDayAsync(DateTime fromDateUtc);
 
     }
 }

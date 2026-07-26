@@ -65,6 +65,7 @@ namespace GameAccShop
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<INotificationPublisher, SignalRNotificationPublisher>();
             builder.Services.AddScoped<IDisputeService, DisputeService>();
+            builder.Services.AddScoped<IAdminStatsService, AdminStatsService>();
 
 
             builder.Services.AddAuthentication(options =>

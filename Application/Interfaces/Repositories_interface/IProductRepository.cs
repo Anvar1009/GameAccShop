@@ -11,6 +11,8 @@ namespace Application.Interfaces.Repositories_interface
 
         Task<List<Product>> GetAllAsync();
 
+        Task<Dictionary<ProductStatus, int>> GetStatusCountsAsync();
+
         Task<Product?> GetByIdAsync(int id);
 
         Task<List<Product>> GetSellerProductsAsync(int sellerId);

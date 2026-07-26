@@ -238,6 +238,23 @@ export interface AdminPaymentDetails {
   canReleasePayment: boolean;
 }
 
+// RegistrationTrendPoint
+export interface RegistrationTrendPoint {
+  date: string;
+  count: number;
+}
+
+// AdminStatsResponse
+export interface AdminStats {
+  totalUsers: number;
+  totalProducts: number;
+  activeProducts: number;
+  reservedProducts: number;
+  soldProducts: number;
+  deletedProducts: number;
+  userRegistrationTrend: RegistrationTrendPoint[];
+}
+
 // AdminOrderResponse
 export interface AdminOrder {
   orderId: number;

@@ -6,6 +6,7 @@ using Infrastructure.EntityModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Infrastructure.Repositories
@@ -43,6 +44,20 @@ namespace Infrastructure.Repositories
             return await _dbContextModel.Users.AsNoTracking()
                 .Where(u => u.Role == Role.Admin || u.Role == Role.Super_Aamin)
                 .ToListAsync();
+        }
+
+        public async Task<int> CountAsync()
+        {
+            return await _dbContextModel.Users.CountAsync();
+        }
+
+        public async Task<Dictionary<DateTime, int>> GetRegistrationCountsByDayAsync(DateTime fromDateUtc)
+        {
+            return await _dbContextModel.Users
+                .Where(u => u.CreatedAt >= fromDateUtc)
+                .GroupBy(u => u.CreatedAt.Date)
+                .Select(g => new { Date = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.Date, x => x.Count);
         }
 
         public async Task<User> Register(User user)

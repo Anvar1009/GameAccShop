@@ -105,6 +105,11 @@ const en = {
   "status.dispute.resolvedBuyer": "Resolved for buyer",
   "status.dispute.resolvedSeller": "Resolved for seller",
   "status.dispute.closed": "Closed",
+  // ── Status: product ────────────────────────────────────────────────
+  "status.product.active": "Active",
+  "status.product.reserved": "Reserved",
+  "status.product.sold": "Sold",
+  "status.product.deleted": "Deleted",
 
   // ── Payment methods ────────────────────────────────────────────────
   "method.card": "Card transfer",
@@ -665,6 +670,17 @@ const en = {
   "toast.evidenceInvalidType": "Only JPG, PNG, WEBP, MP4, WEBM or MOV files are allowed.",
   "toast.evidenceTooLarge": "Each file must be 20 MB or smaller.",
   "disputeDetails.conversation": "Conversation between buyer and seller",
+
+  // ── Admin stats & charts ──────────────────────────────────────────
+  "charts.noData": "No data yet",
+  "adminDash.totalUsers": "Total users",
+  "adminDash.totalProducts": "Total products",
+  "adminDash.totalOrders": "Total orders",
+  "adminDash.pendingPayments": "Pending payments",
+  "adminDash.ordersByStatus": "Orders by status",
+  "adminDash.paymentsByStatus": "Payments by status",
+  "adminDash.productsByStatus": "Products by status",
+  "adminDash.registrationTrend": "User registrations (last 30 days)",
 } as const;
 
 export type TranslationKey = keyof typeof en;
@@ -757,6 +773,10 @@ const uz: Record<TranslationKey, string> = {
   "status.dispute.resolvedBuyer": "Xaridor foydasiga hal qilindi",
   "status.dispute.resolvedSeller": "Sotuvchi foydasiga hal qilindi",
   "status.dispute.closed": "Yopilgan",
+  "status.product.active": "Faol",
+  "status.product.reserved": "Band qilingan",
+  "status.product.sold": "Sotilgan",
+  "status.product.deleted": "O'chirilgan",
 
   "method.card": "Karta o'tkazmasi",
   "method.click": "Click",
@@ -1288,6 +1308,16 @@ const uz: Record<TranslationKey, string> = {
   "toast.evidenceInvalidType": "Faqat JPG, PNG, WEBP, MP4, WEBM yoki MOV fayllariga ruxsat berilgan.",
   "toast.evidenceTooLarge": "Har bir fayl 20 MB yoki undan kichik bo'lishi kerak.",
   "disputeDetails.conversation": "Xaridor va sotuvchi o'rtasidagi yozishmalar",
+
+  "charts.noData": "Hali ma'lumot yo'q",
+  "adminDash.totalUsers": "Jami foydalanuvchilar",
+  "adminDash.totalProducts": "Jami mahsulotlar",
+  "adminDash.totalOrders": "Jami buyurtmalar",
+  "adminDash.pendingPayments": "Kutilayotgan to'lovlar",
+  "adminDash.ordersByStatus": "Buyurtmalar holati bo'yicha",
+  "adminDash.paymentsByStatus": "To'lovlar holati bo'yicha",
+  "adminDash.productsByStatus": "Mahsulotlar holati bo'yicha",
+  "adminDash.registrationTrend": "Ro'yxatdan o'tganlar (so'nggi 30 kun)",
 };
 
 const ru: Record<TranslationKey, string> = {
@@ -1378,6 +1408,10 @@ const ru: Record<TranslationKey, string> = {
   "status.dispute.resolvedBuyer": "Решён в пользу покупателя",
   "status.dispute.resolvedSeller": "Решён в пользу продавца",
   "status.dispute.closed": "Закрыт",
+  "status.product.active": "Активен",
+  "status.product.reserved": "Забронирован",
+  "status.product.sold": "Продан",
+  "status.product.deleted": "Удалён",
 
   "method.card": "Перевод на карту",
   "method.click": "Click",
@@ -1908,6 +1942,16 @@ const ru: Record<TranslationKey, string> = {
   "toast.evidenceInvalidType": "Разрешены только файлы JPG, PNG, WEBP, MP4, WEBM или MOV.",
   "toast.evidenceTooLarge": "Каждый файл должен быть не более 20 МБ.",
   "disputeDetails.conversation": "Переписка между покупателем и продавцом",
+
+  "charts.noData": "Данных пока нет",
+  "adminDash.totalUsers": "Всего пользователей",
+  "adminDash.totalProducts": "Всего товаров",
+  "adminDash.totalOrders": "Всего заказов",
+  "adminDash.pendingPayments": "Ожидают оплаты",
+  "adminDash.ordersByStatus": "Заказы по статусу",
+  "adminDash.paymentsByStatus": "Платежи по статусу",
+  "adminDash.productsByStatus": "Товары по статусу",
+  "adminDash.registrationTrend": "Регистрации пользователей (последние 30 дней)",
 };
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {

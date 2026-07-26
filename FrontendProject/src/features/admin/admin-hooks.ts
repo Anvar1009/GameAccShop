@@ -6,12 +6,17 @@ import { adminApi } from "./admin-api";
 import type { PaymentAccountRequest } from "@/types/api";
 
 export const adminKeys = {
+  stats: ["admin", "stats"] as const,
   payments: ["admin", "payments"] as const,
   paymentDetail: (id: number) => ["admin", "payments", id] as const,
   orders: ["admin", "orders"] as const,
   orderDetail: (id: number) => ["admin", "orders", id] as const,
   paymentAccount: ["admin", "payment-account"] as const,
 };
+
+export function useAdminStats() {
+  return useQuery({ queryKey: adminKeys.stats, queryFn: adminApi.getStats });
+}
 
 export function useAdminPayments() {
   return useQuery({ queryKey: adminKeys.payments, queryFn: adminApi.getPayments });

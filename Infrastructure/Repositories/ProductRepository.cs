@@ -4,6 +4,7 @@ using Infrastructure.EntityModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Infrastructure.Repositories
@@ -50,6 +51,14 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
 
             return result;
+        }
+
+        public async Task<Dictionary<ProductStatus, int>> GetStatusCountsAsync()
+        {
+            return await _dbContext.products
+                .GroupBy(p => p.Status)
+                .Select(g => new { g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.Key, x => x.Count);
         }
 
         public async Task<Product?> GetByIdAsync(int id)

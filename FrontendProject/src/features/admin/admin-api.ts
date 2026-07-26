@@ -4,11 +4,15 @@ import type {
   AdminOrderDetails,
   AdminPayment,
   AdminPaymentDetails,
+  AdminStats,
   PaymentAccount,
   PaymentAccountRequest,
 } from "@/types/api";
 
 export const adminApi = {
+  // Stats
+  getStats: () => api.get<AdminStats>("/api/AdminStats").then((r) => r.data),
+
   // Payments
   getPayments: () => api.get<AdminPayment[]>("/api/AdminPayment").then((r) => r.data),
 

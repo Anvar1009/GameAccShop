@@ -52,6 +52,14 @@ export enum DisputeStatus {
   Closed = 6,
 }
 
+// Domain.Models.ProductsModels.ProductStatus
+export enum ProductStatus {
+  Active = 0,
+  Reserved = 1,
+  Sold = 2,
+  Deleted = 3,
+}
+
 // Domain.Models.ChatModels.NotificationAudience — which side of the order the
 // recipient is on. The type alone is ambiguous (PaymentConfirmed goes to both
 // buyer and seller), so this is what decides where a notification links to.
@@ -101,6 +109,13 @@ const DISPUTE_STATUS_META: Record<DisputeStatus, Meta> = {
   [DisputeStatus.ResolvedBuyer]: { labelKey: "status.dispute.resolvedBuyer", tone: "success" },
   [DisputeStatus.ResolvedSeller]: { labelKey: "status.dispute.resolvedSeller", tone: "success" },
   [DisputeStatus.Closed]: { labelKey: "status.dispute.closed", tone: "neutral" },
+};
+
+const PRODUCT_STATUS_META: Record<ProductStatus, Meta> = {
+  [ProductStatus.Active]: { labelKey: "status.product.active", tone: "success" },
+  [ProductStatus.Reserved]: { labelKey: "status.product.reserved", tone: "warning" },
+  [ProductStatus.Sold]: { labelKey: "status.product.sold", tone: "info" },
+  [ProductStatus.Deleted]: { labelKey: "status.product.deleted", tone: "neutral" },
 };
 
 /**
@@ -223,6 +238,11 @@ export function isDisputeStatus(
   status: DisputeStatus
 ): boolean {
   return normalize<DisputeStatus>(value, DisputeStatus as never) === status;
+}
+
+export function productStatusMeta(value: number | string | null | undefined): Meta {
+  const key = normalize<ProductStatus>(value, ProductStatus as never);
+  return (key != null && PRODUCT_STATUS_META[key]) || { labelKey: "status.unknown", tone: "neutral" };
 }
 
 /** Returns a translation key for the payment method (localize via t/translate). */
