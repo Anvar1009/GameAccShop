@@ -47,6 +47,7 @@ const en = {
   "common.viewAll": "View all",
   "common.saveChanges": "Save changes",
   "common.tryAgain": "Try again",
+  "common.reset": "Reset",
   "common.loading": "Loading…",
   "common.errorTitle": "Couldn't load this",
   "common.paymentMethod": "Payment method",
@@ -217,6 +218,9 @@ const en = {
   "catalog.noneTitle": "No accounts found",
   "catalog.noneDescFiltered": "Try adjusting your search or filters.",
   "catalog.noneDesc": "No accounts have been listed yet.",
+  "catalog.filters": "Filters",
+  "catalog.priceRange": "Price range",
+  "catalog.strengthRange": "Account strength",
 
   // ── Product details ────────────────────────────────────────────────
   "productDetails.signInTitle": "Sign in to view this account",
@@ -720,6 +724,7 @@ const uz: Record<TranslationKey, string> = {
   "common.viewAll": "Hammasini ko'rish",
   "common.saveChanges": "O'zgarishlarni saqlash",
   "common.tryAgain": "Qayta urinish",
+  "common.reset": "Tozalash",
   "common.loading": "Yuklanmoqda…",
   "common.errorTitle": "Buni yuklab bo'lmadi",
   "common.paymentMethod": "To'lov usuli",
@@ -876,6 +881,9 @@ const uz: Record<TranslationKey, string> = {
   "catalog.noneTitle": "Akkauntlar topilmadi",
   "catalog.noneDescFiltered": "Qidiruv yoki filtrlarni o'zgartirib ko'ring.",
   "catalog.noneDesc": "Hali akkauntlar qo'yilmagan.",
+  "catalog.filters": "Filtrlar",
+  "catalog.priceRange": "Narx oralig'i",
+  "catalog.strengthRange": "Akkaunt kuchi",
 
   "productDetails.signInTitle": "Bu akkauntni ko'rish uchun kiring",
   "productDetails.signInDesc":
@@ -1355,6 +1363,7 @@ const ru: Record<TranslationKey, string> = {
   "common.viewAll": "Смотреть все",
   "common.saveChanges": "Сохранить изменения",
   "common.tryAgain": "Повторить",
+  "common.reset": "Сбросить",
   "common.loading": "Загрузка…",
   "common.errorTitle": "Не удалось загрузить",
   "common.paymentMethod": "Способ оплаты",
@@ -1511,6 +1520,9 @@ const ru: Record<TranslationKey, string> = {
   "catalog.noneTitle": "Аккаунты не найдены",
   "catalog.noneDescFiltered": "Попробуйте изменить поиск или фильтры.",
   "catalog.noneDesc": "Аккаунтов пока нет.",
+  "catalog.filters": "Фильтры",
+  "catalog.priceRange": "Диапазон цены",
+  "catalog.strengthRange": "Сила аккаунта",
 
   "productDetails.signInTitle": "Войдите, чтобы посмотреть этот аккаунт",
   "productDetails.signInDesc":
