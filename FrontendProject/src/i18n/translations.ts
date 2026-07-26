@@ -455,6 +455,7 @@ const en = {
   "adminReview.confirmPayment": "Confirm payment",
   "adminReview.releaseToSeller": "Release to seller",
   "adminReview.noActions": "No actions available for this payment in its current state.",
+  "adminReview.waitingForReceipt": "Waiting for the buyer to upload a payment receipt — nothing to confirm yet.",
   "adminReview.decisionNote":
     "Confirm once the receipt is valid — the seller then transfers the account. Release pays the seller after the buyer confirms delivery, completing the order.",
   "adminReview.payment": "Payment",
@@ -1104,6 +1105,7 @@ const uz: Record<TranslationKey, string> = {
   "adminReview.confirmPayment": "To'lovni tasdiqlash",
   "adminReview.releaseToSeller": "Sotuvchiga chiqarish",
   "adminReview.noActions": "Bu to'lov uchun hozirgi holatda hech qanday amal mavjud emas.",
+  "adminReview.waitingForReceipt": "Xaridor hali to'lov chekini yuklamagan — tasdiqlash uchun hech narsa yo'q.",
   "adminReview.decisionNote":
     "Chek to'g'ri bo'lsa tasdiqlang — shundan so'ng sotuvchi akkauntni o'tkazadi. Chiqarish xaridor yetkazishni tasdiqlagandan so'ng sotuvchiga to'laydi va buyurtmani yakunlaydi.",
   "adminReview.payment": "To'lov",
@@ -1742,6 +1744,7 @@ const ru: Record<TranslationKey, string> = {
   "adminReview.confirmPayment": "Подтвердить платёж",
   "adminReview.releaseToSeller": "Выплатить продавцу",
   "adminReview.noActions": "Для этого платежа в текущем состоянии нет доступных действий.",
+  "adminReview.waitingForReceipt": "Покупатель ещё не загрузил чек об оплате — подтверждать пока нечего.",
   "adminReview.decisionNote":
     "Подтвердите, когда чек верен — затем продавец передаёт аккаунт. Выплата отправляет средства продавцу после подтверждения доставки покупателем, завершая заказ.",
   "adminReview.payment": "Платёж",

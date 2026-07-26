@@ -256,7 +256,9 @@ namespace Application.Services
             var order = payment.Order;
             if (order == null)
                 return false;
-            return order.Status == OrderStatus.WaitingPayment && payment.Status == PaymentStatus.Pending;
+            return order.Status == OrderStatus.WaitingPayment
+                && payment.Status == PaymentStatus.Pending
+                && !string.IsNullOrWhiteSpace(payment.ReceiptUrl);
         }
 
         private bool CanReleasePayment(Order order, Payment payment)
@@ -355,6 +357,11 @@ namespace Application.Services
             if (order.Status != OrderStatus.WaitingPayment)
             {
                 throw new InvalidOperationException("Order is not waiting for payment.");
+            }
+
+            if (string.IsNullOrWhiteSpace(payment.ReceiptUrl))
+            {
+                throw new BadRequestException("Buyer has not uploaded a payment receipt yet.");
             }
 
             await using var transaction = await _unitOfWork.BeginTransactionAsync();

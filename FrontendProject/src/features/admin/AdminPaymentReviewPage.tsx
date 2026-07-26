@@ -45,7 +45,10 @@ export function AdminPaymentReviewPage() {
 
   const receipt = payment.receiptUrl;
   const receiptIsPdf = !!receipt && /\.pdf$/i.test(receipt);
-  const showConfirm = payment.canConfirmPayment || isPaymentStatus(payment.status, PaymentStatus.Pending);
+  const isPending = isPaymentStatus(payment.status, PaymentStatus.Pending);
+  // A receipt is required before admin can confirm — mirrors the backend check.
+  const showConfirm = payment.canConfirmPayment || (isPending && !!receipt);
+  const waitingForReceipt = isPending && !receipt;
   const showRelease = payment.canReleasePayment || isPaymentStatus(payment.status, PaymentStatus.Confirmed);
 
   const doConfirm = async () => {
@@ -160,7 +163,12 @@ export function AdminPaymentReviewPage() {
                   <Wallet className="h-4 w-4" /> {t("adminReview.releaseToSeller")}
                 </Button>
               )}
-              {!showConfirm && !showRelease && (
+              {waitingForReceipt && (
+                <p className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-amber-700">
+                  {t("adminReview.waitingForReceipt")}
+                </p>
+              )}
+              {!showConfirm && !showRelease && !waitingForReceipt && (
                 <p className="text-sm text-muted-foreground">
                   {t("adminReview.noActions")}
                 </p>
