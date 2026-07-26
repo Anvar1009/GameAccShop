@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import {
   Bell,
   BadgeCheck,
+  FileSearch,
+  Gavel,
   ReceiptText,
+  ShieldAlert,
   ShoppingCart,
   UserCheck,
   Wallet,
@@ -33,6 +36,11 @@ const ICONS: Record<NotificationType, typeof Bell> = {
   [NotificationType.PaymentConfirmed]: BadgeCheck,
   [NotificationType.BuyerConfirmed]: UserCheck,
   [NotificationType.PaymentReleased]: Wallet,
+  [NotificationType.DisputeOpened]: ShieldAlert,
+  [NotificationType.DisputeUnderReview]: FileSearch,
+  [NotificationType.DisputeEvidenceRequested]: FileSearch,
+  [NotificationType.DisputeResolved]: Gavel,
+  [NotificationType.DisputeClosed]: Gavel,
 };
 
 const TONE_CLASS: Record<BadgeTone, string> = {

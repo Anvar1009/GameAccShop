@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, CreditCard, DollarSign, FileCheck2, Wallet } from "lucide-react";
+import { ArrowRight, CreditCard, DollarSign, FileCheck2, ShieldAlert, Wallet } from "lucide-react";
 import { useAdminPayments } from "./admin-hooks";
 import { useTranslation } from "@/i18n/useTranslation";
 import { PageHeader } from "@/components/PageHeader";
@@ -98,6 +98,11 @@ export function AdminDashboardPage() {
             <Button asChild variant="outline" className="w-full justify-start">
               <Link to="/admin/orders">
                 <FileCheck2 className="h-4 w-4" /> {t("adminDash.viewAllOrders")}
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full justify-start">
+              <Link to="/admin/disputes">
+                <ShieldAlert className="h-4 w-4" /> {t("nav.disputes")}
               </Link>
             </Button>
             <Button asChild variant="outline" className="w-full justify-start">

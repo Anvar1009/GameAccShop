@@ -24,6 +24,7 @@ import { OrderStatusBadge, PaymentStatusBadge } from "@/components/StatusBadge";
 import { OrderTimeline } from "@/components/OrderTimeline";
 import { ErrorState, PageLoader } from "@/components/states";
 import { ChatPanel } from "@/features/chat/ChatPanel";
+import { OpenDisputeButton } from "@/features/disputes/OpenDisputeButton";
 import { formatDateTime, formatPrice } from "@/lib/format";
 import { OrderStatus, PaymentStatus, isOrderStatus, isPaymentStatus, paymentMethodKey } from "@/lib/enums";
 
@@ -49,6 +50,7 @@ export function BuyerOrderDetailsPage() {
     isOrderStatus(order.status, OrderStatus.WaitingPayment) &&
     isPaymentStatus(order.paymentStatus, PaymentStatus.Pending);
   const paymentConfirmed = isPaymentStatus(order.paymentStatus, PaymentStatus.Confirmed);
+  const isDisputed = isOrderStatus(order.status, OrderStatus.Disputed);
 
   const handleConfirm = async () => {
     await confirmOrder.mutateAsync(orderId);
@@ -157,7 +159,7 @@ export function BuyerOrderDetailsPage() {
                   <XCircle className="h-4 w-4" /> {t("orderDetails.cancelOrder")}
                 </Button>
               )}
-              {!needsPayment && !order.canConfirmOrder && !order.canCancelOrder && (
+              {!needsPayment && !order.canConfirmOrder && !order.canCancelOrder && !isDisputed && (
                 <p className="text-sm text-muted-foreground">
                   {t("orderDetails.noActions")}
                 </p>
@@ -166,6 +168,16 @@ export function BuyerOrderDetailsPage() {
                 <p className="rounded-lg bg-accent/50 px-3 py-2 text-xs text-muted-foreground">
                   {t("orderDetails.paymentConfirmedNote")}
                 </p>
+              )}
+              {isDisputed ? (
+                <p className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-amber-700">
+                  {t("orderDetails.disputeOpenNote")}{" "}
+                  <Link to="/disputes" className="font-medium underline">
+                    {t("orderDetails.viewMyDisputes")}
+                  </Link>
+                </p>
+              ) : (
+                order.canOpenDispute && <OpenDisputeButton orderId={order.orderId} />
               )}
             </CardContent>
           </Card>

@@ -12,20 +12,24 @@ namespace Domain.Models.OrdersModel
         public int Id { get; set; }
 
         public int OrderId { get; set; }
+
         public Order Order { get; set; }
 
         // Buyer yoki Seller
         public int OpenedById { get; set; }
-        public User OpenedBy { get; set; }
 
-        public string Reason { get; set; }
+        public User OpenedBy { get; set; }
 
         public string? AdminComment { get; set; }
 
-        public DisputeStatus Status { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
         public DateTime? ResolvedAt { get; set; }
+
+        public string Reason { get; set; } = string.Empty;
+
+        public DisputeStatus Status { get; set; } = DisputeStatus.Open;
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
+
+
 }

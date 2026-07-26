@@ -32,5 +32,20 @@ namespace Application.Interfaces.ServiceInterface
 
         /// <summary>Admin pulni sotuvchiga chiqardi → sotuvchi va xaridorga.</summary>
         Task NotifyPaymentReleasedAsync(Order order);
+
+        /// <summary>Buyer yoki Seller dispute ochdi → adminlarga.</summary>
+        Task NotifyDisputeOpenedAsync(Dispute dispute);
+
+        /// <summary>Admin dispute'ni ko'rib chiqishni boshladi → buyer va sellerga.</summary>
+        Task NotifyDisputeUnderReviewAsync(Dispute dispute);
+
+        /// <summary>Admin qo'shimcha isbot so'radi → buyer va sellerga.</summary>
+        Task NotifyDisputeEvidenceRequestedAsync(Dispute dispute);
+
+        /// <summary>Admin dispute'ni hal qildi → buyer va sellerga.</summary>
+        Task NotifyDisputeResolvedAsync(Dispute dispute);
+
+        /// <summary>Admin dispute'ni yopdi → buyer va sellerga.</summary>
+        Task NotifyDisputeClosedAsync(Dispute dispute);
     }
 }

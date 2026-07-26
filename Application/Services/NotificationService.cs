@@ -139,6 +139,104 @@ namespace Application.Services
         }
 
 
+        public async Task NotifyDisputeOpenedAsync(Dispute dispute)
+        {
+            var admins = await BuildForAdminsAsync(
+                NotificationType.DisputeOpened,
+                "Yangi dispute ochildi",
+                $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute ochildi. Sababi: {dispute.Reason}",
+                dispute.OrderId);
+
+            await DispatchAsync(admins.ToArray());
+        }
+
+        public async Task NotifyDisputeUnderReviewAsync(Dispute dispute)
+        {
+            var order = dispute.Order;
+
+            await DispatchAsync(
+                Build(order.BuyerId,
+                    NotificationAudience.Buyer,
+                    NotificationType.DisputeUnderReview,
+                    "Dispute ko'rib chiqilmoqda",
+                    $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute admin tomonidan ko'rib chiqilmoqda.",
+                    dispute.OrderId),
+                Build(order.SellerId,
+                    NotificationAudience.Seller,
+                    NotificationType.DisputeUnderReview,
+                    "Dispute ko'rib chiqilmoqda",
+                    $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute admin tomonidan ko'rib chiqilmoqda.",
+                    dispute.OrderId));
+        }
+
+        public async Task NotifyDisputeEvidenceRequestedAsync(Dispute dispute)
+        {
+            var order = dispute.Order;
+
+            await DispatchAsync(
+                Build(order.BuyerId,
+                    NotificationAudience.Buyer,
+                    NotificationType.DisputeEvidenceRequested,
+                    "Qo'shimcha isbot talab qilinmoqda",
+                    $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute uchun admin qo'shimcha isbot so'ramoqda.",
+                    dispute.OrderId),
+                Build(order.SellerId,
+                    NotificationAudience.Seller,
+                    NotificationType.DisputeEvidenceRequested,
+                    "Qo'shimcha isbot talab qilinmoqda",
+                    $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute uchun admin qo'shimcha isbot so'ramoqda.",
+                    dispute.OrderId));
+        }
+
+        public async Task NotifyDisputeResolvedAsync(Dispute dispute)
+        {
+            var order = dispute.Order;
+
+            var resolvedInFavorOfBuyer = dispute.Status == DisputeStatus.ResolvedBuyer;
+
+            var buyerMessage = resolvedInFavorOfBuyer
+                ? $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute siz foydangizga hal qilindi."
+                : $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute sotuvchi foydasiga hal qilindi.";
+
+            var sellerMessage = resolvedInFavorOfBuyer
+                ? $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute xaridor foydasiga hal qilindi."
+                : $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute siz foydangizga hal qilindi.";
+
+            await DispatchAsync(
+                Build(order.BuyerId,
+                    NotificationAudience.Buyer,
+                    NotificationType.DisputeResolved,
+                    "Dispute hal qilindi",
+                    buyerMessage,
+                    dispute.OrderId),
+                Build(order.SellerId,
+                    NotificationAudience.Seller,
+                    NotificationType.DisputeResolved,
+                    "Dispute hal qilindi",
+                    sellerMessage,
+                    dispute.OrderId));
+        }
+
+        public async Task NotifyDisputeClosedAsync(Dispute dispute)
+        {
+            var order = dispute.Order;
+
+            await DispatchAsync(
+                Build(order.BuyerId,
+                    NotificationAudience.Buyer,
+                    NotificationType.DisputeClosed,
+                    "Dispute yopildi",
+                    $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute yopildi.",
+                    dispute.OrderId),
+                Build(order.SellerId,
+                    NotificationAudience.Seller,
+                    NotificationType.DisputeClosed,
+                    "Dispute yopildi",
+                    $"#{dispute.OrderId} raqamli buyurtma bo'yicha dispute yopildi.",
+                    dispute.OrderId));
+        }
+
+
         private static Notification Build(
             int userId,
             NotificationAudience audience,

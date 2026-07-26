@@ -10,6 +10,7 @@ import { OrderStatusBadge, PaymentStatusBadge } from "@/components/StatusBadge";
 import { OrderTimeline } from "@/components/OrderTimeline";
 import { ErrorState, PageLoader } from "@/components/states";
 import { ChatPanel } from "@/features/chat/ChatPanel";
+import { OpenDisputeButton } from "@/features/disputes/OpenDisputeButton";
 import { formatDateTime, formatPrice } from "@/lib/format";
 import { OrderStatus, PaymentStatus, isOrderStatus, isPaymentStatus, paymentMethodKey } from "@/lib/enums";
 
@@ -31,6 +32,7 @@ export function SellerOrderDetailsPage() {
     isPaymentStatus(order.paymentStatus, PaymentStatus.Confirmed) ||
     isOrderStatus(order.status, OrderStatus.PaymentConfirmed) ||
     isOrderStatus(order.status, OrderStatus.TransferInProgress);
+  const isDisputed = isOrderStatus(order.status, OrderStatus.Disputed);
 
   return (
     <div className="page-container">
@@ -91,22 +93,30 @@ export function SellerOrderDetailsPage() {
             <CardHeader>
               <CardTitle>{t("sellerOrderDetails.whatToDo")}</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
               {paymentConfirmed ? (
-                <div className="space-y-3">
-                  <div className="flex items-start gap-2 rounded-lg border border-success/20 bg-success/5 px-3 py-2 text-sm text-foreground">
-                    <Send className="mt-0.5 h-4 w-4 shrink-0 text-success" />
-                    <span>
-                      {t("sellerOrderDetails.paymentConfirmedNote")}
-                    </span>
-                  </div>
+                <div className="flex items-start gap-2 rounded-lg border border-success/20 bg-success/5 px-3 py-2 text-sm text-foreground">
+                  <Send className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                  <span>
+                    {t("sellerOrderDetails.paymentConfirmedNote")}
+                  </span>
                 </div>
               ) : isOrderStatus(order.status, OrderStatus.Cancelled) ? (
                 <p className="text-sm text-muted-foreground">{t("sellerOrderDetails.cancelledNote")}</p>
-              ) : (
+              ) : !isDisputed ? (
                 <p className="text-sm text-muted-foreground">
                   {t("sellerOrderDetails.waitingNote")}
                 </p>
+              ) : null}
+              {isDisputed ? (
+                <p className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-amber-700">
+                  {t("orderDetails.disputeOpenNote")}{" "}
+                  <Link to="/disputes" className="font-medium underline">
+                    {t("orderDetails.viewMyDisputes")}
+                  </Link>
+                </p>
+              ) : (
+                order.canOpenDispute && <OpenDisputeButton orderId={order.orderId} />
               )}
             </CardContent>
           </Card>

@@ -280,6 +280,37 @@ export interface AdminOrderDetails {
   isChatOpened: boolean;
 }
 
+// DisputeResponse
+export interface Dispute {
+  id: number;
+  orderId: number;
+  orderStatus: number;
+  productId: number;
+  productDescription: string;
+  buyerId: number;
+  buyerName: string;
+  sellerId: number;
+  sellerName: string;
+  openedById: number;
+  openedByName: string;
+  reason: string;
+  adminComment: string | null;
+  status: number;
+  createdAt: string;
+  resolvedAt: string | null;
+}
+
+// DisputeListResponse
+export interface DisputeListItem {
+  id: number;
+  orderId: number;
+  openedById: number;
+  openedByName: string;
+  reason: string;
+  status: number;
+  createdAt: string;
+}
+
 // ResponsePaymentAccount
 export interface PaymentAccount {
   id: number;

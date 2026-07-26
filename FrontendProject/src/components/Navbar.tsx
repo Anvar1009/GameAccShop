@@ -36,6 +36,7 @@ export function Navbar() {
         { to: "/admin", label: t("nav.overview"), end: true },
         { to: "/admin/payments", label: t("nav.payments") },
         { to: "/admin/orders", label: t("nav.orders") },
+        { to: "/admin/disputes", label: t("nav.disputes") },
         { to: "/admin/payment-accounts", label: t("nav.paymentAccounts") },
       ]
     : isAuthenticated
@@ -44,6 +45,7 @@ export function Navbar() {
         { to: "/dashboard", label: t("nav.dashboard"), end: true },
         { to: "/orders", label: t("nav.myOrders") },
         { to: "/seller", label: t("nav.sell") },
+        { to: "/disputes", label: t("nav.disputes") },
       ]
     : [
         { to: "/", label: t("nav.home"), end: true },

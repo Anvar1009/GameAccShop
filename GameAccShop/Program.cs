@@ -53,16 +53,18 @@ namespace GameAccShop
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
             builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<IDisputeRepository, DisputeRepository>();
 
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddScoped<IPaymentService, AdminPaymentService>(); 
+            builder.Services.AddScoped<IPaymentService, AdminPaymentService>();
             builder.Services.AddScoped<IPaymentAccountService, PaymentAccountService>();
             builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<INotificationPublisher, SignalRNotificationPublisher>();
+            builder.Services.AddScoped<IDisputeService, DisputeService>();
 
 
             builder.Services.AddAuthentication(options =>

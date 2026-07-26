@@ -61,6 +61,41 @@ namespace GameAccShop.Middleware.GlobalExceptionMiddleware
                 response.StatusCode = 400;
                 response.Message = ex.Message;
             }
+            else if (ex is Application.DTOs.OrderDTO.OrderNotFoundException)
+            {
+                context.Response.StatusCode = 404;
+
+                response.StatusCode = 404;
+                response.Message = ex.Message;
+            }
+            else if (ex is PaymentNotFoundException)
+            {
+                context.Response.StatusCode = 404;
+
+                response.StatusCode = 404;
+                response.Message = ex.Message;
+            }
+            else if (ex is DisputeNotFoundException)
+            {
+                context.Response.StatusCode = 404;
+
+                response.StatusCode = 404;
+                response.Message = ex.Message;
+            }
+            else if (ex is DisputeAlreadyExistsException)
+            {
+                context.Response.StatusCode = 400;
+
+                response.StatusCode = 400;
+                response.Message = ex.Message;
+            }
+            else if (ex is ForbiddenException)
+            {
+                context.Response.StatusCode = 403;
+
+                response.StatusCode = 403;
+                response.Message = ex.Message;
+            }
             else
             {
                 context.Response.StatusCode = 500;

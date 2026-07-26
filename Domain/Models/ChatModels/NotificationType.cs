@@ -16,6 +16,16 @@ namespace Domain.Models.ChatModels
 
         BuyerConfirmed,
 
-        PaymentReleased
+        PaymentReleased,
+
+        DisputeOpened,
+
+        DisputeUnderReview,
+
+        DisputeEvidenceRequested,
+
+        DisputeResolved,
+
+        DisputeClosed
     }
 }

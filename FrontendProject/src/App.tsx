@@ -13,6 +13,10 @@ import { ProductDetailsPage } from "@/features/products/ProductDetailsPage";
 
 import { ChatPage } from "@/features/chat/ChatPage";
 
+import { DisputesPage } from "@/features/disputes/DisputesPage";
+import { DisputeDetailsPage } from "@/features/disputes/DisputeDetailsPage";
+import { AdminDisputesPage } from "@/features/disputes/AdminDisputesPage";
+
 import { BuyerDashboardPage } from "@/features/buyer/BuyerDashboardPage";
 import { BuyerOrdersPage } from "@/features/buyer/BuyerOrdersPage";
 import { BuyerOrderDetailsPage } from "@/features/buyer/BuyerOrderDetailsPage";
@@ -53,6 +57,7 @@ export default function App() {
           <Route path="/orders/:orderId" element={<BuyerOrderDetailsPage />} />
           <Route path="/payment/:orderId" element={<PaymentPage />} />
           <Route path="/chat/:orderId" element={<ChatPage />} />
+          <Route path="/disputes" element={<DisputesPage />} />
 
           <Route path="/seller" element={<SellerDashboardPage />} />
           <Route path="/seller/products" element={<SellerProductsPage />} />
@@ -62,8 +67,11 @@ export default function App() {
           <Route path="/seller/orders/:orderId" element={<SellerOrderDetailsPage />} />
         </Route>
 
-        {/* Any authenticated user (fallback guard, currently unused directly) */}
-        <Route element={<ProtectedRoute />}>{/* reserved for shared authed pages */}</Route>
+        {/* Any authenticated user — dispute details are shared between the
+            buyer/seller who filed them and the admin who resolves them. */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/disputes/:id" element={<DisputeDetailsPage />} />
+        </Route>
 
         {/* Admin */}
         <Route element={<AdminRoute />}>
@@ -71,6 +79,7 @@ export default function App() {
           <Route path="/admin/payments" element={<AdminPaymentsPage />} />
           <Route path="/admin/payments/:id" element={<AdminPaymentReviewPage />} />
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
+          <Route path="/admin/disputes" element={<AdminDisputesPage />} />
           <Route path="/admin/payment-accounts" element={<PaymentAccountsPage />} />
         </Route>
 

@@ -34,6 +34,21 @@ export enum NotificationType {
   PaymentConfirmed = 2,
   BuyerConfirmed = 3,
   PaymentReleased = 4,
+  DisputeOpened = 5,
+  DisputeUnderReview = 6,
+  DisputeEvidenceRequested = 7,
+  DisputeResolved = 8,
+  DisputeClosed = 9,
+}
+
+// Domain.Models.OrdersModel.DisputeStatus (explicit values start at 1)
+export enum DisputeStatus {
+  Open = 1,
+  UnderReview = 2,
+  WaitingEvidence = 3,
+  ResolvedBuyer = 4,
+  ResolvedSeller = 5,
+  Closed = 6,
 }
 
 // Domain.Models.ChatModels.NotificationAudience — which side of the order the
@@ -78,6 +93,15 @@ const PAYMENT_STATUS_META: Record<PaymentStatus, Meta> = {
   [PaymentStatus.Cancelled]: { labelKey: "status.payment.cancelled", tone: "danger" },
 };
 
+const DISPUTE_STATUS_META: Record<DisputeStatus, Meta> = {
+  [DisputeStatus.Open]: { labelKey: "status.dispute.open", tone: "danger" },
+  [DisputeStatus.UnderReview]: { labelKey: "status.dispute.underReview", tone: "warning" },
+  [DisputeStatus.WaitingEvidence]: { labelKey: "status.dispute.waitingEvidence", tone: "warning" },
+  [DisputeStatus.ResolvedBuyer]: { labelKey: "status.dispute.resolvedBuyer", tone: "success" },
+  [DisputeStatus.ResolvedSeller]: { labelKey: "status.dispute.resolvedSeller", tone: "success" },
+  [DisputeStatus.Closed]: { labelKey: "status.dispute.closed", tone: "neutral" },
+};
+
 /**
  * Notification copy is localized on the client: the backend stores one Uzbek
  * string per notification, but the reader may be on ru/en. Body keys take an
@@ -114,6 +138,31 @@ const NOTIFICATION_META: Record<NotificationType, NotificationMeta> = {
     titleKey: "notif.paymentReleased.title",
     bodyKey: "notif.paymentReleased.body",
     tone: "success",
+  },
+  [NotificationType.DisputeOpened]: {
+    titleKey: "notif.disputeOpened.title",
+    bodyKey: "notif.disputeOpened.body",
+    tone: "danger",
+  },
+  [NotificationType.DisputeUnderReview]: {
+    titleKey: "notif.disputeUnderReview.title",
+    bodyKey: "notif.disputeUnderReview.body",
+    tone: "warning",
+  },
+  [NotificationType.DisputeEvidenceRequested]: {
+    titleKey: "notif.disputeEvidenceRequested.title",
+    bodyKey: "notif.disputeEvidenceRequested.body",
+    tone: "warning",
+  },
+  [NotificationType.DisputeResolved]: {
+    titleKey: "notif.disputeResolved.title",
+    bodyKey: "notif.disputeResolved.body",
+    tone: "success",
+  },
+  [NotificationType.DisputeClosed]: {
+    titleKey: "notif.disputeClosed.title",
+    bodyKey: "notif.disputeClosed.body",
+    tone: "neutral",
   },
 };
 
@@ -156,6 +205,18 @@ export function orderStatusMeta(value: number | string | null | undefined): Meta
 export function paymentStatusMeta(value: number | string | null | undefined): Meta {
   const key = normalize<PaymentStatus>(value, PaymentStatus as never);
   return (key != null && PAYMENT_STATUS_META[key]) || { labelKey: "status.unknown", tone: "neutral" };
+}
+
+export function disputeStatusMeta(value: number | string | null | undefined): Meta {
+  const key = normalize<DisputeStatus>(value, DisputeStatus as never);
+  return (key != null && DISPUTE_STATUS_META[key]) || { labelKey: "status.unknown", tone: "neutral" };
+}
+
+export function isDisputeStatus(
+  value: number | string | null | undefined,
+  status: DisputeStatus
+): boolean {
+  return normalize<DisputeStatus>(value, DisputeStatus as never) === status;
 }
 
 /** Returns a translation key for the payment method (localize via t/translate). */
