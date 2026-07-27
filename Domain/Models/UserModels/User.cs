@@ -28,6 +28,15 @@ namespace Domain.Models.UserModels
 
         public DateTime CreatedAt { get; set; }
 
+
+        public bool EmailConfirmed { get; set; }
+
+        public string? EmailVerificationCode { get; set; }
+
+        public DateTime? EmailVerificationExpires { get; set; }
+
+
+
         // Sotuvga qo'ygan accountlari
         public ICollection<Product> Products { get; set; }
             = new List<Product>();

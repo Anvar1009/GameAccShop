@@ -6,7 +6,6 @@ using Application.Interfaces.Security;
 using Application.Interfaces.ServiceInterface;
 using Application.Interfaces.UnitOfWorkFolder;
 using Application.Services;
-using Fluent.Infrastructure.FluentStartup;
 using GameAccShop.Controllers.Hubs;
 using GameAccShop.Middleware.GlobalExceptionMiddleware;
 using GameAccShop.Notifications;
