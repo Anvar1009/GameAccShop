@@ -6,9 +6,11 @@ using Application.Interfaces.Security;
 using Application.Interfaces.ServiceInterface;
 using Application.Interfaces.UnitOfWorkFolder;
 using Application.Services;
+using Fluent.Infrastructure.FluentStartup;
 using GameAccShop.Controllers.Hubs;
 using GameAccShop.Middleware.GlobalExceptionMiddleware;
 using GameAccShop.Notifications;
+using Infrastructure.Common;
 using Infrastructure.EntityModel;
 using Infrastructure.Repositories;
 using Infrastructure.Security;
@@ -41,6 +43,10 @@ namespace GameAccShop
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
+            builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+
+
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtProvider, JwtProvider>();
@@ -66,6 +72,7 @@ namespace GameAccShop
             builder.Services.AddScoped<INotificationPublisher, SignalRNotificationPublisher>();
             builder.Services.AddScoped<IDisputeService, DisputeService>();
             builder.Services.AddScoped<IAdminStatsService, AdminStatsService>();
+            builder.Services.AddScoped<IEmailService, EmailServicee>();
 
 
             builder.Services.AddAuthentication(options =>
