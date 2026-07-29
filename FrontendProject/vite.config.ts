@@ -18,6 +18,9 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 5173,
+      // Lets the dev server be reached through an ngrok tunnel (or any other
+      // hostname) when sharing a build with testers.
+      allowedHosts: true,
       proxy: {
         "/api": {
           target,

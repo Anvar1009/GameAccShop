@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Repositories_interface;
 using Domain.Models.OrdersModel;
+using Domain.Models.PaymentModel;
 using Infrastructure.EntityModel;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -84,6 +85,15 @@ namespace Infrastructure.Repositories
         {
             _context.orders.Update(order);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> HasPaidOrderAsync(int productId)
+        {
+            return await _context.orders.AsNoTracking()
+                .Include(o => o.Payment)
+                .AnyAsync(o => o.ProductId == productId &&
+                    o.Payment != null &&
+                    (o.Payment.Status == PaymentStatus.Confirmed || o.Payment.Status == PaymentStatus.Released));
         }
     }
 }

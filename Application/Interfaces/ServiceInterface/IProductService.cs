@@ -18,7 +18,7 @@ namespace Application.Interfaces.ServiceInterface
 
         Task<GetProductDTO> UpdateAsync(UpdateProductDTO product);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int id, int sellerId);
 
         Task<List<GetProductDTO>> GetSellerProductsAsync(int sellerId);
 

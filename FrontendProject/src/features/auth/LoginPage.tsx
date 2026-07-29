@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import axios from "axios";
 import { Gamepad2, Lock } from "lucide-react";
 import { authApi } from "./auth-api";
 import { useAuth } from "./useAuth";
@@ -14,9 +15,10 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField } from "@/components/FormField";
 import { AuthAside } from "./AuthAside";
+import { GoogleAuthButton } from "./GoogleAuthButton";
 
 const schema = z.object({
-  login: z.string().min(1, "validation.loginRequired"),
+  login: z.string().min(1, "validation.loginRequired").email("validation.loginEmail"),
   password: z.string().min(1, "validation.passwordRequired"),
 });
 
@@ -45,6 +47,10 @@ export function LoginPage() {
       const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;
       navigate(from || (isAdmin ? "/admin" : "/dashboard"), { replace: true });
     } catch (e) {
+      if (axios.isAxiosError(e) && e.response?.status === 403) {
+        navigate("/verify-email", { state: { login: values.login } });
+        return;
+      }
       setServerError(getErrorMessage(e, t("login.invalid")));
     }
   };
@@ -73,7 +79,7 @@ export function LoginPage() {
                   </div>
                 )}
                 <FormField label={t("login.login")} htmlFor="login" error={errors.login?.message && t(errors.login.message as never)} required>
-                  <Input id="login" placeholder="your_login" autoComplete="username" {...register("login")} />
+                  <Input id="login" type="email" placeholder="jane@example.com" autoComplete="username" {...register("login")} />
                 </FormField>
                 <FormField label={t("login.password")} htmlFor="password" error={errors.password?.message && t(errors.password.message as never)} required>
                   <Input
@@ -88,6 +94,12 @@ export function LoginPage() {
                   {t("login.submit")}
                 </Button>
               </form>
+              <div className="my-4 flex items-center gap-3">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs uppercase text-muted-foreground">{t("auth.orContinueWith")}</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+              <GoogleAuthButton />
               <p className="mt-6 text-center text-sm text-muted-foreground">
                 {t("login.noAccount")}{" "}
                 <Link to="/register" className="font-semibold text-primary hover:underline">

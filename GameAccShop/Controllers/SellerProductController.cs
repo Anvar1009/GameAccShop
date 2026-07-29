@@ -38,7 +38,11 @@ namespace GameAccShop.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _productService.DeleteAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            var sellerId = int.Parse(userId.Value);
+
+            await _productService.DeleteAsync(id, sellerId);
 
             return Ok(id);
 

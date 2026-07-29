@@ -15,11 +15,13 @@ namespace Application.Services
     {
         private readonly IProductRepository _repository;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IOrderRepository _orderRepository;
 
-        public ProductService(IProductRepository productRepository, IPasswordHasher passwordHasher)
+        public ProductService(IProductRepository productRepository, IPasswordHasher passwordHasher, IOrderRepository orderRepository)
         {
             _repository = productRepository;
             _passwordHasher = passwordHasher;
+            _orderRepository = orderRepository;
         }
 
         public async Task<GetProductDTO> CreateAsync(CreateProductDTO product, int sellerId)
@@ -144,12 +146,18 @@ namespace Application.Services
             return getProductDTO;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, int sellerId)
         {
             var result = await _repository.GetByIdAsync(id);
 
             if (result == null)
                 throw new ProductNotFoundException();
+
+            if (result.SellerId != sellerId)
+                throw new ForbiddenException();
+
+            if (await _orderRepository.HasPaidOrderAsync(id))
+                throw new ProductHasPaidOrderException();
 
             // Soft-delete: productga bog'langan Order bo'lishi mumkin (Order.ProductId FK Restrict),
             // shuning uchun jismonan o'chirmasdan statusni Deleted ga o'tkazamiz.

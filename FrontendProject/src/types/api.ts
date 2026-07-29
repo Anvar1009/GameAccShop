@@ -26,6 +26,19 @@ export interface RegisterResponse {
   describtion: string; // (backend typo preserved)
 }
 
+export interface VerifyEmailRequest {
+  login: string;
+  code: string;
+}
+
+export interface ResendCodeRequest {
+  login: string;
+}
+
+export interface GoogleAuthRequest {
+  idToken: string;
+}
+
 // GetProductDTO
 export interface Product {
   id: number;

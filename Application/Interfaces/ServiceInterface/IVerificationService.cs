@@ -11,7 +11,7 @@ namespace Application.Interfaces.ServiceInterface
     {
         Task SendVerificationCodeAsync(User user);
 
-        Task VerifyCodeAsync(string email, string code);
+        Task<User> VerifyCodeAsync(string email, string code);
 
         Task ResendCodeAsync(string email);
     }

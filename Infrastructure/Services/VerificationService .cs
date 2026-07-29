@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Repositories_interface;
+﻿using Application.Exceptions;
+using Application.Interfaces.Repositories_interface;
 using Application.Interfaces.ServiceInterface;
 using Application.Interfaces.UnitOfWorkFolder;
 using Domain.Models.UserModels;
@@ -28,7 +29,19 @@ namespace Infrastructure.Services
 
         public async Task ResendCodeAsync(string email)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByLoginAsycn(email);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException();
+            }
+
+            if (user.EmailConfirmed)
+            {
+                throw new BadRequestException("Email allaqachon tasdiqlangan");
+            }
+
+            await SendVerificationCodeAsync(user);
         }
 
         public async Task SendVerificationCodeAsync(User user)
@@ -43,9 +56,35 @@ namespace Infrastructure.Services
             await _emailService.SendVerificationCodeAsync(user.Login, code);
         }
 
-        public Task VerifyCodeAsync(string email, string code)
+        public async Task<User> VerifyCodeAsync(string email, string code)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByLoginAsycn(email);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException();
+            }
+
+            if (user.EmailConfirmed)
+            {
+                return user;
+            }
+
+            if (string.IsNullOrEmpty(user.EmailVerificationCode) ||
+                user.EmailVerificationExpires == null ||
+                user.EmailVerificationExpires < DateTime.UtcNow ||
+                user.EmailVerificationCode != code)
+            {
+                throw new InvalidVerificationCodeException();
+            }
+
+            user.EmailConfirmed = true;
+            user.EmailVerificationCode = null;
+            user.EmailVerificationExpires = null;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return user;
         }
     }
 }

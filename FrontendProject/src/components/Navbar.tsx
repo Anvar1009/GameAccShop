@@ -148,9 +148,10 @@ export function Navbar() {
             </div>
           )}
 
-          <ThemeToggle />
-
-          <LanguageSwitcher />
+          <div className="hidden sm:flex sm:items-center sm:gap-2">
+            <ThemeToggle />
+            <LanguageSwitcher />
+          </div>
 
           <button
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-secondary md:hidden"
@@ -182,7 +183,7 @@ export function Navbar() {
               </NavLink>
             ))}
             {!isAuthenticated && (
-              <div className="mt-2 flex gap-2 border-t border-border pt-3">
+              <div className="mt-2 flex gap-2 border-t border-border pt-3 sm:hidden">
                 <Button asChild variant="outline" className="flex-1" onClick={() => setOpen(false)}>
                   <Link to="/login">{t("auth.signIn")}</Link>
                 </Button>
@@ -191,6 +192,14 @@ export function Navbar() {
                 </Button>
               </div>
             )}
+
+            <div className="mt-2 flex items-center justify-between gap-2 border-t border-border pt-3 sm:hidden">
+              <span className="text-sm font-medium text-muted-foreground">{t("lang.label")}</span>
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <LanguageSwitcher />
+              </div>
+            </div>
           </nav>
         </div>
       )}

@@ -110,6 +110,34 @@ namespace GameAccShop.Middleware.GlobalExceptionMiddleware
                 response.StatusCode = 400;
                 response.Message = ex.Message;
             }
+            else if (ex is InvalidVerificationCodeException)
+            {
+                context.Response.StatusCode = 400;
+
+                response.StatusCode = 400;
+                response.Message = ex.Message;
+            }
+            else if (ex is EmailNotVerifiedException)
+            {
+                context.Response.StatusCode = 403;
+
+                response.StatusCode = 403;
+                response.Message = ex.Message;
+            }
+            else if (ex is InvalidGoogleTokenException)
+            {
+                context.Response.StatusCode = 400;
+
+                response.StatusCode = 400;
+                response.Message = ex.Message;
+            }
+            else if (ex is ProductHasPaidOrderException)
+            {
+                context.Response.StatusCode = 400;
+
+                response.StatusCode = 400;
+                response.Message = ex.Message;
+            }
             else
             {
                 context.Response.StatusCode = 500;

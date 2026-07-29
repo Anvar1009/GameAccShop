@@ -7,6 +7,7 @@ import { NotFoundPage } from "@/pages/NotFoundPage";
 
 import { LoginPage } from "@/features/auth/LoginPage";
 import { RegisterPage } from "@/features/auth/RegisterPage";
+import { VerifyEmailPage } from "@/features/auth/VerifyEmailPage";
 
 import { ProductCatalogPage } from "@/features/products/ProductCatalogPage";
 import { ProductDetailsPage } from "@/features/products/ProductDetailsPage";
@@ -48,6 +49,7 @@ export default function App() {
         <Route element={<GuestRoute />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
         </Route>
 
         {/* Authenticated non-admin (buyer + seller share the User role) */}

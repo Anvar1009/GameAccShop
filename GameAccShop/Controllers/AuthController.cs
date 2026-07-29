@@ -35,6 +35,30 @@ namespace GameAccShop.Controllers
             return Ok(result);
         }
 
+        [HttpPost("verify-email")]
+        public async Task<ActionResult<LoginResponseDTO>> VerifyEmail(VerifyEmailRequestDTO request)
+        {
+            var result = await _authService.VerifyEmail_Service(request);
+
+            return Ok(result);
+        }
+
+        [HttpPost("resend-code")]
+        public async Task<IActionResult> ResendCode(ResendCodeRequestDTO request)
+        {
+            await _authService.ResendCode_Service(request);
+
+            return Ok(new { message = "Tasdiqlash kodi qayta yuborildi" });
+        }
+
+        [HttpPost("google")]
+        public async Task<ActionResult<LoginResponseDTO>> GoogleAuth(GoogleAuthRequestDTO request)
+        {
+            var result = await _authService.GoogleAuth_Service(request);
+
+            return Ok(result);
+        }
+
         [Authorize]
         [HttpGet("me")]
         public IActionResult Me()

@@ -6,7 +6,6 @@ import { z } from "zod";
 import { CheckCircle2, Gamepad2 } from "lucide-react";
 import { toast } from "sonner";
 import { authApi } from "./auth-api";
-import { useAuth } from "./useAuth";
 import { getErrorMessage } from "@/lib/api";
 import { useTranslation } from "@/i18n/useTranslation";
 import { Button } from "@/components/ui/button";
@@ -14,11 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField } from "@/components/FormField";
 import { AuthAside } from "./AuthAside";
+import { GoogleAuthButton } from "./GoogleAuthButton";
 
 const schema = z.object({
   firstName: z.string().min(1, "validation.firstNameRequired"),
   lastName: z.string().min(1, "validation.lastNameRequired"),
-  login: z.string().min(3, "validation.loginMin"),
+  login: z.string().min(1, "validation.loginRequired").email("validation.loginEmail"),
   phoneNumber: z.string().min(5, "validation.phoneInvalid"),
   password: z.string().min(6, "validation.passwordMin6"),
 });
@@ -26,7 +26,6 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export function RegisterPage() {
-  const { login: signIn } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -41,11 +40,8 @@ export function RegisterPage() {
     setServerError(null);
     try {
       await authApi.register(values);
-      // Auto-login for a smooth onboarding experience.
-      const res = await authApi.login({ login: values.login, password: values.password });
-      signIn(res.token);
       toast.success(t("register.success"));
-      navigate("/dashboard", { replace: true });
+      navigate("/verify-email", { replace: true, state: { login: values.login } });
     } catch (e) {
       setServerError(getErrorMessage(e, t("register.error")));
     }
@@ -82,7 +78,7 @@ export function RegisterPage() {
                   </FormField>
                 </div>
                 <FormField label={t("register.login")} htmlFor="login" error={errors.login?.message && t(errors.login.message as never)} required>
-                  <Input id="login" placeholder="jane_doe" autoComplete="username" {...register("login")} />
+                  <Input id="login" type="email" placeholder="jane@example.com" autoComplete="username" {...register("login")} />
                 </FormField>
                 <FormField label={t("register.phone")} htmlFor="phoneNumber" error={errors.phoneNumber?.message && t(errors.phoneNumber.message as never)} required>
                   <Input id="phoneNumber" placeholder="+998 90 123 45 67" {...register("phoneNumber")} />
@@ -100,6 +96,12 @@ export function RegisterPage() {
                   {t("register.submit")}
                 </Button>
               </form>
+              <div className="my-4 flex items-center gap-3">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs uppercase text-muted-foreground">{t("auth.orContinueWith")}</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+              <GoogleAuthButton />
               <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                 {t("register.benefit")}

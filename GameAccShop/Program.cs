@@ -45,6 +45,9 @@ namespace GameAccShop
             builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("EmailSettings"));
 
+            builder.Services.Configure<GoogleSettings>(
+    builder.Configuration.GetSection("GoogleSettings"));
+
 
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -72,6 +75,8 @@ namespace GameAccShop
             builder.Services.AddScoped<IDisputeService, DisputeService>();
             builder.Services.AddScoped<IAdminStatsService, AdminStatsService>();
             builder.Services.AddScoped<IEmailService, EmailServicee>();
+            builder.Services.AddScoped<IVerificationService, VerificationService>();
+            builder.Services.AddScoped<IGoogleAuthProvider, GoogleAuthProvider>();
 
 
             builder.Services.AddAuthentication(options =>

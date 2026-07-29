@@ -164,9 +164,11 @@
 }
 
 /* Animated decorative backdrop — floating particle "constellation" field.
-   Fixed to the viewport, sits behind page content, works in light & dark. */
+   Absolutely positioned against <main> (its nearest `position: relative`
+   ancestor) rather than `fixed` to the viewport — `fixed` sizing is unreliable
+   under mobile viewport emulation and was overflowing the page horizontally. */
 .animated-bg {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: -1;
   overflow: hidden;

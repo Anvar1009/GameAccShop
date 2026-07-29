@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Application.DTOs.RegisterDTO
 {
-    public class LoginRequestDTO
+    public class VerifyEmailRequestDTO
     {
         [Required, EmailAddress]
         public string Login { get; set; }
 
-        [Required]
-        public string Password { get; set; }
+        [Required, StringLength(6, MinimumLength = 6)]
+        public string Code { get; set; }
     }
 }

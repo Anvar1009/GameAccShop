@@ -22,5 +22,8 @@ namespace Application.Interfaces.Repositories_interface
         Task<Order?> GetByIdAsync(int id);
 
         Task UpdateAsync(Order order);
+
+        /// <summary>True if any order for this product has a confirmed or released payment.</summary>
+        Task<bool> HasPaidOrderAsync(int productId);
     }
 }
